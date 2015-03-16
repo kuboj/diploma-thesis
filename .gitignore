@@ -1,0 +1,10 @@
+src/main.lol
+.texlipse
+.project
+diplomovk.synctex.gz
+out/*
+!out/.gitkeep
+tmp/*
+!tmp/.gitkeep
+/out
+/tmp
