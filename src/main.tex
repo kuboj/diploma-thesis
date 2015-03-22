@@ -100,7 +100,28 @@
             numberstyle=\small\color{gray},
             numbers=left,
             captionpos=b,
-            language=Ruby,
+            language=C++,
+            #1
+        }
+%    }
+%    {\endminipage}
+}{}
+
+\lstnewenvironment{pseudocode}[1][]%
+{
+%    {\minipage{\linewidth}
+        \lstset{        
+            commentstyle=\color{dgray}\textit,
+            escapeinside={<*}{*>},
+            showstringspaces=false,
+            %aboveskip=20pt, % HACK
+            %xleftmargin=10pt,
+            %xrightmargin=10pt,
+            frame=single,
+            basicstyle=\small\ttfamily,
+            numberstyle=\small\color{gray},
+            numbers=left,
+            captionpos=b,
             #1
         }
 %    }

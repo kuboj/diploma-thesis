@@ -60,6 +60,40 @@ nadslova. (Triviálnym riešením by bolo $O(n \cdot L)$, kde $L$ je dĺžka
 \emph{readu})
 
 \section{Riešenie s použitím hash mapy}
+Ako prvé netriviálne riešenie tohto problému sa naskytá použitie hash mapy,
+kde kľúčom sú všetky možné hľadané \emph{patterny} $P$ (tie generovať vieme,
+keďže máme dopredu danú dĺzku $k = |P|$ a pracujeme nad konečnou abecedou) a
+hodnota pre daný kľúč by bol zoznam \emph{readov}, ktoré tento \emph{pattern}
+obsahujú. Algorimus na generovanie takejto hash mapy by vyzeral naslednovne:
+
+\begin{pseudocode}[label=lst:hash_algorithm,caption={Algoritmus na riešenie
+problému zarovnania readov pomocou hash mapy}]
+h = HashMap.new
+
+def process(S)
+  foreach r : S do
+    for i in (0...(|r| - k + 1)) do
+      t = r[i, k]
+      if not h.has_key?(t)
+        h[t] = LinkedList.new
+      end
+        
+      h[t].append(r)
+    end 
+  end
+end
+
+def find_reads(p)
+  return (h[p].append(h[revcompl(p)]))
+end
+\end{pseudocode}
+
+Pre každý \emph{read} $r$ zo zoznamu \emph{readov} $S$ vygerujeme všetky jeho
+podreťazce dĺžky $k$ a tie použijeme ako kľúče do hash mapy, pomocou ktorých
+tento \emph{read} zaindexujeme jeho pridaním do spájaného zozanmu.
+
+Hľadanie \emph{patternu} $p$ potom prebieha tak, že vrátime zreťazené spájané
+zoznamy pre $p$ a reverzný komplement $p$.
 
 \section{Riešenie s použitím GkArray}
 
