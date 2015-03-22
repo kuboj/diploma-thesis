@@ -72,39 +72,6 @@ implementácii.
     
 \todo{chcem viac o zarovnavaniach ? globalne zarovnanie, skorovanie atd}
 
-\section{Definícia problému}
-
-Úlohou bude vytvoriť efektívnu dátovú štruktúru, ktorá načíta veľkú sadu
-relatívne krátkych \emph{sequence reads} a umožní v nich rýchlo vyhľadávať.
-Počty týchto \emph{readov} sa budú pohybovať v miliónoch až desiatkach miliónov
-a ich dĺžka bude 100-500 báz. 
-
-Konkrétnejšie, budeme požadovať, aby táto štruktúra spĺňala nadsledovné
-podmienky:
-
-\begin{itemize}
-    \item načíta sadu reťazcov (\emph{sequence reads}), ktoré pochádzajú z
-    jedného spoločného nadslova (genómu, ktorý bol sekvenovaný). Treba rátať s
-    chybami pri sekvenovaní, t.j. jednotlivé načítavané reťazce môžu mať jemné
-    odlišnosti oproti spoločnému nadslovu.
-    \item bude sa v nej dať vyhľadávať podľa viacerých kritérií (časom uvidíme,
-    aké konkétne to budú), napr. ``obsahuje podreťazec $P$''.
-    \item bude mat čo najmenšiu pamätovú zložitost, pri zachovaní rozumnej
-    časovej, cieľom by malo byť niečo typu $O(n + s)$, kde $n$ je počet
-    načítaných reťazcov a $s$ je dĺžka spoločného nadslova. (Triviálnym riešením
-    by bolo $O(nl)$, kde $l$ je dĺžka readu).
-\end{itemize}
-
-\newpage % TODO: remove this
-
-\section{Related work}
-\todo{spomenut bezne rieseny, no opacny problem - zarovnavanie  genomu - tam sa
-indexuje referencny genom v nejakej super efektivnej DS, sequence ready sa potom
-paralelne spracuvaju ako sa citaju. my chceme mat efektivne zaindexovane velke
-mnozstvo readov, aby sme to vedeli kadejako efektivne filtrovat }
-
-
-
 \section{Funkcie rank a select}
 \begin{defn}
     Funkcia $rank$ na reťazci $S$ je definovaná ako $rank_S(i, c) = n$, kde $n$

@@ -1,0 +1,72 @@
+\todo{bioinformaticka motivacia problemu. blabla. bioinf definicia problemu. Vo
+svojej praci sa Dr. Peter Boza PhD., CSc., PanVesmiru, zaobera \ldots, kde
+riesi \ldots a odtial pochadza motivacia riesit problem \ldots.}
+
+\section{Definícia problému}
+
+Úlohou bude teda vytvoriť efektívnu dátovú štruktúru, ktorá načíta veľkú sadu
+relatívne krátkych reťazcov (\emph{sequence reads}) a umožní dostatočne rýchlo
+odpovedať na dotaz (\emph{query}) \emph{,,vráť tie reťazce, ktoré obsahujú ako
+podreťazec reťazec $P$``}, pričom dĺžka reťazca $P$ je dopredu daná. Dôraz
+budeme klásť ako na rýchlosť odpovedania na query, tak aj na pamäťovú
+efektívnosť tejto dátovej štruktúry. Formálne:
+
+\begin{description}
+    \item[Vstup] \hfill \\
+        Na vstupe pre konštrukciu dátovej štruktúry sú $k, n, L \in N$ a množina
+        $R$ taká, že:
+        $$R = \{r_0, r_1, \ldots, r_{n-1} :
+        \forall i : 0 \leq i < n : |r_i| = L \wedge \forall j : 0 \leq
+        j < L : r[j] \in \Sigma \}$$ kde $|\Sigma| = 4$.
+    \item[Výstup] \hfill \\
+        Výstupom pre dotaz $P$, kde $$|P| = k \wedge \forall i : 0 \leq i < k :
+        P[i] \in \Sigma$$ je taká množina $O$, že: 
+        $$O = \{r_m, r_{m+1}, \ldots, r_{m+l} : \forall i : m \leq i \leq m +
+        l : r_i \in R \wedge issubstring(P, r_i) \}$$ pričom predikát
+        $issubstring$ je definovaný ako $$issubstring(p, S) \leftarrow \exists i
+        \in N: 0 \leq i < |S| - |p| + 1 : \forall j : 0 \leq j < |p| : p[j] ==
+        S[i+j] $$        
+\end{description}
+
+Takto zadaná úloha je ale veľmi nekonkrétna a vo všeobecnosti ťažko riešiteľná.
+Avšak to, že tento problém budeme riešiť v bioinformatickom kontexte nám úlohu
+uľahčí:
+
+\begin{itemize}
+    \item Vieme, že všetky \emph{sequence reads} $r_i$ pochádzajú z nejakého
+    spoločného nadslova (sekvenovanej DNA), pričom pri sekvenovaní mohla s
+    istou pravdepodobnosťou nastať chyba. \todo{odkaz na definiciu chyby
+    sekvenovania}. Pravdepodobnosť chyby budeme uvažovať na úrovni $0.1\% - 2\% $.
+    \item Dĺžka spoločného nadslova sa pohybuje medzi $10^6$ (dĺžka genómu
+    baktérií je niekde na úrovni $4 \cdot 10^6$) a $10^9$ (dĺžka genómu človeka
+    je asi $3 \cdot 10^9$).
+    \item Dĺžky \emph{readov} $l$ sa pohybujú v rozmedzí $100 - 150$
+    \item Pri sekvenovaní sa využíva miera pokrytia (\todo{odkaz na definiciu
+    miery pokrytia}) v rozmedzí $10\times$ až $100\times$, z čoho nám v
+    kombinácii s dlžkou spoločného nadslova a dlžkou \emph{readov} vychádza
+    obmedzenie pre počet \emph{readov} na vstupe na 
+    $n \in [ 10^5, \frac{2}{3} \cdot 10^9 ]$ \todo{ugh. toto nie je privela?}
+    \item Dĺžku podreťazca $P$ budeme uvažovať v rozmedzí $13 -15$. 
+    \item Jemná modifikácia predikátu $issubstring(p, S)$: $$issubstring2
+    \leftarrow issubstring(p, S) \vee issubstring(p, revcompl(S))$$ kde
+    $revcompl(S)$ je funkcia, ktorá pre vstupný reťazec $S$ vráti jeho reverzný
+    komplement (\todo{odkaz na definiciu reverzneho komplementu})
+\end{itemize}
+
+% obmedzenia pre k, n, L + bioveci 12 < k < 16 10^6 < n < 10^9 100 < L < 200 
+
+%         \item 
+%     načíta sadu reťazcov (\emph{sequence reads}), ktoré
+%     pochádzajú z jedného spoločného nadslova (genómu, ktorý bol sekvenovaný). Treba rátať s chybami pri sekvenovaní, t.j. jednotlivé načítavané reťazce môžu mať jemné odlišnosti oproti spoločnému nadslovu.
+%     \item bude sa v nej dať vyhľadávať podľa viacerých kritérií (časom uvidíme,
+%     aké konkétne to budú), napr. ``obsahuje podreťazec $P$''.
+%     \item bude mat čo najmenšiu pamätovú zložitost, pri zachovaní rozumnej
+%     časovej, cieľom by malo byť niečo typu $O(n + s)$, kde $n$ je počet
+%     načítaných reťazcov a $s$ je dĺžka spoločného nadslova. (Triviálnym riešením
+%     by bolo $O(nl)$, kde $l$ je dĺžka readu).
+
+\section{Related work}
+\todo{spomenut bezne rieseny, no opacny problem - zarovnavanie  genomu - tam sa
+indexuje referencny genom v nejakej super efektivnej DS, sequence ready sa potom
+paralelne spracuvaju ako sa citaju. my chceme mat efektivne zaindexovane velke
+mnozstvo readov, aby sme to vedeli kadejako efektivne filtrovat }
