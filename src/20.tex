@@ -53,20 +53,14 @@ uľahčí:
     komplement (\todo{odkaz na definiciu reverzneho komplementu})
 \end{itemize}
 
-% obmedzenia pre k, n, L + bioveci 12 < k < 16 10^6 < n < 10^9 100 < L < 200 
+Cieľom bude dosiahnuť čo najnižsiu pamäťovú zložitosť, pri zachovaní
+,,rozumnej`` časovej zložitosti. Očakávaná pamáťová zložitosť bude teda $O(n +
+s)$, kde $n$ je počet načítaných \emph{readov} a $s$ je dĺžka spoločného
+nadslova. (Triviálnym riešením by bolo $O(n \cdot L)$, kde $L$ je dĺžka
+\emph{readu})
 
-%         \item 
-%     načíta sadu reťazcov (\emph{sequence reads}), ktoré
-%     pochádzajú z jedného spoločného nadslova (genómu, ktorý bol sekvenovaný). Treba rátať s chybami pri sekvenovaní, t.j. jednotlivé načítavané reťazce môžu mať jemné odlišnosti oproti spoločnému nadslovu.
-%     \item bude sa v nej dať vyhľadávať podľa viacerých kritérií (časom uvidíme,
-%     aké konkétne to budú), napr. ``obsahuje podreťazec $P$''.
-%     \item bude mat čo najmenšiu pamätovú zložitost, pri zachovaní rozumnej
-%     časovej, cieľom by malo byť niečo typu $O(n + s)$, kde $n$ je počet
-%     načítaných reťazcov a $s$ je dĺžka spoločného nadslova. (Triviálnym riešením
-%     by bolo $O(nl)$, kde $l$ je dĺžka readu).
+\section{Riešenie s použitím hash mapy}
 
-\section{Related work}
-\todo{spomenut bezne rieseny, no opacny problem - zarovnavanie  genomu - tam sa
-indexuje referencny genom v nejakej super efektivnej DS, sequence ready sa potom
-paralelne spracuvaju ako sa citaju. my chceme mat efektivne zaindexovane velke
-mnozstvo readov, aby sme to vedeli kadejako efektivne filtrovat }
+\section{Riešenie s použitím GkArray}
+
+\section{Porovnanie}
