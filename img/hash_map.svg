@@ -1,0 +1,763 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Created with Inkscape (http://www.inkscape.org/) -->
+
+<svg
+   xmlns:dc="http://purl.org/dc/elements/1.1/"
+   xmlns:cc="http://creativecommons.org/ns#"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   width="744.09448819"
+   height="1052.3622047"
+   id="svg2"
+   version="1.1"
+   inkscape:version="0.48.4 r9939"
+   sodipodi:docname="hash_map.svg">
+  <defs
+     id="defs4" />
+  <sodipodi:namedview
+     id="base"
+     pagecolor="#ffffff"
+     bordercolor="#666666"
+     borderopacity="1.0"
+     inkscape:pageopacity="0.0"
+     inkscape:pageshadow="2"
+     inkscape:zoom="1.4"
+     inkscape:cx="312.35613"
+     inkscape:cy="719.12509"
+     inkscape:document-units="px"
+     inkscape:current-layer="layer1"
+     showgrid="false"
+     showguides="true"
+     inkscape:guide-bbox="true"
+     inkscape:window-width="1920"
+     inkscape:window-height="1025"
+     inkscape:window-x="-3"
+     inkscape:window-y="-3"
+     inkscape:window-maximized="1">
+    <sodipodi:guide
+       orientation="1,0"
+       position="58.571429,895"
+       id="guide4062" />
+  </sodipodi:namedview>
+  <metadata
+     id="metadata7">
+    <rdf:RDF>
+      <cc:Work
+         rdf:about="">
+        <dc:format>image/svg+xml</dc:format>
+        <dc:type
+           rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
+        <dc:title />
+      </cc:Work>
+    </rdf:RDF>
+  </metadata>
+  <g
+     inkscape:label="Layer 1"
+     inkscape:groupmode="layer"
+     id="layer1">
+    <rect
+       style="fill:#ffffff;stroke:#000000"
+       id="rect2991"
+       width="45.073803"
+       height="27.857143"
+       x="59.285713"
+       y="103.07647" />
+    <flowRoot
+       xml:space="preserve"
+       id="flowRoot2993"
+       style="fill:black;stroke:none;stroke-opacity:1;stroke-width:1px;stroke-linejoin:miter;stroke-linecap:butt;fill-opacity:1;font-family:Sans;font-style:normal;font-weight:normal;font-size:14px;line-height:125%;letter-spacing:0px;word-spacing:0px"><flowRegion
+         id="flowRegion2995"><rect
+           id="rect2997"
+           width="41.42857"
+           height="20"
+           x="60"
+           y="108.07647" /></flowRegion><flowPara
+         id="flowPara2999" /></flowRoot>    <text
+       xml:space="preserve"
+       style="font-size:14px;font-style:normal;font-weight:normal;line-height:125%;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;font-family:Sans"
+       x="69.119827"
+       y="121.6479"
+       id="text3001"
+       sodipodi:linespacing="125%"><tspan
+         sodipodi:role="line"
+         id="tspan3003"
+         x="69.119827"
+         y="121.6479"
+         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-family:Andale Mono;-inkscape-font-specification:Andale Mono">ACT</tspan></text>
+    <path
+       style="fill:none;stroke:#000000;stroke-width:3;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
+       d="m 104.67391,117.36218 43.01828,0"
+       id="path3013"
+       inkscape:connector-curvature="0" />
+    <path
+       style="fill:none;stroke:#000000;stroke-width:3;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
+       d="M 146.82226,116.85632 135.71058,105.74464"
+       id="path3031"
+       inkscape:connector-curvature="0" />
+    <path
+       style="fill:none;stroke:#000000;stroke-width:3;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
+       d="m 146.72214,117.86778 -10.6066,10.6066"
+       id="path3051"
+       inkscape:connector-curvature="0" />
+    <rect
+       style="fill:#ffffff;stroke:#000000;stroke-width:1"
+       id="rect2991-0"
+       width="52.271133"
+       height="27.857143"
+       x="148.1774"
+       y="103.79076" />
+    <text
+       xml:space="preserve"
+       style="font-size:14px;font-style:normal;font-weight:normal;line-height:125%;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;font-family:Sans"
+       x="154.40202"
+       y="121.6479"
+       id="text3001-4"
+       sodipodi:linespacing="125%"><tspan
+         sodipodi:role="line"
+         id="tspan3003-4"
+         x="154.40202"
+         y="121.6479"
+         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-family:Andale Mono;-inkscape-font-specification:Andale Mono">ACTTT</tspan></text>
+    <rect
+       style="fill:#ffffff;stroke:#000000;stroke-width:1"
+       id="rect2991-0-9"
+       width="52.271133"
+       height="27.857143"
+       x="209.22998"
+       y="103.79075" />
+    <text
+       xml:space="preserve"
+       style="font-size:14px;font-style:normal;font-weight:normal;line-height:125%;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;font-family:Sans"
+       x="214.44444"
+       y="121.6479"
+       id="text3001-4-9"
+       sodipodi:linespacing="125%"><tspan
+         sodipodi:role="line"
+         id="tspan3003-4-0"
+         x="214.44444"
+         y="121.6479"
+         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-family:Andale Mono;-inkscape-font-specification:Andale Mono">AAACT</tspan></text>
+    <rect
+       style="fill:#ffffff;stroke:#000000;stroke-width:1"
+       id="rect2991-0-5"
+       width="52.271133"
+       height="27.857143"
+       x="269.58658"
+       y="103.79075" />
+    <text
+       xml:space="preserve"
+       style="font-size:14px;font-style:normal;font-weight:normal;line-height:125%;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;font-family:Sans"
+       x="274.80106"
+       y="121.6479"
+       id="text3001-4-0"
+       sodipodi:linespacing="125%"><tspan
+         sodipodi:role="line"
+         id="tspan3003-4-2"
+         x="274.80106"
+         y="121.6479"
+         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-family:Andale Mono;-inkscape-font-specification:Andale Mono">ACTGA</tspan></text>
+    <path
+       style="fill:none;stroke:#000000;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+       d="m 200.51528,117.21346 8.5863,0"
+       id="path3912"
+       inkscape:connector-curvature="0" />
+    <path
+       style="fill:none;stroke:#000000;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+       d="m 208.4375,117.18361 -3.95692,-6.85358"
+       id="path3934"
+       inkscape:connector-curvature="0" />
+    <path
+       style="fill:none;stroke:#000000;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+       d="m 208.39682,117.16436 -3.95692,6.85358"
+       id="path3934-4"
+       inkscape:connector-curvature="0" />
+    <path
+       style="fill:none;stroke:#000000;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+       d="m 260.9747,117.1338 8.5863,0"
+       id="path3912-9"
+       inkscape:connector-curvature="0" />
+    <path
+       style="fill:none;stroke:#000000;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+       d="M 268.89692,117.10395 264.94,110.25037"
+       id="path3934-6"
+       inkscape:connector-curvature="0" />
+    <path
+       style="fill:none;stroke:#000000;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+       d="m 268.85624,117.0847 -3.95692,6.85358"
+       id="path3934-4-5"
+       inkscape:connector-curvature="0" />
+    <rect
+       style="fill:#ffffff;stroke:#000000"
+       id="rect2991-1"
+       width="45.073803"
+       height="27.857143"
+       x="59.183174"
+       y="138.11978" />
+    <text
+       xml:space="preserve"
+       style="font-size:14px;font-style:normal;font-weight:normal;line-height:125%;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;font-family:Sans"
+       x="69.017288"
+       y="156.69121"
+       id="text3001-8"
+       sodipodi:linespacing="125%"><tspan
+         sodipodi:role="line"
+         id="tspan3003-7"
+         x="69.017288"
+         y="156.69121"
+         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-family:Andale Mono;-inkscape-font-specification:Andale Mono">CTT</tspan></text>
+    <path
+       style="fill:none;stroke:#000000;stroke-width:3;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
+       d="m 104.57138,152.40551 43.01828,0"
+       id="path3013-1"
+       inkscape:connector-curvature="0" />
+    <path
+       style="fill:none;stroke:#000000;stroke-width:3;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
+       d="M 146.71973,151.89965 135.60805,140.78797"
+       id="path3031-6"
+       inkscape:connector-curvature="0" />
+    <path
+       style="fill:none;stroke:#000000;stroke-width:3;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
+       d="m 146.61961,152.91111 -10.6066,10.6066"
+       id="path3051-6"
+       inkscape:connector-curvature="0" />
+    <rect
+       style="fill:#ffffff;stroke:#000000;stroke-width:1"
+       id="rect2991-0-1"
+       width="52.271133"
+       height="27.857143"
+       x="148.07486"
+       y="138.83406" />
+    <text
+       xml:space="preserve"
+       style="font-size:14px;font-style:normal;font-weight:normal;line-height:125%;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;font-family:Sans"
+       x="154.2995"
+       y="156.69121"
+       id="text3001-4-8"
+       sodipodi:linespacing="125%"><tspan
+         sodipodi:role="line"
+         id="tspan3003-4-8"
+         x="154.2995"
+         y="156.69121"
+         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-family:Andale Mono;-inkscape-font-specification:Andale Mono">ACTTT</tspan></text>
+    <rect
+       style="fill:#ffffff;stroke:#000000;stroke-width:1"
+       id="rect2991-0-9-6"
+       width="52.271133"
+       height="27.857143"
+       x="209.12747"
+       y="138.83406" />
+    <text
+       xml:space="preserve"
+       style="font-size:14px;font-style:normal;font-weight:normal;line-height:125%;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;font-family:Sans"
+       x="214.34192"
+       y="156.69121"
+       id="text3001-4-9-5"
+       sodipodi:linespacing="125%"><tspan
+         sodipodi:role="line"
+         id="tspan3003-4-0-4"
+         x="214.34192"
+         y="156.69121"
+         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-family:Andale Mono;-inkscape-font-specification:Andale Mono">CTTAT</tspan></text>
+    <path
+       style="fill:none;stroke:#000000;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+       d="m 200.41275,152.25679 8.5863,0"
+       id="path3912-8"
+       inkscape:connector-curvature="0" />
+    <path
+       style="fill:none;stroke:#000000;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+       d="m 208.33497,152.22694 -3.95692,-6.85358"
+       id="path3934-62"
+       inkscape:connector-curvature="0" />
+    <path
+       style="fill:none;stroke:#000000;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+       d="m 208.29429,152.20769 -3.95692,6.85358"
+       id="path3934-4-53"
+       inkscape:connector-curvature="0" />
+    <rect
+       style="fill:#ffffff;stroke:#000000"
+       id="rect2991-2"
+       width="45.073803"
+       height="27.857143"
+       x="59.12775"
+       y="172.8808" />
+    <text
+       xml:space="preserve"
+       style="font-size:14px;font-style:normal;font-weight:normal;line-height:125%;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;font-family:Sans"
+       x="68.961868"
+       y="191.45226"
+       id="text3001-9"
+       sodipodi:linespacing="125%"><tspan
+         sodipodi:role="line"
+         id="tspan3003-5"
+         x="68.961868"
+         y="191.45226"
+         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-family:Andale Mono;-inkscape-font-specification:Andale Mono">TTT</tspan></text>
+    <path
+       style="fill:none;stroke:#000000;stroke-width:3;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
+       d="m 104.51595,187.16653 43.01828,0"
+       id="path3013-2"
+       inkscape:connector-curvature="0" />
+    <path
+       style="fill:none;stroke:#000000;stroke-width:3;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
+       d="M 146.6643,186.66067 135.55262,175.54899"
+       id="path3031-3"
+       inkscape:connector-curvature="0" />
+    <path
+       style="fill:none;stroke:#000000;stroke-width:3;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
+       d="m 146.56418,187.67213 -10.6066,10.6066"
+       id="path3051-61"
+       inkscape:connector-curvature="0" />
+    <rect
+       style="fill:#ffffff;stroke:#000000;stroke-width:1"
+       id="rect2991-0-0"
+       width="52.271133"
+       height="27.857143"
+       x="148.01944"
+       y="173.59509" />
+    <text
+       xml:space="preserve"
+       style="font-size:14px;font-style:normal;font-weight:normal;line-height:125%;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;font-family:Sans"
+       x="154.24406"
+       y="191.45226"
+       id="text3001-4-7"
+       sodipodi:linespacing="125%"><tspan
+         sodipodi:role="line"
+         id="tspan3003-4-9"
+         x="154.24406"
+         y="191.45226"
+         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-family:Andale Mono;-inkscape-font-specification:Andale Mono">ACTTT</tspan></text>
+    <rect
+       style="fill:#ffffff;stroke:#000000;stroke-width:1"
+       id="rect2991-0-9-7"
+       width="52.271133"
+       height="27.857143"
+       x="209.07204"
+       y="173.59508" />
+    <text
+       xml:space="preserve"
+       style="font-size:14px;font-style:normal;font-weight:normal;line-height:125%;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;font-family:Sans"
+       x="214.28648"
+       y="191.45226"
+       id="text3001-4-9-8"
+       sodipodi:linespacing="125%"><tspan
+         sodipodi:role="line"
+         id="tspan3003-4-0-7"
+         x="214.28648"
+         y="191.45226"
+         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-family:Andale Mono;-inkscape-font-specification:Andale Mono">TTTAT</tspan></text>
+    <path
+       style="fill:none;stroke:#000000;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+       d="m 200.35732,187.01781 8.5863,0"
+       id="path3912-3"
+       inkscape:connector-curvature="0" />
+    <path
+       style="fill:none;stroke:#000000;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+       d="m 208.27954,186.98796 -3.95692,-6.85358"
+       id="path3934-0"
+       inkscape:connector-curvature="0" />
+    <path
+       style="fill:none;stroke:#000000;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+       d="m 208.23886,186.96871 -3.95692,6.85358"
+       id="path3934-4-3"
+       inkscape:connector-curvature="0" />
+    <rect
+       style="fill:#ffffff;stroke:#000000"
+       id="rect2991-7"
+       width="45.073803"
+       height="27.857143"
+       x="59.428284"
+       y="207.71933" />
+    <text
+       xml:space="preserve"
+       style="font-size:14px;font-style:normal;font-weight:normal;line-height:125%;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;font-family:Sans"
+       x="69.262398"
+       y="226.29076"
+       id="text3001-2"
+       sodipodi:linespacing="125%"><tspan
+         sodipodi:role="line"
+         id="tspan3003-49"
+         x="69.262398"
+         y="226.29076"
+         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-family:Andale Mono;-inkscape-font-specification:Andale Mono">TTA</tspan></text>
+    <path
+       style="fill:none;stroke:#000000;stroke-width:3;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
+       d="m 104.81648,222.00504 43.01828,0"
+       id="path3013-7"
+       inkscape:connector-curvature="0" />
+    <path
+       style="fill:none;stroke:#000000;stroke-width:3;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
+       d="M 146.96483,221.49918 135.85315,210.3875"
+       id="path3031-7"
+       inkscape:connector-curvature="0" />
+    <path
+       style="fill:none;stroke:#000000;stroke-width:3;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
+       d="m 146.86471,222.51064 -10.6066,10.6066"
+       id="path3051-4"
+       inkscape:connector-curvature="0" />
+    <rect
+       style="fill:#ffffff;stroke:#000000;stroke-width:1"
+       id="rect2991-0-50"
+       width="52.271133"
+       height="27.857143"
+       x="148.31998"
+       y="208.43361" />
+    <text
+       xml:space="preserve"
+       style="font-size:14px;font-style:normal;font-weight:normal;line-height:125%;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;font-family:Sans"
+       x="154.5446"
+       y="226.29076"
+       id="text3001-4-84"
+       sodipodi:linespacing="125%"><tspan
+         sodipodi:role="line"
+         id="tspan3003-4-5"
+         x="154.5446"
+         y="226.29076"
+         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-family:Andale Mono;-inkscape-font-specification:Andale Mono">CTTAT</tspan></text>
+    <rect
+       style="fill:#ffffff;stroke:#000000;stroke-width:1"
+       id="rect2991-0-9-3"
+       width="52.271133"
+       height="27.857143"
+       x="209.37256"
+       y="208.43359" />
+    <text
+       xml:space="preserve"
+       style="font-size:14px;font-style:normal;font-weight:normal;line-height:125%;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;font-family:Sans"
+       x="214.58701"
+       y="226.29076"
+       id="text3001-4-9-9"
+       sodipodi:linespacing="125%"><tspan
+         sodipodi:role="line"
+         id="tspan3003-4-0-3"
+         x="214.58701"
+         y="226.29076"
+         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-family:Andale Mono;-inkscape-font-specification:Andale Mono">TTTAT</tspan></text>
+    <path
+       style="fill:none;stroke:#000000;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+       d="m 200.65785,221.85632 8.5863,0"
+       id="path3912-5"
+       inkscape:connector-curvature="0" />
+    <path
+       style="fill:none;stroke:#000000;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+       d="m 208.58007,221.82647 -3.95692,-6.85358"
+       id="path3934-8"
+       inkscape:connector-curvature="0" />
+    <path
+       style="fill:none;stroke:#000000;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+       d="m 208.53939,221.80722 -3.95692,6.85358"
+       id="path3934-4-1"
+       inkscape:connector-curvature="0" />
+    <flowRoot
+       xml:space="preserve"
+       id="flowRoot4239"
+       style="fill:black;stroke:none;stroke-opacity:1;stroke-width:1px;stroke-linejoin:miter;stroke-linecap:butt;fill-opacity:1;font-family:Sans;font-style:normal;font-weight:normal;font-size:14px;line-height:125%;letter-spacing:0px;word-spacing:0px"><flowRegion
+         id="flowRegion4241"><rect
+           id="rect4243"
+           width="52.142857"
+           height="78.571426"
+           x="281.78571"
+           y="194.50504" /></flowRegion><flowPara
+         id="flowPara4245" /></flowRoot>    <rect
+       style="fill:#ffffff;stroke:#000000"
+       id="rect2991-9"
+       width="45.073803"
+       height="27.857143"
+       x="59.428284"
+       y="242.71933" />
+    <text
+       xml:space="preserve"
+       style="font-size:14px;font-style:normal;font-weight:normal;line-height:125%;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;font-family:Sans"
+       x="69.26239"
+       y="261.29074"
+       id="text3001-6"
+       sodipodi:linespacing="125%"><tspan
+         sodipodi:role="line"
+         id="tspan3003-54"
+         x="69.26239"
+         y="261.29074"
+         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-family:Andale Mono;-inkscape-font-specification:Andale Mono">TAT</tspan></text>
+    <path
+       style="fill:none;stroke:#000000;stroke-width:3;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
+       d="m 104.81648,257.00503 43.01828,0"
+       id="path3013-5"
+       inkscape:connector-curvature="0" />
+    <path
+       style="fill:none;stroke:#000000;stroke-width:3;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
+       d="M 146.96483,256.49917 135.85315,245.38749"
+       id="path3031-9"
+       inkscape:connector-curvature="0" />
+    <path
+       style="fill:none;stroke:#000000;stroke-width:3;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
+       d="m 146.86471,257.51063 -10.6066,10.6066"
+       id="path3051-2"
+       inkscape:connector-curvature="0" />
+    <rect
+       style="fill:#ffffff;stroke:#000000;stroke-width:1"
+       id="rect2991-0-2"
+       width="52.271133"
+       height="27.857143"
+       x="148.31998"
+       y="243.43361" />
+    <text
+       xml:space="preserve"
+       style="font-size:14px;font-style:normal;font-weight:normal;line-height:125%;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;font-family:Sans"
+       x="154.5446"
+       y="261.29074"
+       id="text3001-4-2"
+       sodipodi:linespacing="125%"><tspan
+         sodipodi:role="line"
+         id="tspan3003-4-6"
+         x="154.5446"
+         y="261.29074"
+         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-family:Andale Mono;-inkscape-font-specification:Andale Mono">CTTAT</tspan></text>
+    <rect
+       style="fill:#ffffff;stroke:#000000;stroke-width:1"
+       id="rect2991-0-9-31"
+       width="52.271133"
+       height="27.857143"
+       x="209.37256"
+       y="243.43361" />
+    <text
+       xml:space="preserve"
+       style="font-size:14px;font-style:normal;font-weight:normal;line-height:125%;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;font-family:Sans"
+       x="214.58701"
+       y="261.29074"
+       id="text3001-4-9-4"
+       sodipodi:linespacing="125%"><tspan
+         sodipodi:role="line"
+         id="tspan3003-4-0-79"
+         x="214.58701"
+         y="261.29074"
+         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-family:Andale Mono;-inkscape-font-specification:Andale Mono">TTTAT</tspan></text>
+    <path
+       style="fill:none;stroke:#000000;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+       d="m 200.65785,256.85631 8.5863,0"
+       id="path3912-2"
+       inkscape:connector-curvature="0" />
+    <path
+       style="fill:none;stroke:#000000;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+       d="m 208.58007,256.82646 -3.95692,-6.85358"
+       id="path3934-1"
+       inkscape:connector-curvature="0" />
+    <path
+       style="fill:none;stroke:#000000;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+       d="m 208.53939,256.80721 -3.95692,6.85358"
+       id="path3934-4-55"
+       inkscape:connector-curvature="0" />
+    <rect
+       style="fill:#ffffff;stroke:#000000"
+       id="rect2991-07"
+       width="45.073803"
+       height="27.857143"
+       x="59.07114"
+       y="277.36218" />
+    <text
+       xml:space="preserve"
+       style="font-size:14px;font-style:normal;font-weight:normal;line-height:125%;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;font-family:Sans"
+       x="68.905243"
+       y="295.93362"
+       id="text3001-0"
+       sodipodi:linespacing="125%"><tspan
+         sodipodi:role="line"
+         id="tspan3003-52"
+         x="68.905243"
+         y="295.93362"
+         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-family:Andale Mono;-inkscape-font-specification:Andale Mono">AAA</tspan></text>
+    <path
+       style="fill:none;stroke:#000000;stroke-width:3;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
+       d="m 104.45934,291.64789 43.01828,0"
+       id="path3013-54"
+       inkscape:connector-curvature="0" />
+    <path
+       style="fill:none;stroke:#000000;stroke-width:3;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
+       d="M 146.60769,291.14203 135.49601,280.03035"
+       id="path3031-1"
+       inkscape:connector-curvature="0" />
+    <path
+       style="fill:none;stroke:#000000;stroke-width:3;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
+       d="m 146.50757,292.15349 -10.6066,10.6066"
+       id="path3051-0"
+       inkscape:connector-curvature="0" />
+    <rect
+       style="fill:#ffffff;stroke:#000000;stroke-width:1"
+       id="rect2991-0-16"
+       width="52.271133"
+       height="27.857143"
+       x="147.96283"
+       y="278.07648" />
+    <text
+       xml:space="preserve"
+       style="font-size:14px;font-style:normal;font-weight:normal;line-height:125%;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;font-family:Sans"
+       x="154.18745"
+       y="295.93362"
+       id="text3001-4-93"
+       sodipodi:linespacing="125%"><tspan
+         sodipodi:role="line"
+         id="tspan3003-4-1"
+         x="154.18745"
+         y="295.93362"
+         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-family:Andale Mono;-inkscape-font-specification:Andale Mono">AAACT</tspan></text>
+    <rect
+       style="fill:#ffffff;stroke:#000000"
+       id="rect2991-24"
+       width="45.073803"
+       height="27.857143"
+       x="58.713997"
+       y="312.00504" />
+    <text
+       xml:space="preserve"
+       style="font-size:14px;font-style:normal;font-weight:normal;line-height:125%;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;font-family:Sans"
+       x="68.548111"
+       y="330.57648"
+       id="text3001-22"
+       sodipodi:linespacing="125%"><tspan
+         sodipodi:role="line"
+         id="tspan3003-0"
+         x="68.548111"
+         y="330.57648"
+         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-family:Andale Mono;-inkscape-font-specification:Andale Mono">AAC</tspan></text>
+    <path
+       style="fill:none;stroke:#000000;stroke-width:3;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
+       d="m 104.10219,326.29075 43.01828,0"
+       id="path3013-4"
+       inkscape:connector-curvature="0" />
+    <path
+       style="fill:none;stroke:#000000;stroke-width:3;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
+       d="M 146.25054,325.78489 135.13886,314.67321"
+       id="path3031-96"
+       inkscape:connector-curvature="0" />
+    <path
+       style="fill:none;stroke:#000000;stroke-width:3;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
+       d="m 146.15042,326.79635 -10.6066,10.6066"
+       id="path3051-5"
+       inkscape:connector-curvature="0" />
+    <rect
+       style="fill:#ffffff;stroke:#000000;stroke-width:1"
+       id="rect2991-0-97"
+       width="52.271133"
+       height="27.857143"
+       x="147.60568"
+       y="312.71933" />
+    <text
+       xml:space="preserve"
+       style="font-size:14px;font-style:normal;font-weight:normal;line-height:125%;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;font-family:Sans"
+       x="153.83031"
+       y="330.57648"
+       id="text3001-4-4"
+       sodipodi:linespacing="125%"><tspan
+         sodipodi:role="line"
+         id="tspan3003-4-11"
+         x="153.83031"
+         y="330.57648"
+         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-family:Andale Mono;-inkscape-font-specification:Andale Mono">AAACT</tspan></text>
+    <rect
+       style="fill:#ffffff;stroke:#000000"
+       id="rect2991-24-2"
+       width="45.073803"
+       height="27.857143"
+       x="58.704304"
+       y="345.93362" />
+    <text
+       xml:space="preserve"
+       style="font-size:14px;font-style:normal;font-weight:normal;line-height:125%;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;font-family:Sans"
+       x="68.538414"
+       y="364.50507"
+       id="text3001-22-2"
+       sodipodi:linespacing="125%"><tspan
+         sodipodi:role="line"
+         id="tspan3003-0-4"
+         x="68.538414"
+         y="364.50507"
+         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-family:Andale Mono;-inkscape-font-specification:Andale Mono">CTG</tspan></text>
+    <path
+       style="fill:none;stroke:#000000;stroke-width:3;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
+       d="m 104.0925,360.21932 43.01828,0"
+       id="path3013-4-7"
+       inkscape:connector-curvature="0" />
+    <path
+       style="fill:none;stroke:#000000;stroke-width:3;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
+       d="M 146.24085,359.71346 135.12917,348.60178"
+       id="path3031-96-6"
+       inkscape:connector-curvature="0" />
+    <path
+       style="fill:none;stroke:#000000;stroke-width:3;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
+       d="m 146.14073,360.72492 -10.6066,10.6066"
+       id="path3051-5-7"
+       inkscape:connector-curvature="0" />
+    <rect
+       style="fill:#ffffff;stroke:#000000;stroke-width:1"
+       id="rect2991-0-97-7"
+       width="52.271133"
+       height="27.857143"
+       x="147.59599"
+       y="346.64792" />
+    <text
+       xml:space="preserve"
+       style="font-size:14px;font-style:normal;font-weight:normal;line-height:125%;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;font-family:Sans"
+       x="153.82062"
+       y="364.50507"
+       id="text3001-4-4-1"
+       sodipodi:linespacing="125%"><tspan
+         sodipodi:role="line"
+         id="tspan3003-4-11-8"
+         x="153.82062"
+         y="364.50507"
+         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-family:Andale Mono;-inkscape-font-specification:Andale Mono">ACTGA</tspan></text>
+    <rect
+       style="fill:#ffffff;stroke:#000000"
+       id="rect2991-24-5"
+       width="45.073803"
+       height="27.857143"
+       x="59.061451"
+       y="380.57645" />
+    <text
+       xml:space="preserve"
+       style="font-size:14px;font-style:normal;font-weight:normal;line-height:125%;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;font-family:Sans"
+       x="68.895561"
+       y="399.14789"
+       id="text3001-22-8"
+       sodipodi:linespacing="125%"><tspan
+         sodipodi:role="line"
+         id="tspan3003-0-8"
+         x="68.895561"
+         y="399.14789"
+         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-family:Andale Mono;-inkscape-font-specification:Andale Mono">TGA</tspan></text>
+    <path
+       style="fill:none;stroke:#000000;stroke-width:3;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
+       d="m 104.44964,394.86218 43.01828,0"
+       id="path3013-4-3"
+       inkscape:connector-curvature="0" />
+    <path
+       style="fill:none;stroke:#000000;stroke-width:3;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
+       d="M 146.59799,394.35632 135.48631,383.24464"
+       id="path3031-96-2"
+       inkscape:connector-curvature="0" />
+    <path
+       style="fill:none;stroke:#000000;stroke-width:3;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
+       d="m 146.49787,395.36778 -10.6066,10.6066"
+       id="path3051-5-9"
+       inkscape:connector-curvature="0" />
+    <rect
+       style="fill:#ffffff;stroke:#000000;stroke-width:1"
+       id="rect2991-0-97-6"
+       width="52.271133"
+       height="27.857143"
+       x="147.95312"
+       y="381.29074" />
+    <text
+       xml:space="preserve"
+       style="font-size:14px;font-style:normal;font-weight:normal;line-height:125%;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;font-family:Sans"
+       x="154.17775"
+       y="399.14789"
+       id="text3001-4-4-9"
+       sodipodi:linespacing="125%"><tspan
+         sodipodi:role="line"
+         id="tspan3003-4-11-5"
+         x="154.17775"
+         y="399.14789"
+         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-family:Andale Mono;-inkscape-font-specification:Andale Mono">ACTGA</tspan></text>
+  </g>
+</svg>

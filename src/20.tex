@@ -21,9 +21,6 @@ na pamäťovú efektívnosť tejto dátovej štruktúry. Čiže:
         obsahujú $p$ ako podreťazec.
 \end{description}
 
-\todo{cize definiciu prepisem na menej formalnu, vyhodim bullshit o tazkej
-riesitelnosti, nahradom slovo query}
-
 V našom kontexte ale platia aj nasledovné veci, ktoré nám riešenie úlohy do
 značnej miery uľahčí:
 
@@ -91,10 +88,35 @@ tento \emph{read} zaindexujeme jeho pridaním do spájaného zozanmu.
 Hľadanie vzorky $p$ potom prebieha tak, že vrátime zreťazené spájané
 zoznamy pre $p$ a reverzný komplement $p$.
 
-\todo{zlozitost, O, pamat}
+\begin{example}
+    Príklad hash mapy pre množinu \emph{readov} $$S = \{ACTTT, CTTAT, TTTAT,
+    AAACT, ACTGA\}$$.
+    \begin{figure}[h]
+        \centering
+        \includegraphics[width=6cm]{hash_map}
+        \caption{Hash mapa}
+        \label{fig:hash_map}
+    \end{figure}
+    \\
+    Pre vzorku napr. $TTT$ by teda bola výsledkom množina \emph{readov} $R =
+    \{ACTTT, CTTAT, AAACT\}$.
+\end{example}
 
-\todo{mozne zlepsenia: komprimacia klucov (kazdy znak nahradit dvomi bitmi,
-bitovy vektor sa uz komprimuje lahsie)}
+Vyhľadávanie vzorky prebieha v konštantnom čase, no pamäťová uložitosť tohto
+riešenia ale nie je ani zďaleka optimálna, v najhoršom prípade až $O(n \cdot
+l)$. Existuje množstvo zlepšení, napríklad:
+
+\begin{itemize}
+    \item miesto celých \emph{readov} nám stačí si v spájanom zozname
+    pamätať len indexy daných readov
+    \item kľúče možno komprimovať napríklad nasledovným spôsobom: pre znaky
+    tvoriace kľúče vytvoríme nasledovné kódovanie: $A = 00$, $C = 01$, $T = 10$,
+    $G = 11$ a pomocou neho zakódujeme celý kľúč, čím dostaneme bitový vektor
+    (v našom príklade uvedenom vyššie 6-bitový), ktorý sa už komprimuje oveľa
+    jednoduchšie (napríklad ako celé číslo).
+\end{itemize}
+
+\todo{dalsie zlepsenia?}
 
 \section{Riešenie s použitím GkArray}
 
