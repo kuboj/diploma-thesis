@@ -5,52 +5,48 @@ riesi \ldots a odtial pochadza motivacia riesit problem \ldots.}
 \section{Definícia problému}
 
 Úlohou bude teda vytvoriť efektívnu dátovú štruktúru, ktorá načíta veľkú sadu
-relatívne krátkych reťazcov (\emph{sequence reads}) a umožní dostatočne rýchlo
-odpovedať na dotaz (\emph{query}) \emph{,,vráť tie reťazce, ktoré obsahujú ako
-podreťazec reťazec $P$``}, pričom dĺžka reťazca $P$ je dopredu daná. Dôraz
-budeme klásť ako na rýchlosť odpovedania na query, tak aj na pamäťovú
-efektívnosť tejto dátovej štruktúry. Formálne:
+relatívne krátkych reťazcov (\emph{sequence reads})\todo{odkaz na definiciu
+sequence read} a umožní dostatočne rýchlo odpovedať na dotaz \emph{,,vráť tie
+reťazce, ktoré obsahujú ako podreťazec reťazec $P$``}, pričom dĺžka reťazca$P$
+je dopredu daná. Dôraz budeme klásť ako na rýchlosť odpovedania na query, tak aj
+na pamäťovú efektívnosť tejto dátovej štruktúry. Čiže:
 
 \begin{description}
     \item[Vstup] \hfill \\
-        Na vstupe pre konštrukciu dátovej štruktúry sú $k, n, L \in N$ a množina
-        $R$ taká, že:
-        $$R = \{r_0, r_1, \ldots, r_{n-1} :
-        \forall i : 0 \leq i < n : |r_i| = L \wedge \forall j : 0 \leq
-        j < L : r[j] \in \Sigma \}$$ kde $|\Sigma| = 4$.
+        Na vstupe pre konštrukciu dátovej štruktúry je prirodzené číslo $k$ -
+        dĺžka dotazu a množina $R$, ktorá predstavuje množinu $n$ \emph{readov},
+        každý s dĺžkou $l$.
     \item[Výstup] \hfill \\
-        Výstupom pre dotaz $P$, kde $$|P| = k \wedge \forall i : 0 \leq i < k :
-        P[i] \in \Sigma$$ je taká množina $O$, že: 
-        $$O = \{r_m, r_{m+1}, \ldots, r_{m+l} : \forall i : m \leq i \leq m +
-        l : r_i \in R \wedge issubstring(P, r_i) \}$$ pričom predikát
-        $issubstring$ je definovaný ako $$issubstring(p, S) \leftarrow \exists i
-        \in N: 0 \leq i < |S| - |p| + 1 : \forall j : 0 \leq j < |p| : p[j] ==
-        S[i+j] $$        
+        Výstupom pre dotaz $p$ je množina $S$ takých \emph{readov} z $R$, ktoré
+        obsahujú $p$ ako podreťazec.
 \end{description}
 
-Takto zadaná úloha je ale veľmi nekonkrétna a vo všeobecnosti ťažko riešiteľná.
-Avšak to, že tento problém budeme riešiť v bioinformatickom kontexte nám úlohu
-uľahčí:
+\todo{cize definiciu prepisem na menej formalnu, vyhodim bullshit o tazkej
+riesitelnosti, nahradom slovo query}
+
+V našom kontexte ale platia aj nasledovné veci, ktoré nám riešenie úlohy do
+značnej miery uľahčí:
 
 \begin{itemize}
-    \item Vieme, že všetky \emph{sequence reads} $r_i$ pochádzajú z nejakého
+    \item Vieme, že všetky \emph{sequence reads} pochádzajú z nejakého
     spoločného nadslova (sekvenovanej DNA), pričom pri sekvenovaní mohla s
     istou pravdepodobnosťou nastať chyba. \todo{odkaz na definiciu chyby
     sekvenovania}. Pravdepodobnosť chyby budeme uvažovať na úrovni $0.1\% - 2\% $.
-    \item Dĺžka spoločného nadslova sa pohybuje medzi $10^6$ (dĺžka genómu
-    baktérií je niekde na úrovni $4 \cdot 10^6$) a $10^9$ (dĺžka genómu človeka
-    je asi $3 \cdot 10^9$).
-    \item Dĺžky \emph{readov} $l$ sa pohybujú v rozmedzí $100 - 150$
+    \item Dĺžka spoločného nadslova sa pohybuje medzi miliónom (dĺžka
+    genómu baktérií je niekde na úrovni štyroch miliónov) a jednej
+    miliardy (dĺžka genómu človeka je asi tri miliardy báz).
+    \item Dĺžky \emph{readov} $l$ sa pohybujú v rozmedzí $100 - 150$ báz.
     \item Pri sekvenovaní sa využíva miera pokrytia (\todo{odkaz na definiciu
     miery pokrytia}) v rozmedzí $10\times$ až $100\times$, z čoho nám v
     kombinácii s dlžkou spoločného nadslova a dlžkou \emph{readov} vychádza
     obmedzenie pre počet \emph{readov} na vstupe na 
-    $n \in [ 10^5, \frac{2}{3} \cdot 10^9 ]$ \todo{ugh. toto nie je privela?}
-    \item Dĺžku podreťazca $P$ budeme uvažovať v rozmedzí $13 -15$. 
-    \item Jemná modifikácia predikátu $issubstring(p, S)$: $$issubstring2
-    \leftarrow issubstring(p, S) \vee issubstring(p, revcompl(S))$$ kde
-    $revcompl(S)$ je funkcia, ktorá pre vstupný reťazec $S$ vráti jeho reverzný
-    komplement (\todo{odkaz na definiciu reverzneho komplementu})
+    $n \in [ 10^5, \frac{2}{3} \cdot 10^9 ]$.
+    \item Dĺžku dotazu $p$ budeme uvažovať v rozmedzí $13 -15$. 
+    \item A na záver, pri zisťovaní, či $p$ je podreťazcom $r$ budeme testovať
+    aj to, či reverzný komplement (\todo{odkaz na definiciu reverzneho
+    komplementu}) $p$ ($revcompl(p)$) nie je podreťazcom $r$ - bude nám stačiť,
+    ak bude túto podmienku spĺňať jeden z nich. \todo{maybe biologicka
+    motivacia preco toto?}
 \end{itemize}
 
 Cieľom bude dosiahnuť čo najnižsiu pamäťovú zložitosť, pri zachovaní
@@ -61,8 +57,8 @@ nadslova. (Triviálnym riešením by bolo $O(n \cdot L)$, kde $L$ je dĺžka
 
 \section{Riešenie s použitím hash mapy}
 Ako prvé netriviálne riešenie tohto problému sa naskytá použitie hash mapy,
-kde kľúčom sú všetky možné hľadané \emph{patterny} $P$ (tie generovať vieme,
-keďže máme dopredu danú dĺzku $k = |P|$ a pracujeme nad konečnou abecedou) a
+kde kľúčom sú všetky možné hľadané vzorky $p$ (tie generovať vieme,
+keďže máme dopredu danú dĺzku $k = |p|$ a pracujeme nad konečnou abecedou) a
 hodnota pre daný kľúč by bol zoznam \emph{readov}, ktoré tento \emph{pattern}
 obsahujú. Algorimus na generovanie takejto hash mapy by vyzeral naslednovne:
 
@@ -70,8 +66,8 @@ obsahujú. Algorimus na generovanie takejto hash mapy by vyzeral naslednovne:
 problému zarovnania readov pomocou hash mapy}]
 h = HashMap.new
 
-def process(S)
-  foreach r : S do
+def process(R)
+  foreach r : R do
     for i in (0...(|r| - k + 1)) do
       t = r[i, k]
       if not h.has_key?(t)
@@ -88,12 +84,17 @@ def find_reads(p)
 end
 \end{pseudocode}
 
-Pre každý \emph{read} $r$ zo zoznamu \emph{readov} $S$ vygerujeme všetky jeho
+Pre každý \emph{read} $r$ zo zoznamu \emph{readov} $R$ vygerujeme všetky jeho
 podreťazce dĺžky $k$ a tie použijeme ako kľúče do hash mapy, pomocou ktorých
 tento \emph{read} zaindexujeme jeho pridaním do spájaného zozanmu.
 
-Hľadanie \emph{patternu} $p$ potom prebieha tak, že vrátime zreťazené spájané
+Hľadanie vzorky $p$ potom prebieha tak, že vrátime zreťazené spájané
 zoznamy pre $p$ a reverzný komplement $p$.
+
+\todo{zlozitost, O, pamat}
+
+\todo{mozne zlepsenia: komprimacia klucov (kazdy znak nahradit dvomi bitmi,
+bitovy vektor sa uz komprimuje lahsie)}
 
 \section{Riešenie s použitím GkArray}
 
