@@ -274,39 +274,8 @@ lexikografickom usporiadaní nachádza pred všetkými znakmi uvažovanej abeced
                         \$       & : SA[i] = 1
                     \end{cases}
     $                    
-    
-    %\subsubsection{LF mapping}
-    %\emph{Last-to-first mapping} (LF mapping) popisuje vzťah medzi posledným stĺpcom $BWM$ (nazvime ho L) a prvým stĺpcom $F$. Pre LF mapping platí nasledovné tvrdenie:
-    
-    %\begin{lemma}
-    %i-ty výskyt znaku c v L zodpovedá i-temu výskytu c v F.
-    %\end{lemma}
-      
-    %\bigskip
-			
-    %\begin{minipage}{2.5in}    
-	%    \begin{tabular}{ c c c c c c c }
-	%        \textbf{F}&&&&&&\textbf{L}                       \\
-	%                \$ & b  & a  & n  & a  & n  & a          \\            
-	%                a  & \$ & b  & a  & n  & a  & n          \\
-	%                a  & n  & a  & \$ & b  & a  & \textbf{n} \\
-	%                a  & n  & a  & n  & a  & \$ & b          \\
-	%                b  & a  & n  & a  & n  & a  & \$         \\
-	%                n  & a  & \$ & b  & a  & n  & a          \\ 
-	%        \textbf{n} & a  & n  & a  & \$ & b  & a          \\
-	%    \end{tabular}
-	%\end{minipage}
-	%\begin{minipage}{2.5in}
-   % 	Všimnime si na pravej matici ($BWM$) z príkladu~\ref{ex:bwt_bananna}: Druhé $n$ zo stĺpca $L$ je ``to isté,, $n$ ako druhé z $F$ - obe zodpovedajú prvému $n$ v pôvodnom slove $ba\boldsymbol{n}ana$.
-    %\end{minipage}
-    
-    %\bigskip    
-    
-    %\begin{proof}
-    %Nech
-    %\end{proof}
      
-    \subsection{Reverzná BTW s použitím LF mappingu}
+    \subsection{Reverzná BWT s použitím LF mappingu}
     \subsubsection{LF mapping}
     Spomenuli sme, že $BWT$ je invertovateľná operácia, no na prvý pohľad to také zrejmé určite nie je. Pripomeňme si príklad \ref{ex:bwt_banana} - $BWT(banana\$) = annb\$aa$. Pri letmom pohľade čitateľ ľahko nadobudne pocit, že informácia o tom, ktoré $n$ v $BWT(T)$ prislúcha ku ktorému $n$ v pôvodnom reťazci $T$ je nenávratne stratená.
     
@@ -398,7 +367,6 @@ lexikografickom usporiadaní nachádza pred všetkými znakmi uvažovanej abeced
     \emph{LF mapping} nám hovorí nasledovnú vec: \emph{i-ty} výskyt znaku $c$ v $F$ má rovnaký \emph{rank} ako \emph{i-ty} výskyt $c$ v $L$. Všimnime si to napríklad na znaku $a$ - v $F$ sú ranky v poradí: 2, 1, 0, rovnako ako v $L$. To platí kvôli tomu, že keď si zvolíme nejaký znak $c$, tak usporiadanie jeho \emph{rankov} v $F$ je dané tým, čo nasleduje po tomto znaku $c$ v pôvodnom reťazci $T$ (pre $a$ je to teda poradie $\$, na\$, nana\$$). To je ale to isté, čím je dané poradie znakov $a$ v $L$ - tiež tým, čo sa nachádza za daným znakom v pôvodnom reťazci $T$.
     
     \subsubsection{Reverzná BWT}
-    
         
      Na začiatku teda poznáme len $BWT(T)$, čo je posledný stĺpec ($L$) matice lexikograficky usporiadaných cyklických rotácií pôvodného reťazca $T$. Z neho si vieme spočitať prvý stĺpec ($F$) matice jednoduchým utriedením posledného stĺpca. Pri $BWT$ sme počítali \emph{rank} vzhľadom na $T$, teraz ho budeme počítať vzhľadom na $BWT(T)$:
     
@@ -444,7 +412,56 @@ lexikografickom usporiadaní nachádza pred všetkými znakmi uvažovanej abeced
     \todo{mozno ilustracia tej rekonstrukcie.}
     
 \section{FM index}  
-    \todo{} % TODO
+    FM index je komprimovaný index založený na Burrows-Wheelerovej transformácii, publikovaný v \cite{FM00}. Skratka \emph{FM} je odvodená od \emph{Full-text in Minute space} - \emph{full-text} index je dátová štruktúra nad textom $T$ umožňujúca efektívne vyhľadávanie podreťazcov v $T$. \emph{Minute space} znamená, že index je pamäťovo veľmi efektívny. Táto dátová štruktúra vo všeobecnosti podporuje dve operácie - \emph{count}, ktorá pre reťazec na vstupe vráti počet výskytov v $T$ a operáciu \emph{locate}, ktorej výsledkom pre nejaký vstupný reťazec $P$ je zoznam indexov v $T$, na ktorých sa $P$ vyskytuje v $T$.
+    
+    Na FM index sa dá pozerať ako na súbor tabuliek skladajúci sa z dvoch častí s istou funkcionalitou navyše. Prvú časť tvoria tabuľky, ktoré zabezpečujú vykonanie operácie \emph{count}. Do tejto kategórie patria všetky tabuľky podporujúce \emph{LF mapping}. Presnejšie, táto skupina sa skladá z dvoch tabuliek - tabuľky \emph{prefixových súm} $C$ a \emph{tabuľky výskytov} tiež označovanej ako $Occ$. Druhú kategóriu tvoria tabuľky, pomocou ktorých FM index odpovedá na dotaz \emph{locate}.
+    
+    \begin{figure}[h]
+        \centering
+        \includegraphics[width=6cm]{fm_index}
+        \caption{Znázornenie štruktúry FM indexu}
+        \label{fig:fm_index}
+    \end{figure}
+    
+    \subsubsection{Komprimované sufixové pole}
+    Toto pole sa využíva na zistenie pozície daného podreťazca v texte $T$. Nie je si ale potrebné držať v ňom pozície všetkých sufixov $T$, keďže pomocou \emph{LF mappingu} vieme zrekonštruovať podreťazec $T$ začínajúci na ľubovoľnej pozícii. Preto si stačí pamätať len pozície niektorých sufixov a potom pomocou \emph{LF mappingu} len čiastočne rekonštruovať $T$, pokým nedosiahneme nejakú pamätanú pozíciu sufixu. Komprimované sufixové pole zaberá iba zlomok pamäte oproti pôvodnému, no na oplátku sa kvôli nutnosti čiastočnej rekonštrukcie výrazne zvýši čas trvania operácie \emph{locate}.
+    
+    \subsubsection{Tabuľka prefixových súm}
+    Táto tabuľka obsahuje pre každý znak $c$ danej abecedy počet výskytov lexikograficky menších znakov ako $c$ v danom reťazci $S$. Narozdiel od sufixového poľa ale nie je tak ľahko komprimovateľná, keďže frekvencie výskytu jednotlivých znakov sú na sebe navzájom nezávislé. Na druhej strane, zvyčajne býva veľkosť abecedy rádovo menšia než dĺžka textu, takže veľkosť tejto tabuľky bude prispievať do celkovej pamäťovej náročnosti len malou časťou\footnote{Špeciálne to platí v našom, bioinformatickom kontexte, kde používame štvorpísmenovú abecedu a genómy majú dĺžky v miliónoch.}.
+    
+    \subsubsection{Tabuľka výskytov}
+    Tabuľka výskytov $Occ$ pre dané $c$ a $k$ vráti počet výskytov znaku $c$ v prefixe daného reťazca $S$ dĺžky $k$. Keď túto tabuľku skonštruujeme nad $BWT(T)$, tak \emph{LF mapping} vieme zadefinovať ako $$LF(i) = C[BWT(T)[i]] + Occ(BWT(T)[i], i)$$
+    Rýchlosť prístupu k tejto tabuľke a jej pamäťová náročnosť je najdôležitejším faktorom FM indexu. 
+    
+    \bigskip
+    
+    Pre lepšiu predstavu uveďme príklad:
+    
+    \begin{example}
+        \label{ex:fm_index}
+        Nech $T = banana\$$, potom $BWT(T) = annb\$aa$. Tabuľky $C$ a $Occ$ skonštruované nad $BWT(T)$ potom vyzerajú nasledovne:
+        
+        \bigskip
+        
+        \begin{minipage}{2.5in}
+            \begin{tabular}{ | c | c | c | c | c | }
+                \multicolumn{5}{c}{\textbf{C pre \emph{annb\$aa}}} \\ \hline
+                \textbf{c}    & \$ & a & b & n                     \\ \hline
+                \textbf{C[c]} & 0  & 1 & 4 & 5                     \\ \hline
+            \end{tabular}
+        \end{minipage}
+        \begin{minipage}{2.5in}
+            \begin{tabular}{ | c | c | c | c | c | c | c | c | }
+                \multicolumn{8}{c}{\textbf{Occ(c, k) pre \emph{annb\$aa}}} \\ \hline
+                            & \textbf{a} & \textbf{n} & \textbf{n} & \textbf{b} & \textbf{\$} & \textbf{a} & \textbf{a} \\ \hline
+                            & \textbf{1} & \textbf{2} & \textbf{3} & \textbf{4} & \textbf{5}  & \textbf{6} & \textbf{7} \\ \hline
+                \textbf{\$} & 0          & 0          & 0          & 0          & 1           & 1 & 1 \\ \hline                 
+                \textbf{a}  & 1          & 1          & 1          & 1          & 1           & 2 & 3 \\ \hline
+                \textbf{b}  & 0          & 0          & 0          & 1          & 1           & 1 & 1 \\ \hline  
+                \textbf{n}  & 0          & 1          & 2          & 2          & 2           & 2 & 2 \\ \hline
+            \end{tabular}
+        \end{minipage}
+    \end{example}
 
     \subsection{Vyhľadávanie pomocou FM indexu}
     \todo{} % TODO
