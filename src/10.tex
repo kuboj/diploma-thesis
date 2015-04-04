@@ -185,30 +185,30 @@ lexikografickom usporiadaní nachádza pred všetkými znakmi uvažovanej abeced
 \section{Burrows-Wheelerova transformácia}
     Burrows-Wheelerova transformácia (BWT) je transformácia textu využívaná pri
     kompresii (napríklad v programe bzip2) ale aj v úsporných dátových
-    štruktúrach na hľadanie vzorky v texte. BWT transformuje vstupný reťazec $S$
-    na reťazec $bw(S)$, ktorý je permutáciou pôvodného reťazca, no s tou
+    štruktúrach na hľadanie vzorky v texte. BWT transformuje vstupný reťazec $T$
+    na reťazec $BWT(T)$, ktorý je permutáciou pôvodného reťazca, no s tou
     vlastnosťou, že sa dá väčšinou oveľa lepšie skomprimovať než pôvodný
     reťazec. Táto transformácia je invertovateľná (bez potreby uloženia
-    akýchkoľvek dát navyše), t.j. z reťazca $bw(S)$ vieme získať pôvodný reťazec
-    $S$.
+    akýchkoľvek dát navyše), t.j. z reťazca $BWT(T)$ vieme získať pôvodný reťazec
+    $T$.
     
     \subsection{BWT cez BWM}
     \subsubsection*{Postup transformácie}
     \begin{itemize}
-        \item na koniec reťazca $S$ pridáme špeciálny symbol \$, ktorý sa
+        \item na koniec reťazca $T$ pridáme špeciálny symbol \$, ktorý sa
         nevyskytuje v danej abecede a zadefinujeme ho ako prvý symbol novej
         abecedy (vzhľadom na lexikografické usporiadanie)
-        \item vytvoríme maticu cyklických posunov reťazca $S\$$
+        \item vytvoríme maticu cyklických posunov reťazca $T\$$
         \item lexikograficky utriedime riadky matice
-        \item posledný stĺpec matice predstavuje $bw(S)$
+        \item posledný stĺpec matice predstavuje $BWT(T)$
     \end{itemize}
     
-    Táto lexikograficky utriedená matica cyklických posunov reťazca $S$
+    Táto lexikograficky utriedená matica cyklických posunov reťazca $T$
     sa označuje ako BWM (Burrows-Wheeler matrix).
     
     \begin{example}
-        \label{ex:bwt_bananna}
-        Uvažujme $S = banana\$$. Matica cyklických posunov a utriedená matica 
+        \label{ex:bwt_banana}
+        Uvažujme $T = banana\$$. Matica cyklických posunov a utriedená matica 
         budú vyzerať nasledovne:
         
         \bigskip
@@ -238,20 +238,20 @@ lexikografickom usporiadaní nachádza pred všetkými znakmi uvažovanej abeced
         
         \bigskip
         
-        Teda $bw(banana\$) = annb\$aa$ - posledný stĺpec utriedenej matice.
+        Teda $BWT(banana\$) = annb\$aa$ - posledný stĺpec utriedenej matice.
     \end{example}
 
     \subsection{BWT cez sufixové pole}
     Medzi BWM a sufixovým poľom je zjavný súvis - pri vytváraní sufixového poľa
-    $SA(S)$ pre reťazec $S$ triedime sufixy reťazca $S$ a pri vytváraní $BWM(S)$
-    triedime cyklické posuny $S$. Tento vzťah je jasnejší v príklade:
+    $SA(T)$ pre reťazec $T$ triedime sufixy reťazca $T$ a pri vytváraní $BWM(T)$
+    triedime cyklické posuny $T$. Tento vzťah je jasnejší v príklade:
     
     \bigskip
     
     \begin{example}
         \begin{tabular}{ | l  | r | l | }
             \hline
-            \textbf{BWM} & \textbf{SA} & \textbf{sufix $S$} \\ \hline 
+            \textbf{BWM} & \textbf{SA} & \textbf{sufix $T$} \\ \hline 
             \$banana     & 7           & \$                 \\ \hline
             a\$banan     & 6           & a\$                \\ \hline
             ana\$ban     & 4           & ana\$              \\ \hline
@@ -264,78 +264,70 @@ lexikografickom usporiadaní nachádza pred všetkými znakmi uvažovanej abeced
     
     \bigskip
     
-    Iný spôsob ako definovať $BWT(S)$ je teda cez sufixové pole $SA(S)$:
+    Iný spôsob ako definovať $BWT(T)$ je teda cez sufixové pole $SA(T)$:
     
     \bigskip
     
     $
-        BWT(S)[i] = \begin{cases}
-                        S[SA[i]] & : SA[i] > 1 \\ 
+        BWT(T)[i] = \begin{cases}
+                        T[SA[i]] & : SA[i] > 1 \\ 
                         \$       & : SA[i] = 1
                     \end{cases}
     $                    
     
-    \subsubsection{LF mapping}
-    \emph{Last-to-first mapping} (LF mapping) popisuje vzťah medzi posledným stĺpcom $BWM$ (nazvime ho L) a prvým stĺpcom $F$. Pre LF mapping platí nasledovné tvrdenie:
+    %\subsubsection{LF mapping}
+    %\emph{Last-to-first mapping} (LF mapping) popisuje vzťah medzi posledným stĺpcom $BWM$ (nazvime ho L) a prvým stĺpcom $F$. Pre LF mapping platí nasledovné tvrdenie:
     
-    \begin{lemma}
-    i-ty výskyt znaku c v L zodpovedá i-temu výskytu c v F.
-    \end{lemma}
+    %\begin{lemma}
+    %i-ty výskyt znaku c v L zodpovedá i-temu výskytu c v F.
+    %\end{lemma}
       
-    \bigskip
+    %\bigskip
 			
-    \begin{minipage}{2.5in}    
-	    \begin{tabular}{ c c c c c c c }
-	        \textbf{F}&&&&&&\textbf{L}                       \\
-	                \$ & b  & a  & n  & a  & n  & a          \\            
-	                a  & \$ & b  & a  & n  & a  & n          \\
-	                a  & n  & a  & \$ & b  & a  & \textbf{n} \\
-	                a  & n  & a  & n  & a  & \$ & b          \\
-	                b  & a  & n  & a  & n  & a  & \$         \\
-	                n  & a  & \$ & b  & a  & n  & a          \\ 
-	        \textbf{n} & a  & n  & a  & \$ & b  & a          \\
-	    \end{tabular}
-	\end{minipage}
-	\begin{minipage}{2.5in}
-    	Všimnime si na pravej matici ($BWM$) z príkladu~\ref{ex:bwt_bananna}: Druhé $n$ zo stĺpca $L$ je ``to isté,, $n$ ako druhé z $F$ - obe zodpovedajú prvému $n$ v pôvodnom slove $ba\boldsymbol{n}ana$.
-    \end{minipage}
+    %\begin{minipage}{2.5in}    
+	%    \begin{tabular}{ c c c c c c c }
+	%        \textbf{F}&&&&&&\textbf{L}                       \\
+	%                \$ & b  & a  & n  & a  & n  & a          \\            
+	%                a  & \$ & b  & a  & n  & a  & n          \\
+	%                a  & n  & a  & \$ & b  & a  & \textbf{n} \\
+	%                a  & n  & a  & n  & a  & \$ & b          \\
+	%                b  & a  & n  & a  & n  & a  & \$         \\
+	%                n  & a  & \$ & b  & a  & n  & a          \\ 
+	%        \textbf{n} & a  & n  & a  & \$ & b  & a          \\
+	%    \end{tabular}
+	%\end{minipage}
+	%\begin{minipage}{2.5in}
+   % 	Všimnime si na pravej matici ($BWM$) z príkladu~\ref{ex:bwt_bananna}: Druhé $n$ zo stĺpca $L$ je ``to isté,, $n$ ako druhé z $F$ - obe zodpovedajú prvému $n$ v pôvodnom slove $ba\boldsymbol{n}ana$.
+    %\end{minipage}
     
-    \bigskip    
+    %\bigskip    
     
-    \begin{proof}
-    Nec
-    \end{proof}
+    %\begin{proof}
+    %Nech
+    %\end{proof}
      
     \subsection{Reverzná BTW s použitím LF mappingu}
-    Na začiatku teda poznáme len $BWT(S)$, čo je posledný stĺpec (označme ho
-    $L$) matice lexikograficky usporiadaných cyklických rotácií povôdného
-    reťazca $S$. Z neho si vieme spočitať prvý stĺpec ($F$) matice jednoduchým
-    utriedením posledného stĺpca:
+    \subsubsection{LF mapping}
+    Spomenuli sme, že $BWT$ je invertovateľná operácia, no na prvý pohľad to také zrejmé určite nie je. Pripomeňme si príklad \ref{ex:bwt_banana} - $BWT(banana\$) = annb\$aa$. Pri letmom pohľade čitateľ ľahko nadobudne pocit, že informácia o tom, ktoré $n$ v $BWT(T)$ prislúcha ku ktorému $n$ v pôvodnom reťazci $T$ je nenávratne stratená.
+    
+    $BWT$ ale disponuje dôležitou vlastnosťou s názvom \emph{LF mapping} (\emph{last-to-first mapping}). Uvažujme $BWM$ z príkladu \ref{ex:bwt_banana}:
     
     \bigskip
-    
-    \begin{example}
-        \begin{tabular}{ c c c }
-            \textbf{F}   &        & \textbf{L} \\  
-            \$           & \ldots & a          \\
-            a            & \ldots & n          \\
-            a            & \ldots & n          \\
-            a            & \ldots & b          \\
-            b            & \ldots & \$         \\
-            n            & \ldots & a          \\
-            n            & \ldots & a          \\
+    \begin{center}
+        \begin{tabular}{ c c c c c c c }
+            \$ & b  & a  & n  & a  & n  & a  \\            
+            a  & \$ & b  & a  & n  & a  & n  \\
+            a  & n  & a  & \$ & b  & a  & n  \\
+            a  & n  & a  & n  & a  & \$ & b  \\
+            b  & a  & n  & a  & n  & a  & \$ \\
+            n  & a  & \$ & b  & a  & n  & a  \\ 
+            n  & a  & n  & a  & \$ & b  & a  \\
         \end{tabular}
-    \end{example}
+    \end{center}    
     
-    \bigskip    
+    Prepíšme $T$ tak, že každému znaku (okrem \$) dáme ako dolný index počet jeho doterajších výskytov v $T$: $T = b_0a_0n_0a_{1}n_{1}a_{2}\$$. Tomuto indexu hovoríme $rank$. Prepíšme teraz $BWM$ s použitím \emph{rankov}\footnote{Ranky nemajú vplyv na lexikografické usporiadanie}:
     
-    Pripomeňme si ešte pôvodnú, kompletnú maticu s tým, že každému znaku
-    pridáme ako dolný index jeho $rank_S$ vzhľadom na pôvodný reťazec $S$ (kde
-    ako $i$ dosadíme jeho index v $S$). Môžme si všimnúť, že relatívne
-    poradie písmen je v $L$ a $F$ rovnaké.
-    
-    \bigskip
-    \begin{example}
+    \begin{center}
         \begin{tabular}{ c c c c c c c }
             \textbf{F}         &
                                &
@@ -346,77 +338,110 @@ lexikografickom usporiadaní nachádza pred všetkými znakmi uvažovanej abeced
             \textbf{L}         \\
         
             \$                 &
-            b\textsubscript{1} &
-            a\textsubscript{1} &
+            b\textsubscript{0} &
+            a\textsubscript{0} &
+            n\textsubscript{0} &
+            a\textsubscript{1} & 
             n\textsubscript{1} &
-            a\textsubscript{2} & 
-            n\textsubscript{2} &
-            a\textsubscript{3} \\
-            
-            a\textsubscript{3} &
-            \$                 &
-            b\textsubscript{1} &
-            a\textsubscript{1} &
-            n\textsubscript{1} &
-            a\textsubscript{2} & 
-            n\textsubscript{2} \\
+            a\textsubscript{2} \\
             
             a\textsubscript{2} &
-            n\textsubscript{2} &
-            a\textsubscript{3} &
             \$                 &
-            b\textsubscript{1} &
-            a\textsubscript{1} &
+            b\textsubscript{0} &
+            a\textsubscript{0} &
+            n\textsubscript{0} &
+            a\textsubscript{1} & 
             n\textsubscript{1} \\
             
             a\textsubscript{1} &
             n\textsubscript{1} &
             a\textsubscript{2} &
-            n\textsubscript{2} &
-            a\textsubscript{3} &
             \$                 &
-            b\textsubscript{1} \\
+            b\textsubscript{0} &
+            a\textsubscript{0} &
+            n\textsubscript{0} \\
             
-            b\textsubscript{1} &
+            a\textsubscript{0} &
+            n\textsubscript{0} &
             a\textsubscript{1} &
             n\textsubscript{1} &
             a\textsubscript{2} &
-            n\textsubscript{2} &
-            a\textsubscript{3} &
+            \$                 &
+            b\textsubscript{0} \\
+            
+            b\textsubscript{0} &
+            a\textsubscript{0} &
+            n\textsubscript{0} &
+            a\textsubscript{1} &
+            n\textsubscript{1} &
+            a\textsubscript{2} &
             \$                 \\
             
-            n\textsubscript{2} &
-            a\textsubscript{3} &
-            \$                 &
-            b\textsubscript{1} &
-            a\textsubscript{1} &
-            n\textsubscript{1} &
-            a\textsubscript{2} \\ 
-            
             n\textsubscript{1} &
             a\textsubscript{2} &
-            n\textsubscript{2} &
-            a\textsubscript{3} &
             \$                 &
-            b\textsubscript{1} &
-            a\textsubscript{1} \\
+            b\textsubscript{0} &
+            a\textsubscript{0} &
+            n\textsubscript{0} &
+            a\textsubscript{1} \\ 
+            
+            n\textsubscript{0} &
+            a\textsubscript{1} &
+            n\textsubscript{1} &
+            a\textsubscript{2} &
+            \$                 &
+            b\textsubscript{0} &
+            a\textsubscript{0} \\
         \end{tabular}
-    \end{example}
+    \end{center}
+    
+    \emph{LF mapping} nám hovorí nasledovnú vec: \emph{i-ty} výskyt znaku $c$ v $F$ má rovnaký \emph{rank} ako \emph{i-ty} výskyt $c$ v $L$. Všimnime si to napríklad na znaku $a$ - v $F$ sú ranky v poradí: 2, 1, 0, rovnako ako v $L$. To platí kvôli tomu, že keď si zvolíme nejaký znak $c$, tak usporiadanie jeho \emph{rankov} v $F$ je dané tým, čo nasleduje po tomto znaku $c$ v pôvodnom reťazci $T$ (pre $a$ je to teda poradie $\$, na\$, nana\$$). To je ale to isté, čím je dané poradie znakov $a$ v $L$ - tiež tým, čo sa nachádza za daným znakom v pôvodnom reťazci $T$.
+    
+    \subsubsection{Reverzná BWT}
+    
+        
+     Na začiatku teda poznáme len $BWT(T)$, čo je posledný stĺpec ($L$) matice lexikograficky usporiadaných cyklických rotácií pôvodného reťazca $T$. Z neho si vieme spočitať prvý stĺpec ($F$) matice jednoduchým utriedením posledného stĺpca. Pri $BWT$ sme počítali \emph{rank} vzhľadom na $T$, teraz ho budeme počítať vzhľadom na $BWT(T)$:
+    
     \bigskip
     
-    Ďalej platí, že $F[i]$ nasleduje po $L[i]$ v $S$. Preto v našom príklade
-    symbolu \$ v $L$ prislúcha $S[0] = b$. Potom nájdeme $S[0]$ v $L$, dostaneme
-    $S[1]$ v $F$ ($S[1] =$ tretie $a$). Nájdeme tretie $a$ v $L$, dostaneme
-    $S[2]$ v $F$ ($S[2] =$ druhé $n$) atď.
+    \begin{center}
+        \begin{tabular}{ c c c }
+            \textbf{F}   & \textbf{L} & \textbf{rank} \\  
+            \$           & a          & 0             \\
+            a            & n          & 0             \\
+            a            & n          & 1             \\
+            a            & b          & 0             \\
+            b            & \$         & 0             \\
+            n            & a          & 1             \\
+            n            & a          & 2             \\
+        \end{tabular}
+    \end{center}
     
-    Je nutné ale poznamenať, že problémom môže byť, ak je pôvodný reťazec $S$
-    veľmi dlhý - vtedy je neefektívne prepočítať si $rank$ pre všetky znaky,
-    nakoľko by táto informácia zaberala oveľa viac pamäte než $BWT(S)$. Preto je
-    táto inverzná operácia v praxi riešená inak. 
-
-    \todo{pohladat, ako je to
-    riesene. okrem toho, ze bzip2 to vraj komprimuje 'into relatively small
-    blocks, decompressing a block at time'}
+    \bigskip
+    
+    Vieme, že platia nasledovné veci:
+    
+    \begin{enumerate}
+        \item{Predchodca znaku v $F$ je znak v $L$ v tom istom riadku.}
+        \item{Pomocou \emph{LF mappingu} vieme ktorý znak z $L$ prislúcha ktorému znaku v $F$.}
+    \end{enumerate}
+    
+    Algoritmus na \emph{spätnú rekonštrukciu} $T$ z $BWT(T)$ teda vyzerá nasledovne:
+    
+    \begin{enumerate}
+        \item{Nájdi pozíciu $pos$ posledného znaku $c$ v $T$\footnote{Posledný znak $T$ je prvý znak $BWT(T)$, kvôli pridaniu $\$$}.}
+        \item{Pomocou \emph{LF mappingu} vypočítaj pozíciu $i$ znaku $c$ v $F$.}
+        \item{Do $pos$ priraď $i$.}
+        \item{Nájdi predchodcu $p$ znaku $c$ z $BWT(T)[i]$.}
+        \item{Do $c$ priraď $p$.}
+        \item{Opakuj kroky 2 až 6 pokým nie je zrekonštruovaný pôvodný reťazec $T$.}
+    \end{enumerate}
+    
+    Pre náš príklad by teda postup vyzeral tak, že by sme začali v prvom riadku (resp. nultom), teda $pos = 0$, $c = a$. Ďalej by sme sa posunuli v $F$ na riadok 1 ($i = 1$), kde sa nachádza $a$ s \emph{rankom} 0. Na konci tohto riadka je $n$, to je teda predposledný znak pôvodného reťazca $T$. V tomto kroku priradíme do $c$ znak $n$ a opakujeme procedúru.
+    
+    \emph{Rekonštrukcia odpredu} funguje podobne, no nasledujúce znaky sa extrahujú z prvého stĺpca rovnakého riadka a na posun ďalej sa využíva \emph{FL mapping}, ktorý je podstatne zložitejší na implementáciu.
+    
+    \todo{mozno ilustracia tej rekonstrukcie.}
     
 \section{FM index}  
     \todo{} % TODO
