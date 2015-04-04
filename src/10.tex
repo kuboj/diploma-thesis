@@ -207,6 +207,7 @@ lexikografickom usporiadaní nachádza pred všetkými znakmi uvažovanej abeced
     sa označuje ako BWM (Burrows-Wheeler matrix).
     
     \begin{example}
+        \label{ex:bwt_bananna}
         Uvažujme $S = banana\$$. Matica cyklických posunov a utriedená matica 
         budú vyzerať nasledovne:
         
@@ -274,6 +275,37 @@ lexikografickom usporiadaní nachádza pred všetkými znakmi uvažovanej abeced
                     \end{cases}
     $                    
     
+    \subsubsection{LF mapping}
+    \emph{Last-to-first mapping} (LF mapping) popisuje vzťah medzi posledným stĺpcom $BWM$ (nazvime ho L) a prvým stĺpcom $F$. Pre LF mapping platí nasledovné tvrdenie:
+    
+    \begin{lemma}
+    i-ty výskyt znaku c v L zodpovedá i-temu výskytu c v F.
+    \end{lemma}
+      
+    \bigskip
+			
+    \begin{minipage}{2.5in}    
+	    \begin{tabular}{ c c c c c c c }
+	        \textbf{F}&&&&&&\textbf{L}                       \\
+	                \$ & b  & a  & n  & a  & n  & a          \\            
+	                a  & \$ & b  & a  & n  & a  & n          \\
+	                a  & n  & a  & \$ & b  & a  & \textbf{n} \\
+	                a  & n  & a  & n  & a  & \$ & b          \\
+	                b  & a  & n  & a  & n  & a  & \$         \\
+	                n  & a  & \$ & b  & a  & n  & a          \\ 
+	        \textbf{n} & a  & n  & a  & \$ & b  & a          \\
+	    \end{tabular}
+	\end{minipage}
+	\begin{minipage}{2.5in}
+    	Všimnime si na pravej matici ($BWM$) z príkladu~\ref{ex:bwt_bananna}: Druhé $n$ zo stĺpca $L$ je ``to isté,, $n$ ako druhé z $F$ - obe zodpovedajú prvému $n$ v pôvodnom slove $ba\boldsymbol{n}ana$.
+    \end{minipage}
+    
+    \bigskip    
+    
+    \begin{proof}
+    Nec
+    \end{proof}
+     
     \subsection{Reverzná BTW s použitím LF mappingu}
     Na začiatku teda poznáme len $BWT(S)$, čo je posledný stĺpec (označme ho
     $L$) matice lexikograficky usporiadaných cyklických rotácií povôdného

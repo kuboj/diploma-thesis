@@ -4,3 +4,6 @@ src/main.lol
 diplomovk.synctex.gz
 /out
 /tmp
+materialy/
+*.log
+build/
