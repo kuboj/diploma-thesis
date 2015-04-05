@@ -424,13 +424,13 @@ lexikografickom usporiadaní nachádza pred všetkými znakmi uvažovanej abeced
     \end{figure}
     
     \subsubsection{Komprimované sufixové pole}
-    Toto pole sa využíva na zistenie pozície daného podreťazca v texte $T$. Nie je si ale potrebné držať v ňom pozície všetkých sufixov $T$, keďže pomocou \emph{LF mappingu} vieme zrekonštruovať podreťazec $T$ začínajúci na ľubovoľnej pozícii. Preto si stačí pamätať len pozície niektorých sufixov a potom pomocou \emph{LF mappingu} len čiastočne rekonštruovať $T$, pokým nedosiahneme nejakú pamätanú pozíciu sufixu. Komprimované sufixové pole zaberá iba zlomok pamäte oproti pôvodnému, no na oplátku sa kvôli nutnosti čiastočnej rekonštrukcie výrazne zvýši čas trvania operácie \emph{locate}.
+    Komprimované sufixové pole (\emph{CSA - compressed suffix array}) pole sa využíva na zistenie pozície daného podreťazca v texte $T$. Nie je si ale potrebné držať v ňom pozície všetkých sufixov $T$, keďže pomocou \emph{LF mappingu} vieme zrekonštruovať podreťazec $T$ začínajúci na ľubovoľnej pozícii. Preto si stačí pamätať len pozície niektorých sufixov a potom pomocou \emph{LF mappingu} len čiastočne rekonštruovať $T$, pokým nedosiahneme nejakú pamätanú pozíciu sufixu. Komprimované sufixové pole zaberá iba zlomok pamäte oproti pôvodnému, no na oplátku sa kvôli nutnosti čiastočnej rekonštrukcie výrazne zvýši čas trvania operácie \emph{locate}.
     
     \subsubsection{Tabuľka prefixových súm}
     Táto tabuľka obsahuje pre každý znak $c$ danej abecedy počet výskytov lexikograficky menších znakov ako $c$ v danom reťazci $S$. Narozdiel od sufixového poľa ale nie je tak ľahko komprimovateľná, keďže frekvencie výskytu jednotlivých znakov sú na sebe navzájom nezávislé. Na druhej strane, zvyčajne býva veľkosť abecedy rádovo menšia než dĺžka textu, takže veľkosť tejto tabuľky bude prispievať do celkovej pamäťovej náročnosti len malou časťou\footnote{Špeciálne to platí v našom, bioinformatickom kontexte, kde používame štvorpísmenovú abecedu a genómy majú dĺžky v miliónoch.}.
     
     \subsubsection{Tabuľka výskytov}
-    Tabuľka výskytov $Occ$ pre dané $c$ a $k$ vráti počet výskytov znaku $c$ v prefixe daného reťazca $S$ dĺžky $k$. Keď túto tabuľku skonštruujeme nad $BWT(T)$, tak \emph{LF mapping} vieme zadefinovať ako $$LF(i) = C[BWT(T)[i]] + Occ(BWT(T)[i], i)$$
+    Tabuľka výskytov $Occ$ pre dané $c$ a $k$ vráti počet výskytov znaku $c$ v prefixe $S[0..k]$ daného reťazca $S$. Keď túto tabuľku skonštruujeme nad $BWT(T)$, tak \emph{LF mapping} vieme zadefinovať ako $$LF(i) = C[BWT(T)[i]] + Occ(BWT(T)[i], i)$$
     Rýchlosť prístupu k tejto tabuľke a jej pamäťová náročnosť je najdôležitejším faktorom FM indexu. 
     
     \bigskip
@@ -454,7 +454,7 @@ lexikografickom usporiadaní nachádza pred všetkými znakmi uvažovanej abeced
             \begin{tabular}{ | c | c | c | c | c | c | c | c | }
                 \multicolumn{8}{c}{\textbf{Occ(c, k) pre \emph{annb\$aa}}} \\ \hline
                             & \textbf{a} & \textbf{n} & \textbf{n} & \textbf{b} & \textbf{\$} & \textbf{a} & \textbf{a} \\ \hline
-                            & \textbf{1} & \textbf{2} & \textbf{3} & \textbf{4} & \textbf{5}  & \textbf{6} & \textbf{7} \\ \hline
+                            & \textbf{0} & \textbf{1} & \textbf{2} & \textbf{3} & \textbf{4}  & \textbf{5} & \textbf{6} \\ \hline
                 \textbf{\$} & 0          & 0          & 0          & 0          & 1           & 1 & 1 \\ \hline                 
                 \textbf{a}  & 1          & 1          & 1          & 1          & 1           & 2 & 3 \\ \hline
                 \textbf{b}  & 0          & 0          & 0          & 1          & 1           & 1 & 1 \\ \hline  
@@ -464,10 +464,79 @@ lexikografickom usporiadaní nachádza pred všetkými znakmi uvažovanej abeced
     \end{example}
 
     \subsection{Vyhľadávanie pomocou FM indexu}
-    \todo{} % TODO
+    Vyhľadávanie v FM indexe rozdelíme na dve fázy - \emph{počítaciu} a \emph{lokalizačnú} (pri operácii \emph{count} stačí vykonať prvú časť, pre \emph{locate} obe). \emph{Počítacia} fáza má za úlohu identifikovať rozsah sufixov zo sufixového poľa, ktoré majú rovnaký prefix -- vyhľadávanú vzorku\footnote{Z definície sufixového poľa vyplýva, že sufixy s rovnakým prefixom nasledujú v sufixovom poli za sebou} a \emph{lokalizačná} fáza potom identifikuje vzorky v sufixovom poli.
     
-    \subsection{Zlepšenia - offsets, rank checkpoints}
-    \todo{} % TODO
+    \subsubsection{Počítacia fáza}
+    Hľadanie vzorky v sufixovom poli je časovo veľmi efektívne, pretože sa zároveň hľadajú všetky výskyty danej vzorky $P$ -- simultánnym posúvaním ukazovateľov hornej a dolnej hranice v sufixovom poli. Označme tieto ukazovatele $sp$ a $ep$ (z ang. \emph{starting} resp. \emph{ending pointer}). Znak $c$ bude obsahovať momentálne spracovávaný znak vzorky $P$, pričom začneme posledným znakom a budeme tiež využívať pomocné polia $Occ$ a $C$ zadefinované v predchádzajúcej časti. Ukazovateľ $sp$ bude inicializovaný na $C[c]$ a ukazovateľ $ep$ na $C[c + 1]$ -- v tomto prípade už tieto ukazovatele ukazujú na prvý resp. posledný výskyt posledného písmena $P$ v $F$\footnote{Pripomeňme, že $F$ je prvým stĺpcom $BWM$ a $F$ je vlastne pole znakov, ktoré zodpovedajú indexom sufixového poľa do pôvodného textu $T$.}.
+    
+    \bigskip
+    
+    \begin{pseudocode}[label=lst:fm_search_algorithm,caption={Algoritmus na hľadanie vzorky pomocou FM indexu}]
+i = P.length - 1
+c = P[i]
+sp = C[c]
+ep = C[c + 1]
+
+while i > 0 do
+  i = i - 1
+  c = P[i]
+  sp = C[c] + Occ(c, sp - 1)
+  ep = C[c] + Occ(c, ep) - 1
+end
+    \end{pseudocode}
+    
+    $Occ(c, sp - 1)$ (riadok 5) vracia počet znakov $c$ v $BWT(T)[0..(sp - 1)]$. Keď k nemu pripočítame počet znakov, ktoré sú menšie než $c$ ($C[c]$) dostávame pozíciu prvého $c$ v rozsahu $sp$ až $ep$ v $F$. Operácie v riadkoch 5 a 6 realizujú \emph{LF mapping} pre prvý a posledný výskyt $c$ v $BWT(T)[sp..ep]$ (ak by sme nemali k dispozícii tabuľku $Occ$, museli by sme najprv nájsť prvý a posledný výskyt $c$ v $BWT(T)[sp..ep]$ a až potom použiť \emph{LF mapping}).
+    
+    \bigskip
+    \begin{example}
+        Postup vyhľadávania vzorky $P = nan$ by vyzeral nasledovne: \\ \\
+        \begin{minipage}{2in}
+            \begin{tabular}{ c c c }
+                \multicolumn{3}{c}{\emph{P = na\textbf{n}}} \\
+                \textbf{F} &        & \textbf{L} \\
+                \$         & \ldots & a          \\            
+                a          & \ldots & n          \\
+                a          & \ldots & n          \\
+                a          & \ldots & b          \\
+                b          & \ldots & \$         \\
+                \textbf{n} & \ldots & a          \\ 
+                \textbf{n} & \ldots & a          \\
+            \end{tabular}
+        \end{minipage}
+        \begin{minipage}{2in}
+            \begin{tabular}{ c c c }
+                \multicolumn{3}{c}{\emph{P = n\textbf{an}}} \\
+                \textbf{F} &        & \textbf{L} \\
+                \$         & \ldots & a          \\            
+                a          & \ldots & n          \\
+                \textbf{a} & \ldots & n          \\
+                \textbf{a} & \ldots & b          \\
+                b          & \ldots & \$         \\
+                n          & \ldots & a          \\ 
+                n          & \ldots & a          \\
+            \end{tabular}
+        \end{minipage}
+        \begin{minipage}{2in}
+            \begin{tabular}{ c c c }
+                \multicolumn{3}{c}{\emph{P = \textbf{nan}}} \\
+                \textbf{F} &        & \textbf{L} \\
+                \$         & \ldots & a          \\            
+                a          & \ldots & n          \\
+                a          & \ldots & n          \\
+                a          & \ldots & b          \\
+                b          & \ldots & \$         \\
+                \textbf{n} & \ldots & a          \\ 
+                n          & \ldots & a          \\
+            \end{tabular}
+        \end{minipage}
+    \end{example}
+    \bigskip
+
+    \subsubsection{Lokalizačná fáza}
+    No.
+    
+    \subsection{Zlepšenia}
+    \todo{MTF, RL, wavelet, huffman, ...}
     
 \section{Algoritmy na zostavovanie genómu}
     Výsledkom sekvenovania genómu (pri použití súčasných technológií) je veľké
