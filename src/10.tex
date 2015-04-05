@@ -533,10 +533,19 @@ end
     \bigskip
 
     \subsubsection{Lokalizačná fáza}
-    No.
+    Výsledkom počítacej fázy sú dva indexy, $sp$ a $ep$, ktoré vymedzujú rozsah v sufixovom poli textu $T$. A práve prvky prvky v tomto rozsahu nám prezradia, na ktorých pozíciach textu $T$ nastala zhoda s vyhľadávanou vzorkou.
     
-    \subsection{Zlepšenia}
-    \todo{MTF, RL, wavelet, huffman, ...}
+    \subsubsection{Časová zložitosť}
+    Časová zložitosť počítacej fázy je lineárna vzhľadom na dĺžku hľadanej vzorky $P$, keďže v každej iterácii spracujeme jeden znak $P$. Na druhej strane, dĺžka textu $T$ na túto operáciu vplyv nemá, preto je táto metóda mimoriadne vhodná na spracovávanie dlhých textov, ako sú napríklad genómy. Zložitosť počítacej fázy je tiež nezávislá na počte výskytov vzorky v texte, keďže hľadáme len hornú a dolnú hranicu výskytu. V každej iterácii tiež spravíme dva dotazy do tabuľky $Occ$, takže výsledný čas závisí tiež lineárne od časovej zložitosti dotazov na $Occ$.
+    
+    Pri časovej zložitosti lokalizačnej fázy je situácia opačná -- nezávisí na dĺžke hľadanej vzorky, ale na počte výskytov, keďže pre každý jeden musíme pristúpiť ku sufixovému poľu. Preto o zložitosti rozhoduje implementácia sufixového poľa.
+    
+    \subsubsection{Zlepšenia}
+    Ak by mala tabuľka $Occ$ odpovedať v konštantnom čase, zaberala by značné množstvo pamäte, preto sa v praxi pri jej implementácii používajú sofistikovanejšie dátové štruktúry ako napríklad \emph{wavelet tree} \cite{GGV03}.
+    
+    Čo sa týka lokalizačnej fázy, tak je potrebné spomenúť, že pamätanie si celého sufixového poľa by zaberalo priveľa pamäte, preto sa v praxi používajú napríklad komprimované sufixové pole -- ukladá sa len časť pôvodného sufixového poľa a chýbajúce hodnoty sa potom v prípade potreby dorátavajú pomocou pamätaných hodnôt.
+    
+    \todo{MTF, RL, wavelet, huffman, ... citacie, odkazy, fm index v2}
     
 \section{Algoritmy na zostavovanie genómu}
     Výsledkom sekvenovania genómu (pri použití súčasných technológií) je veľké
