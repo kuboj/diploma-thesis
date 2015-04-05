@@ -144,32 +144,20 @@ lexikografickom usporiadaní nachádza pred všetkými znakmi uvažovanej abeced
     \cite{AKO04} pracujúci v čase dokonca $O(\lvert P \rvert)$.
     
     \subsection{Konštrukcia sufixového poľa}
-    \begin{description}
-        \item[Klasické triedenie]        \hfill \\
-        Merge sort potrebuje $O(n \log{n})$ porovnaní, no porovnanie každej
-        dvojice sufixov trvá $O(n)$, takže dokopy konštrukcia sufixového poľa
-        potrvá $O(n^2 \log{n})$.
-        \item[Radix sort]                \hfill \\
-        Triedenie pomocou radix sortu predstavuje mierne zlepšenie. Radix sort
-        vo všeobecnosti triedi $d$ ciferné čísla v $k$-árnej sústave, pričom
-        každú cifru triedi pomocou counting sortu. Ten utriedi $n$ čísel z
-        množiny ${0 \ldots k - 1}$ v čase $O(n + k)$. Celkový čas radix sortu je
-        teda $O(d (n + k))$. Ak uvažujeme abecedu ako podmnožinu množiny ${0,
-        \ldots, n - 1}$, tak nám čas triedenia vyjde $O(n^2)$.
-        \item[Pomocou sufixového stromu] \hfill \\
-        Ak najprv skonštruujeme sufixový strom (to sa dá spraviť v čase $O(n)$)
-        a potom ho postupne prechádzame do hĺbky, pričom v každom vrchole
-        prechádzame neprejdené hrany podľa abecedy, tak potom poradie, v ktorom
-        navštívime listy predstavuje poradie sufixov v sufixovom poli.
-        Nepríjemnosťou pri tomto postupe je fakt, že sufixové stromy zaberajú
-        príliš veľa pamäte.
-        \item[Lineárne algoritmy]        \hfill \\
-        Lineárnych algoritmov existuje niekoľko, napríklad \emph{SA-SI}
-        \cite{NZC09}, ktorý je momentálne jeden z najrýchlejších známych
-        algoritmov, prípadne algoritmus od Kärkkäinena a Sandersa \cite{KS03}.
+    
+    
+    \subsubsection{Klasické triedenie}
+    Merge sort potrebuje $O(n \log{n})$ porovnaní, no porovnanie každej dvojice sufixov trvá $O(n)$, takže dokopy konštrukcia sufixového poľa potrvá $O(n^2 \log{n})$.
+    
+    \subsubsection{Radix sort}
+    Triedenie pomocou radix sortu predstavuje mierne zlepšenie. Radix sort vo všeobecnosti triedi $d$ ciferné čísla v $k$-árnej sústave, pričom každú cifru triedi pomocou counting sortu. Ten utriedi $n$ čísel z množiny ${0 \ldots k - 1}$ v čase $O(n + k)$. Celkový čas radix sortu je teda $O(d (n + k))$. Ak uvažujeme abecedu ako podmnožinu množiny ${0, \ldots, n - 1}$, tak nám čas triedenia vyjde $O(n^2)$.
+    \subsubsection{Pomocou sufixového stromu}
+Ak najprv skonštruujeme sufixový strom (to sa dá spraviť v čase $O(n)$) a potom ho postupne prechádzame do hĺbky, pričom v každom vrchole prechádzame neprejdené hrany podľa abecedy, tak potom poradie, v ktorom navštívime listy predstavuje poradie sufixov v sufixovom poli. Nepríjemnosťou pri tomto postupe je fakt, že sufixové stromy zaberajú príliš veľa pamäte.
+
+    \subsubsection{Lineárne algoritmy}
+    Lineárnych algoritmov existuje niekoľko, napríklad \emph{SA-SI} \cite{NZC09}, ktorý je momentálne jeden z najrýchlejších známych algoritmov, prípadne algoritmus od Kärkkäinena a Sandersa \cite{KS03}.
         
-        \todo{chcem tu nejak velmi rozpisovat nejaky konkretny linearny algoritmus?}
-    \end{description}
+    \todo{chcem tu nejak velmi rozpisovat nejaky konkretny linearny algoritmus?}
     
     \subsection{Pamäťová efektivita}
     Sufixové polia sú vo všeobecnsti efektívnejšie než sufixové stromy, no v
@@ -590,46 +578,27 @@ end
     \subsection{Overlap-Layout-Consensus}
     Táto metóda, ako už jej názov naznačuje, pracuje v troch fázach:
     
-    \begin{description}
-        \item[Overlap]        \hfill \\
-        V tejto fáze assembler hľadá navzájom sa prekrývajúce fragmenty a spája
-        ich do dlhších fragmentov, \emph{kontigov}.
-        
-        Porovnávanie každej dvojice fragmentov by však bolo v praxi veľmi časovo
-        náročné, nakoľko fragmentov môžu byť často milióny a pri porovnaní
-        každej dvojice by sme potrebovali rádovo $O(n^2k)$ času (kde $n$ je
-        počet fragmentov a $O(k)$ je čas, ktorý trvá porovnanie dvoch
-        fragmentov).
-        
-        Efektívnejšie algoritmy sú založené na predpoklade, že ak sa dva
-        fragmenty úplne zhodujú na úseku dľžky aspoň $k$ (v praxi sa používa $k
-        \approx 24$ ), tak pochádzajú z toho istého miesta v sekvenovanom genóme
-        a teda sú spojené do jedného kontigu.
-        
-        Vo všeobecnosti vyzerá tento postup nasledovne:
-        \begin{itemize}
-            \item vytvor zoznam podreťazcov dĺžky $k$ zo všetkých fragmentov,
-            pričom ku každému podreťazcu si zapamätaj, z ktorého fragmentu
-            pochádza
-            \item lexikograficky utrieď zoznam podreťazcov
-            \item skupiny výrazne sa prekrývajúcich fragmentov sa v utriedenom
-            zozname budú vyskytovať pohromade a práve to sú dobrí kandidáti na
-            spojenie do kontigov
-        \end{itemize}
-        \item[Layout] \hfill \\
-        V druhej fáze assembler určuje relatívnu polohu jednotlivých kontigov a
-        ich približné vzdialenosti, výsledné bloky kontigov sa nazývajú
-        \emph{superkontigy}.
-        \item[Consensus] \hfill \\
-        V poslednej fáze je vytvorená finálna sekvencia superkontigov, ktorá
-        pokrýva genóm (alebo aspoň jeho časti).
-    \end{description}
+    \subsubsection{Overlap}
+    V tejto fáze assembler hľadá navzájom sa prekrývajúce fragmenty a spája ich do dlhších fragmentov, \emph{kontigov}. 
     
-    Často sa ale zvykne používať aj grafová reprezentácia tohto algoritmu.
-    Vrcholmi grafu sú fragmenty, hrana medzi vrcholmi je vtedy, ak sa tieto dva
-    fragmenty prekrývajú (overlap). V layout fáze sa tento graf zjednodušuje
-    (napr. vymazanie nadbytočných hrán). Fáza consensus potom spočíva v nájdení
-    hamiltonovskej cesty v tomto grafe.
+    Porovnávanie každej dvojice fragmentov by však bolo v praxi veľmi časovo náročné, nakoľko fragmentov môžu byť často milióny a pri porovnaní každej dvojice by sme potrebovali rádovo $O(n^2k)$ času (kde $n$ je počet fragmentov a $O(k)$ je čas, ktorý trvá porovnanie dvoch fragmentov). 
+    
+    Efektívnejšie algoritmy sú založené na predpoklade, že ak sa dva fragmenty úplne zhodujú na úseku dľžky aspoň $k$ (v praxi sa používa $k \approx 24$ ), tak pochádzajú z toho istého miesta v sekvenovanom genóme a teda sú spojené do jedného kontigu. 
+    
+    Vo všeobecnosti vyzerá tento postup nasledovne:
+    \begin{itemize}
+        \item vytvor zoznam podreťazcov dĺžky $k$ zo všetkých fragmentov, pričom ku každému podreťazcu si zapamätaj, z ktorého fragmentu pochádza
+        \item lexikograficky utrieď zoznam podreťazcov
+        \item skupiny výrazne sa prekrývajúcich fragmentov sa v utriedenom zozname budú vyskytovať pohromade a práve to sú dobrí kandidáti na spojenie do kontigov
+    \end{itemize}
+    
+    \subsubsection{Layouy}
+V druhej fáze assembler určuje relatívnu polohu jednotlivých kontigov a ich približné vzdialenosti, výsledné bloky kontigov sa nazývajú \emph{superkontigy}.
+
+    \subsubsection{Consensus}
+V poslednej fáze je vytvorená finálna sekvencia superkontigov, ktorá pokrýva genóm (alebo aspoň jeho časti). 
+\\ \\
+Často sa ale zvykne používať aj grafová reprezentácia tohto algoritmu. Vrcholmi grafu sú fragmenty, hrana medzi vrcholmi je vtedy, ak sa tieto dva fragmenty prekrývajú (overlap). V layout fáze sa tento graf zjednodušuje (napr. vymazanie nadbytočných hrán). Fáza consensus potom spočíva v nájdení hamiltonovskej cesty v tomto grafe.
     
     \subsection{De Bruijnove grafy}
     Tento prístup využíva to, že (obvykle) máme pri sekvenovaní veľké množstvo
