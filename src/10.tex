@@ -2,75 +2,97 @@ V tejto kapitole sa oboznámime so základnými pojmami z bioinformatiky a
 niektorými dátovými štruktúrami a algoritmami, ktoré budú neskôr použité pri
 implementácii.
 
-\section{Biologická motivácia}
-\todo{}
+\section{Sekvenovanie}
+\label{sec:sekvenovanie}
+Sekvenovanie DNA je súhrnný termín pre biochemické metódy, pomocou ktorých sa zisťuje poradie nukleotidov (A, C, T, G) v sekvenciách DNA. Z informatického pohľadu je výsledkom sekvenovania DNA sada reťazcov nad abecedou $\Sigma = \{A, C, T, G\}$\footnote{Veci začneme zjednodušovať už hneď zhurta zo začiatku a nebudeme rátať s neznámymi - $N$ (\emph{uNknown}) bázami v \emph{sequence readoch}.}, pričom tieto reťazce pochádzajú z jedného spoločného nadslova. Tieto reťazce nazývame \emph{sequence reads}. Pri sekvenovaní nás zaujímajú hlavne:
+
+\begin{itemize}
+    \item Dĺžka \emph{readov} - tá je daná použitou biochemickou metódou sekvenovania.
+    \item Počet \emph{readov}
+    \item Miera pokrytia - tá nam hovorí, v aspoň koľkých \emph{readoch} sa každý nukleotid sekvenovanej DNA nachádza.
+    \item Miera chýb - žiadna sekvenovacia metóda nie je dokonalá a teda daný \emph{sequence read} nemusí byť v skutočnosti podslovom sekvenovanej DNA, ale môže obsahovať nejaké chyby, napríklad nejaké bázy navyše, či niektoré zmenené.
+\end{itemize}
+
+Tieto \emph{sequence reads} je potom potrebné bioinformatickými metódami poskladať do dlhších fragmentov na základe ich prekryvov. 
 
 \section{Formálne definície}
-
-    \subsection{Zarovnanie}
-    \begin{defn}
-        Zarovnanie sekvencií $S_0 = a_1 a_2 \ldots a_n$ a $S_1 = b_1 b_2 \ldots
-        b_m$ je funkcia $f : \mathbb{Z}_n \to \mathbb{Z}_m \cup \{ \bot \} $
-        spĺňajúca nasledovnú podmienku:
+\label{sec:formalne_definicie}
+\begin{defn}
+    Zarovnanie sekvencií $S_0=a_1 a_2 \ldots a_n$ a $S_1 = b_1 b_2 \ldots b_m$ je funkcia $f : \mathbb{Z}_n \to \mathbb{Z}_m \cup \{ \bot \} $ spĺňajúca nasledovnú podmienku:
         
-        $ (\forall i, j \in \mathbb{Z}_n) (f(i) \neq \bot \wedge f(j) \neq \bot
-        \wedge i < j) \implies (f(i) < f(j)) $
-    \end{defn}
-    
-    \bigskip
-    
-    \begin{example}
-        Dve možné zarovnania sekvencií $S_0$ = \texttt{AGGTA} a $S_1$ =
-        \texttt{GCTA}:
-        
-        \bigskip
-        
-        \begin{minipage}{2.5in}
-            \begin{tabular}{ c c c c c c c }
-                0 & 1 & 2 &   & 3 & 4 \\ \hline     
-                A & G & G & - & T & A \\
-                - & G & - & C & T & A \\ \hline
-                  & 0 &   & 1 & 2 & 3 \\   
-            \end{tabular}
-        \end{minipage}
-        \begin{minipage}{2.5in}
-            \begin{tabular}{ | c | c | }
-                \hline            
-                $i$ & $f(i)$ \\ \hline             
-                0   & $\bot$ \\ \hline 
-                1   & 0      \\ \hline
-                2   & $\bot$ \\ \hline
-                3   & 2      \\ \hline
-                4   & 3      \\ \hline
-            \end{tabular}
-        \end{minipage}
-        
-        \bigskip
-        
-        \begin{minipage}{2.5in}
-            \begin{tabular}{ c c c c c c c c c }
-                0 & 1 & 2 & 3 & 4 &           \\ \hline     
-                A & G & G & T & A & - & - & - \\
-                - & - & G & - & - & C & T & A \\ \hline
-                  &   & 0 &   &   & 1 & 2 & 3 \\   
-            \end{tabular}
-        \end{minipage}
-        \begin{minipage}{2.5in}
-            \begin{tabular}{ | c | c | }
-                \hline            
-                $i$ & $f(i)$ \\ \hline             
-                0   & $\bot$ \\ \hline 
-                1   & $\bot$ \\ \hline
-                2   & 0      \\ \hline
-                3   & $\bot$ \\ \hline
-                4   & $\bot$ \\ \hline
-            \end{tabular}
-        \end{minipage}        
-    \end{example}
+    $ (\forall i, j \in \mathbb{Z}_n) (f(i) \neq \bot \wedge f(j) \neq \bot \wedge i < j) \implies (f(i) < f(j)) $
+\end{defn}
     
 \bigskip
     
-\todo{chcem viac o zarovnavaniach ? globalne zarovnanie, skorovanie atd}
+\begin{example}
+    Dve možné zarovnania sekvencií $S_0$ = \texttt{AGGTA} a $S_1$ = \texttt{GCTA}:
+    
+    \bigskip
+    
+    \begin{minipage}{2.5in}
+        \begin{tabular}{ c c c c c c c }
+            0 & 1 & 2 &   & 3 & 4 \\ \hline     
+            A & G & G & - & T & A \\
+            - & G & - & C & T & A \\ \hline
+              & 0 &   & 1 & 2 & 3 \\   
+        \end{tabular}
+    \end{minipage}
+    \begin{minipage}{2.5in}
+        \begin{tabular}{ | c | c | }
+            \hline            
+            $i$ & $f(i)$ \\ \hline             
+            0   & $\bot$ \\ \hline 
+            1   & 0      \\ \hline
+            2   & $\bot$ \\ \hline
+            3   & 2      \\ \hline
+            4   & 3      \\ \hline
+        \end{tabular}
+    \end{minipage}
+        
+    \bigskip
+        
+    \begin{minipage}{2.5in}
+        \begin{tabular}{ c c c c c c c c c }
+            0 & 1 & 2 & 3 & 4 &           \\ \hline     
+            A & G & G & T & A & - & - & - \\
+            - & - & G & - & - & C & T & A \\ \hline
+            &   & 0 &   &   & 1 & 2 & 3 \\   
+        \end{tabular}
+    \end{minipage}
+    \begin{minipage}{2.5in}
+        \begin{tabular}{ | c | c | }
+            \hline            
+            $i$ & $f(i)$ \\ \hline             
+            0   & $\bot$ \\ \hline 
+            1   & $\bot$ \\ \hline
+            2   & 0      \\ \hline
+            3   & $\bot$ \\ \hline
+            4   & $\bot$ \\ \hline
+        \end{tabular}
+    \end{minipage}        
+\end{example}
+    
+\bigskip
+
+\begin{defn}
+    Reverzným komplementom reťazca $S=a_0a_1 \ldots a_{n-1}$, kde \\
+    $\forall i \in \mathbb{N} : 0 \leq i < n : a_i \in \{A, C, T, G\}$ je reťazec $S_{rc}=b_0b_1 \ldots b_{n-1}$, pre ktorý platí:
+    $$
+    \forall i \in \mathbb{N} : 0 \leq i < n : b_i = \begin{cases}
+                                                        A : a_{n-i-1} = T \\
+                                                        T : a_{n-i-1} = A \\
+                                                        C : a_{n-i-1} = G \\
+                                                        G : a_{n-i-1} = C  
+                                                    \end{cases}
+    $$
+\end{defn}
+
+\begin{example}
+    Pre reťazec $S=ACTTTGCCCT$ je reverzným komplementom reťazec $S_{rc}=AGGGCAAAGT$.
+\end{example}
+    
+\todo{chcem viac o zarovnavaniach ? globalne zarovnanie, skorovanie atd. mozno biologicka motivacia, naco su dobre reverzne komplementy}
 
 \section{Funkcie rank a select}
 \begin{defn}
@@ -111,6 +133,8 @@ lexikografickom usporiadaní nachádza pred všetkými znakmi uvažovanej abeced
 
 \begin{example}
     Nech $S = banana\$$. Usporiadané sufixy $S$ budú vyzerať nasledovne:
+    
+    \bigskip
     \begin{center}
         \begin{tabular}{ | l | l | }
             \hline
@@ -124,6 +148,7 @@ lexikografickom usporiadaní nachádza pred všetkými znakmi uvažovanej abeced
             nana\$         & 3          \\ \hline
         \end{tabular}
     \end{center}
+    \bigskip
     
     Prislúchajúce sufixové pole: $SA = (7, 6, 4, 2, 1, 5, 3)$.
 \end{example}
