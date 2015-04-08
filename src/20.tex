@@ -2,6 +2,8 @@
 svojej praci sa Dr. Peter Boza PhD., CSc., PanVesmiru, zaobera \ldots, kde
 riesi \ldots a odtial pochadza motivacia riesit problem \ldots.}
 
+\todo{bioinf motivacia je gkarray paperi, prelom stran 3-4. ale nerozumiem tomu}
+
 \section{Definícia problému}
 
 Úlohou bude teda vytvoriť efektívnu dátovú štruktúru, ktorá načíta veľkú sadu
@@ -109,8 +111,32 @@ l)$. Existuje množstvo zlepšení, napríklad:
     jednoduchšie (napríklad ako celé číslo).
 \end{itemize}
 
-\todo{dalsie zlepsenia?}
+\todo{dalsie zlepsenia? mozno spomenut sparse/dense hash map, SGI c++ ext}
 
 \section{Riešenie s použitím GkArray}
+V roku 2011 vyšiel v \emph{BMC Bioinformatics} článok od N. Phillipea a spol.\cite{NP11} prezentujúci dátovú štruktúru s názvom \emph{GkArray}. Cieľom autorov bolo navrhnúť a implementovať univerzálne riešenie na indexáciu \emph{sequence readov} a vyhľadávanie v nich cez \emph{k}-mery vopred danej dĺžky. Vstupom pre jej konštrukciu je sada \emph{sequence readov} každý  dĺžky $m$ a číslo $k$, kde $k \leq m$. Dátová štruktúra \emph{GkArray} je konštruovaná tak, aby vedela odpovedať na nasledujúce dotazy\footnote{V pôvodnom článku je uvedený aj ôsmy dotaz, ktorý je ale ekvivalentný so šiestym, my sme si ho dovolili rovno vynechať.}:
+
+\begin{itemize}
+    \item[\textbf{Q1}:]{Ktoré \emph{ready} obsahujú $f$ ako podreťazec?}
+    \item[\textbf{Q2}:]{Koľko \emph{readov} obsahuje $f$ ako podreťazec?}
+    \item[\textbf{Q3}:]{Na ktorých pozíciach sa v jednotlivých \emph{readoch} $f$ nachádza?}
+    \item[\textbf{Q4}:]{Aký je celkový počet výskytov $f$ vo všetkých \emph{readoch}?}
+    \item[\textbf{Q5}:]{V ktorých \emph{readoch} sa $f$ nachádza len raz?}
+    \item[\textbf{Q6}:]{V koľkých \emph{readoch} sa $f$ nachádza len raz?}
+    \item[\textbf{Q7}:]{Na ktorých pozíciach v \emph{readoch}, ktoré ho obsahujú len raz sa $f$ nachádza?}
+\end{itemize}
+
+\emph{GkArray} vnútorne používa 4 polia -- \emph{GkSA} (Generalized \emph{k} Suffix Array), čo je nejakým spôsobom modifikované sufixové pole skonštruované nad reťazcom získaným zreťazením všetkých \emph{readov} zo vstupu, \emph{GkIFA} (Generalized \emph{k} Inverse Array) predstavuje obmenu sufixového poľa reverzov, \emph{GkCFA} (Generalized \emph{k} Counting Factor Array) a štvrté pole, \emph{GkCFPS} (Generalized \emph{k} Counting Factor Prefix Sum) je použité len pri konštrukcii prvých troch.
+
+\todo{ako velmi rozpisovat fungovanie GkArrayu?}
+
+Vidíme teda, že štruktúra \emph{GkArray} by mala vedieť riešiť \emph{problém indexovania readov} podľa našej definície pomocou odpovedí na dotazy \textbf{Q1} -- \textbf{Q4}. Pri indexácii ale len zreťazí reťazce zo vstupu a nijak nevyužíva to, že sú to \emph{sequence ready} nejakého genómu, nesnaží sa ich nijak komprimovať. Skúsme teda spraviť jednoduché porovnanie spotreby pamäte v porovnaní s hash mapou.
 
 \section{Porovnanie}
+Pre porovnanie sme použili náhodne vybraných milión \emph{readov} z \emph{E.Coli MG1655 Illumina HiSeq2000 sequencing dataset}\footnote{Dostupné verejne na internete na \url{ftp://webdata:webdata@ussd-ftp.illumina.com/Data/SequencingRuns/MG1655/MiSeq\_Ecoli\_MG1655\_110721\_R1.fastq}}, pričom dĺžka každého \emph{readu} bola 151 báz a dĺžku dotazu sme zvolil $k=13$. Program, ktorý sme použili na testovanie je dostupný na internete na adrese \url{https://github.com/kuboj/CR-index/blob/master/benchmark/construct.cpp}.
+
+Kompilácia a test prebehli počítači s nainštalovanou 64-bitovou verziou operačného systému Linux 3.16.0-33, kompilátorom \texttt{gcc} verzie 4.9.1 a \texttt{glibc} verziou 2.19. Pri kompilácii boli zapnuté všetky optimalizačné prepínače (\texttt{-O3}).
+
+Ako implementáciu hash mapy sme zvolili \\ \texttt{stl::unordered\_map $<$string, vector$<$int$>>$} - to znamená, že sme nepamätáme všetky \emph{ready}, ale len ich indexy a tie vypisujeme na výstup . Nepoužili sme ani komprimáciu kľúčov, ktorú sme vyššie naznačili.
+
+Vo výsledku zaberala hash mapa 2703080kB a \emph{GkArray} 1241084kB (pričom čas konštrukcie hash mapy bol len o málo kratší). Keď si uvedomíme, že vstup tvorilo 150MB dát, tak nám pre \emph{GkArray} vychádza ,,cena`` za jednu bázu na vstupe veľmi vysoká, okolo 8 bajtov. Určite su preto myslíme, že je v tejto oblasti priestor na zlepšenie.
