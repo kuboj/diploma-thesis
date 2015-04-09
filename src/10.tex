@@ -426,15 +426,15 @@ Ak najprv skonštruujeme sufixový strom (to sa dá spraviť v čase $O(n)$) a p
     
     \todo{mozno ilustracia tej rekonstrukcie.}
     
-\section{FM index}  
-    FM index je komprimovaný index založený na Burrows-Wheelerovej transformácii, publikovaný v \cite{FM00}. Skratka \emph{FM} je odvodená od \emph{Full-text in Minute space} - \emph{full-text} index je dátová štruktúra nad textom $T$ umožňujúca efektívne vyhľadávanie podreťazcov v $T$. \emph{Minute space} znamená, že index je pamäťovo veľmi efektívny. Táto dátová štruktúra vo všeobecnosti podporuje dve operácie - \emph{count}, ktorá pre reťazec na vstupe vráti počet výskytov v $T$ a operáciu \emph{locate}, ktorej výsledkom pre nejaký vstupný reťazec $P$ je zoznam indexov v $T$, na ktorých sa $P$ vyskytuje v $T$.
+\section{FM-index}
+    FM-index je komprimovaný index založený na Burrows-Wheelerovej transformácii, publikovaný v \cite{FM00}. Skratka \emph{FM} je odvodená od \emph{Full-text in Minute space} - \emph{full-text} index je dátová štruktúra nad textom $T$ umožňujúca efektívne vyhľadávanie podreťazcov v $T$. \emph{Minute space} znamená, že index je pamäťovo veľmi efektívny. Táto dátová štruktúra vo všeobecnosti podporuje dve operácie - \emph{count}, ktorá pre reťazec na vstupe vráti počet výskytov v $T$ a operáciu \emph{locate}, ktorej výsledkom pre nejaký vstupný reťazec $P$ je zoznam indexov v $T$, na ktorých sa $P$ vyskytuje v $T$.
     
-    Na FM index sa dá pozerať ako na súbor tabuliek skladajúci sa z dvoch častí s istou funkcionalitou navyše. Prvú časť tvoria tabuľky, ktoré zabezpečujú vykonanie operácie \emph{count}. Do tejto kategórie patria všetky tabuľky podporujúce \emph{LF mapping}. Presnejšie, táto skupina sa skladá z dvoch tabuliek - tabuľky \emph{prefixových súm} $C$ a \emph{tabuľky výskytov} tiež označovanej ako $Occ$. Druhú kategóriu tvoria tabuľky, pomocou ktorých FM index odpovedá na dotaz \emph{locate}.
+    Na FM-index sa dá pozerať ako na súbor tabuliek skladajúci sa z dvoch častí s istou funkcionalitou navyše. Prvú časť tvoria tabuľky, ktoré zabezpečujú vykonanie operácie \emph{count}. Do tejto kategórie patria všetky tabuľky podporujúce \emph{LF mapping}. Presnejšie, táto skupina sa skladá z dvoch tabuliek - tabuľky \emph{prefixových súm} $C$ a \emph{tabuľky výskytov} tiež označovanej ako $Occ$. Druhú kategóriu tvoria tabuľky, pomocou ktorých FM-index odpovedá na dotaz \emph{locate}.
     
     \begin{figure}[h]
         \centering
         \includegraphics[width=6cm]{fm_index}
-        \caption{Znázornenie štruktúry FM indexu}
+        \caption{Znázornenie štruktúry FM-indexu}
         \label{fig:fm_index}
     \end{figure}
     
@@ -446,7 +446,7 @@ Ak najprv skonštruujeme sufixový strom (to sa dá spraviť v čase $O(n)$) a p
     
     \subsubsection{Tabuľka výskytov}
     Tabuľka výskytov $Occ$ pre dané $c$ a $k$ vráti počet výskytov znaku $c$ v prefixe $S[0..k]$ daného reťazca $S$. Keď túto tabuľku skonštruujeme nad $BWT(T)$, tak \emph{LF mapping} vieme zadefinovať ako $$LF(i) = C[BWT(T)[i]] + Occ(BWT(T)[i], i)$$
-    Rýchlosť prístupu k tejto tabuľke a jej pamäťová náročnosť je najdôležitejším faktorom FM indexu. 
+    Rýchlosť prístupu k tejto tabuľke a jej pamäťová náročnosť je najdôležitejším faktorom FM-indexu. 
     
     \bigskip
     
@@ -478,15 +478,15 @@ Ak najprv skonštruujeme sufixový strom (to sa dá spraviť v čase $O(n)$) a p
         \end{minipage}
     \end{example}
 
-    \subsection{Vyhľadávanie pomocou FM indexu}
-    Vyhľadávanie v FM indexe rozdelíme na dve fázy - \emph{počítaciu} a \emph{lokalizačnú} (pri operácii \emph{count} stačí vykonať prvú časť, pre \emph{locate} obe). \emph{Počítacia} fáza má za úlohu identifikovať rozsah sufixov zo sufixového poľa, ktoré majú rovnaký prefix -- vyhľadávanú vzorku\footnote{Z definície sufixového poľa vyplýva, že sufixy s rovnakým prefixom nasledujú v sufixovom poli za sebou} a \emph{lokalizačná} fáza potom identifikuje vzorky v sufixovom poli.
+    \subsection{Vyhľadávanie pomocou FM-indexu}
+    Vyhľadávanie v FM-indexe rozdelíme na dve fázy - \emph{počítaciu} a \emph{lokalizačnú} (pri operácii \emph{count} stačí vykonať prvú časť, pre \emph{locate} obe). \emph{Počítacia} fáza má za úlohu identifikovať rozsah sufixov zo sufixového poľa, ktoré majú rovnaký prefix -- vyhľadávanú vzorku\footnote{Z definície sufixového poľa vyplýva, že sufixy s rovnakým prefixom nasledujú v sufixovom poli za sebou} a \emph{lokalizačná} fáza potom identifikuje vzorky v sufixovom poli.
     
     \subsubsection{Počítacia fáza}
     Hľadanie vzorky v sufixovom poli je časovo veľmi efektívne, pretože sa zároveň hľadajú všetky výskyty danej vzorky $P$ -- simultánnym posúvaním ukazovateľov hornej a dolnej hranice v sufixovom poli. Označme tieto ukazovatele $sp$ a $ep$ (z ang. \emph{starting} resp. \emph{ending pointer}). Znak $c$ bude obsahovať momentálne spracovávaný znak vzorky $P$, pričom začneme posledným znakom a budeme tiež využívať pomocné polia $Occ$ a $C$ zadefinované v predchádzajúcej časti. Ukazovateľ $sp$ bude inicializovaný na $C[c]$ a ukazovateľ $ep$ na $C[c + 1]$ -- v tomto prípade už tieto ukazovatele ukazujú na prvý resp. posledný výskyt posledného písmena $P$ v $F$\footnote{Pripomeňme, že $F$ je prvým stĺpcom $BWM$ a $F$ je vlastne pole znakov, ktoré zodpovedajú indexom sufixového poľa do pôvodného textu $T$.}.
     
     \bigskip
     
-    \begin{pseudocode}[label=lst:fm_search_algorithm,caption={Algoritmus na hľadanie vzorky pomocou FM indexu}]
+    \begin{pseudocode}[label=lst:fm_search_algorithm,caption={Algoritmus na hľadanie vzorky pomocou FM-indexu}]
 i = P.length - 1
 c = P[i]
 sp = C[c]

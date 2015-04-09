@@ -7,3 +7,5 @@ diplomovk.synctex.gz
 materialy/
 *.log
 build/
+*.swp
+*.swo
