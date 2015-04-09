@@ -1,29 +1,34 @@
 V tejto kapitole predstavíme naše riešenie \emph{problému indexovania readov} -- dátovú štruktúru \emph{CR-index} (z eng. \emph{Compressed Read index}), ktorá je navrhnutá tak, aby sa vyhla nedostatkom, ktorými trpia riešenia s použitím \emph{GkArray} alebo hash mapy.
 
+%\section{R-index}
+% spravime crappy preproces a vysvetlime koncepty?
+
 %- hlavna myslienka, ideme ready komprimovat, mohol by som mat SS bez editov, to bolo nanic, dovolime chyby, komplikuje to situaciu, ale je to gain, ako to navonok funguje - ake queries chceme atd.
 %- ako funguju queries
 %- popis vnutorneho fungovania
 %- popis ako to vyrobime - trivialne - crappy preprocess (a potom ako lepsie)
 
-\section{Komprimácia vstupu}
+\section{Princíp fungovania}
+
+\subsection{Komprimácia vstupu}
 Kým \emph{GkArray} \emph{ready} zo vstupu iba zreťazil a nad týmto dlhým reťazcom potom budoval sufixové polia a ostatné pomocné štruktúry, hlavnou myšlienkou \emph{CR-indexu} je, ako už napovedá názov, \emph{ready} najprv nejakým spôsobom skomprimovať a až potom ďalej spracovávať. Využijeme to, že reťazce, ktoré máme za úlohu indexovať majú čosi spoločné -- vznikli sekvenovaním jedného genómu. Keďže pokrytie sa pri sekvenovaní zvyčajne pohybuje na úrovni $10\times$ -- $100\times$, znamená to, že \emph{ready} obsahujú veľké množstvo nadbytočných informácií. Pomocou nejakého assembleru čiastočne zrekonštruujeme pôvodný genóm \todo{vysvetlit v 1. kapitole co je asembler} -- čiastočne preto, lebo výstupom assemblerov pre nejakú sadu \emph{readov} nebýva vo všeobecnosti súvislý genóm, ale len sada kontigov resp. superkontig.\todo{vysvetlit kontig/superkontig v 1. kapitole}. Tiež nemáme zaručené, že každý \emph{read} zo vstupu sa v niektorom kontigu musí nachádzať. Tieto chýbajúce \emph{ready} potom musíme efektívne nájsť a nejakým spôsobom pridať ku kontigom, aby sme neprišli o žiadnu informáciu.
 
-\section{Bez sekvenovacích chýb}
-Pre začiatok predpokladajme, že \emph{ready} na vstupe sú bez sekvenovacích chýb -- to znamená, že pre každý \emph{read} platí, že je podreťazcom pôvodného genómu, ktorý bol sekvenovaný. Assembler by mal byť pri rekonštruovaní genómu pomerne úspešný (samozrejme ak majú \emph{ready} dostatočné pokrytie) a relatívne málo \emph{readov} by malo chýbať medzi kontigmi. V tomto prípade by sme teda spolu zreťazili kontigy a všetky chýbajúce \emph{ready}. Nad výsledným reťazcom by potom prebiehala ďalšia fáza konštrukcie -- indexácia textu.
+Pre začiatok predpokladajme, že \emph{ready} na vstupe sú bez sekvenovacích chýb -- to znamená, že pre každý \emph{read} platí, že je podreťazcom pôvodného genómu, ktorý bol sekvenovaný. Assembler by mal byť pri rekonštruovaní genómu pomerne úspešný (samozrejme ak majú \emph{ready} dostatočné pokrytie) a relatívne málo \emph{readov} by malo chýbať medzi kontigmi. V tomto prípade by sme teda spolu zreťazili kontigy a všetky chýbajúce \emph{ready} -- tým dostaneme bezstratovo komprimovaný vstup. Nad výsledným reťazcom by potom prebiehala ďalšia fáza konštrukcie -- indexácia textu.
 
-\todo{obrazok - schema, ze do ciernej krabicky 'assembler' pcham sadu readov, vyjde sada superkontigov. potom hladam ready zo vstupu v superkontigoch, tak tam nie su, pridam}
+%\subsubsection{Bez chýb to ale nejde}
+Bohužiaľ, zjednodušením situácie vo forme popierania existencie sekvenovacích chýb sa až príliš vzďaľujeme realite. Ako sa teda zmení situácia, ak máme brať do úvahy, že v \emph{readoch} sa vyskytujú chyby?
 
-\section{Bez chýb to ale nejde}
-Bohužiaľ, zjednodušením situácie vo forme popierania existencie sekvenovacích chýb sa až príliš vzďaľujeme realite. Čo to ale v praxi znamená, ak máme brať do úvahy, že v \emph{readoch} sa vyskytujú chyby?
+Pripomeňme, že pri probléme \emph{indexovania readov} tak, ako sme ho zadefinovali v kapitole \ref{ch:problem_indexovania_readov} uvažujeme len substitučné chyby -- čo znamená, že \emph{read} sa môže v niektorých bázach líšiť od svojho ,,obrazu`` v pôvodnom genóme.
 
-Pripomeňme, že pri probléme \emph{indexovania readov} tak, ako sme ho zadefinovali v kapitole \ref{ch:problem_indexovania_readov} uvažujeme len substitučné chyby - čo sa dá chapať ako to, že \emph{read} sa môže v niektorých bázach líšiť od svojho ,,obrazu`` v pôvodnom genóme.
+V prvom rade assembler nebude pri konštrukcii kontigov ani zďaleka tak úspešný ako v predchádzajúcom prípade -- chyby budú znižovať pravdepodobnosť, že úspešne odhalí prekryvy medzi \emph{readmi}, ciže výstupom assembleru budú oveľa kratšie kontigy, čiže aj ,,kompresný pomer`` bude výrazne nižší a to viac \emph{readov} bude potrebné pripojiť na koniec. 
 
-V prvom rade assembler nebude pri konštrukcii kontigov ani zďaleka tak úspešný ako v predchádzajúcom prípade -- chyby budú znižovať pravdepodobnosť, že úspešne odhalí prekryvy medzi \emph{readmi}, ciže výstupom assembleru budú oveľa kratšie kontigy  
+Ako ale nájdeme \emph{ready}, ktoré nie sú podreťazcom zreťazenia kontigov? Jednoducho -- nad zreťazením kontigov skonštruujeme FM-index, ktorého sa postupne budeme pýtať na všetky \emph{ready} zo vstupu a v prípade, že FM-index tento \emph{read} nenájde, označíme ho ako chýbajúci.
 
+Výsledkom komprimačnej fázy je teda zreťazenie kontigov a \emph{readov} zo vstupu, ktoré nie sú podreťazcom zreťazenia kontigov. Tento reťazec nazveme \emph{superstring} (neskôr ho definujeme aj formálne).
 
+\subsection{Index}
+V ďalšej fáze konštrukcie \emph{CR-indexu} vytvoríme nad superstringom index
 
-% Ukázalo sa tiež, že akonáhle sa v \emph{readoch} vyskytujú chyby, Vidíme teda, že spôsob komprimácie vstupu až taký priamočiary nebude.
-
-
+%,,Komprimovateľnosť`` \emph{readov} zvýšime tak, že pred tým, ako ich dostane assembler na vstup budú opravené -- korekcia \emph{readov} (\emph{sequencing read correction}) je známy problém, na ktorý existuje množstvo riešení. \todo{sem by sa hodili nejake citacie} Čo nám ale skomplikuje situáciu je fakt, že kontigy budú obsahovať opravené \emph{ready} a nie originálne, ktoré sme dostali na vstupe -- preto si budeme musieť pamätať nejaké ďalšie informácie týkajúce sa aplikovaných korekcií, aby sme pomocou nich vedeli odpovedať na otázky týkajúce sa pôvodných \emph{readov}. Výsledkom fázy komprimácie teda bude zreťazenie kontigov\footnote{neskôr ukážeme, že k nemu ešte niečo budeme musieť pridať} - to nazveme \emph{superstring} (formálne definujeme neskôr) a pole nejakým spôsobom popisujúce aplikované korekcie.
 
 %V našej práci sme použili implementáciu \emph{SGA} (\emph{String Graph Assembler} \cite{SD11}) dostupnú na internete\footnote{\url{https://github.com/jts/sga}}. 
