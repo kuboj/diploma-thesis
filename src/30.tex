@@ -17,10 +17,11 @@ Pre začiatok predpokladajme, že ready na vstupe sú bez sekvenovacích chýb -
 Výsledkom komprimačnej fázy je teda zreťazenie kontigov a readov zo vstupu, ktoré nie sú podreťazcom zreťazenia kontigov a ani ich reverzný komplement nie je podreťazcom zreťazenia kontigov. Tento dlhý reťazec nazveme \emph{superstring} (neskôr ho definujeme aj formálne).
 
 \subsection{Index}
+\label{ssec:index}
 V ďalšej fáze konštrukcie CR-indexu vytvoríme nad superstringom (opäť) FM-index. V tejto chvíli sme už schopní efektívne vyhľadávať vzorky v superstringu, no keď nám operácia FM-indexu \emph{locate} vráti zoznam pozícií superstringu, kde sa daná vzorka nachádza, nevieme z toho povedať ktorým readom tieto pozície prislúchajú. Potrebujeme si teda predrátať, kde sa ktorý read nachádza. Na to použijeme pole \emph{positions} -- jeho prvkami budú trojice $(i, r, b)$ - $i$ bude označovať index v superstringu, kde začína read $r$. Logická premenná $b$ označuje, či sa v superstringu nachádza samotný read ($b=0$) alebo jeho reverzný komplement ($b=1$). Algoritmus na konštrukciu CR-indexu teda vyzerá nasledovne\footnote{Táto implementácia slúži len pre účely vysvetlenia konštrukcie CR-indexu. Reálna implementácia vyzerá trochu odlišne a popíšeme ju v kapitole \ref{ch:implementacia}.}:
 
 \bigskip
-\begin{pseudocode}[label=lst:cr_index_construction,caption={Algoritmus konštrukcie CR-indexu.}]
+\begin{pseudocode}[label=lst:cr_index_construction,caption={Algoritmus konštrukcie CR-indexu nad readmi bez chýb.}]
 assembler = Assembler.new <* \label{lst:cr_index_construction_assembler} *>
 superstring = ""
 positions = Array.new
@@ -50,13 +51,48 @@ foreach r : R  do
   end
 end
 
+positions.sort <* \label{lst:cr_index_construction_sort} *>  
 fm_index = FMIndex.new(superstring) <* \label{lst:cr_index_construction_fm_index2} *>
 \end{pseudocode}
 \bigskip
 
 Premenná $R$ označuje množinu readov, ktorú máme na vstupe. Objekt \emph{assembler} (riadok \ref{lst:cr_index_construction_assembler}) predstavuje zapuzdrenie volania vhodného assemblera, jeho metóda \emph{assemble} (riadok \ref{lst:cr_index_construction_assemble}) vracia pre pole readov na vstupe pole reťazcov predstavujúcich kontigy, ktoré assembler poskladal z readov. Objekt \emph{FM-index} (riadok \ref{lst:cr_index_construction_fm_index}) je vhodná implementácia FM-indexu podporujúca operáciu \emph{locate} (viď. kapitolu \ref{sec:fm_index}), ktorá pre vzorku na vstupe vráti pole indexov reťazca nad ktorým je tento FM-index skonštruovaný, na ktorých daná vzorka začína. Funkcia \emph{rev\_compl(s)} (riadok \ref{lst:cr_index_construction_rev_compl}) vracia pre reťazec na vstupe jeho reverzný komplement (podľa definície \ref{def:reverzny_komplement}).
 
-Algoritmus najprv zavolá assembler (riadok \ref{lst:cr_index_construction_assemble}), pomocou ktorého vytvorí kontigy, ktoré zreťazí (riadky \ref{lst:cr_index_construction_contigs_start} -- \ref{lst:cr_index_construction_contigs_end}). Potom prebehne konštrukcia pomocného FM-indexu (riadok \ref{lst:cr_index_construction_fm_infex}) nad zreťazenými kontigmi. Následne sa pre každý read $r$ a jeho reverzný komplement zavoláme metódu \emph{locate} tohto FM-indexu (riadky \ref{lst:cr_index_construction_locate} -- \ref{lst:cr_index_construction_rev_compl}). Ak sa ani jeden z nich v superstringu nenachádza, tak ho tam pridáme (riadok \ref{lst:cr_index_construction_superstring_r}). Už predtým už ale vieme, na akej pozícii bude tento read v superstringu začínať (keďže ho pridávame na koniec) a môžeme túto informáciu vložiť do poľa \emph{positions} (riadok \ref{lst:cr_index_construction_push}). Pre ready, ktoré sa v superstringu nachádzajú pridáme do poľa \emph{positions} informáciu o ich výskytoch (riadok \ref{lst:cr_index_construction_push2}) resp. výskytoch ich reverzných komplementov (riadok \ref{lst:cr_index_construction_push3}). Nad superstringom, ktorý sme úspešne zreťazili so všetkými chýbajúcimi readmi potom skonštruujeme nový FM-index (riadok \ref{lst:cr_index_construction_fm_index2}). Práve ten predstavuje výstup konštrukcie celého CR-indexu.
+Algoritmus najprv zavolá assembler (riadok \ref{lst:cr_index_construction_assemble}), pomocou ktorého vytvorí kontigy, ktoré zreťazí (riadky \ref{lst:cr_index_construction_contigs_start} -- \ref{lst:cr_index_construction_contigs_end}). Potom prebehne konštrukcia pomocného FM-indexu (riadok \ref{lst:cr_index_construction_fm_index}) nad zreťazenými kontigmi. Následne sa pre každý read $r$ a jeho reverzný komplement zavoláme metódu \emph{locate} tohto FM-indexu (riadky \ref{lst:cr_index_construction_locate} -- \ref{lst:cr_index_construction_rev_compl}). Ak sa ani jeden z nich v superstringu nenachádza, tak ho tam pridáme (riadok \ref{lst:cr_index_construction_superstring_r}). Už predtým už ale vieme, na akej pozícii bude tento read v superstringu začínať (keďže ho pridávame na koniec) a môžeme túto informáciu vložiť do poľa \emph{positions} (riadok \ref{lst:cr_index_construction_push}). Pre ready, ktoré sa v superstringu nachádzajú pridáme do poľa \emph{positions} informáciu o ich výskytoch (riadok \ref{lst:cr_index_construction_push2}) resp. výskytoch ich reverzných komplementov (riadok \ref{lst:cr_index_construction_push3}). Pole \emph{positions} nakoniec utriedime (riadok \ref{lst:cr_index_construction_sort}) -- ako uvidíme v ďalšej časti, pomôže nám to rýchlejšie identifikovať ready obsahujúce hľadanú vzorku. Nad superstringom, ktorý sme úspešne zreťazili so všetkými chýbajúcimi readmi potom skonštruujeme nový FM-index (riadok \ref{lst:cr_index_construction_fm_index2}). Práve ten spolu s poľom \emph{positions} predstavujú výstup konštrukcie celého CR-indexu.
+
+\subsection{Dotazy}
+Úlohou je pre reťazec $p$ na vstupe vrátiť tie ready, ktoré obsahujú $p$ ako podreťazec. Najprv uvedieme algoritmus v pseudokóde a potom ho vysvetlíme:
+
+\bigskip
+\begin{pseudocode}[label=lst:cr_index_query,caption={Algoritmus dotazu \emph{locate} CR-indexu nad readmi bez chýb.}]
+def locate(p)
+  retval = Array.new
+  indexes = fm_index.locate(p) <* \label{lst:cr_index_query_locate} *>  
+  
+  foreach i : indexes do <* \label{lst:cr_index_query_foreach} *>  
+    start_index = [i + k - l, -1, 0] <* \label{lst:cr_index_query_start_index} *>  
+    end_index = [i, INT_MAX, 1] <* \label{lst:cr_index_query_end_index} *>  
+    
+    low = positions.lower_bound(start_index) <* \label{lst:cr_index_query_low} *>  
+    up = positions.upper_bound(end_index) <* \label{lst:cr_index_query_up} *>  
+    
+    foreach pos : (low..up) do <* \label{lst:cr_index_query_foreach2} *>
+      if (pos[2] == 0)
+        retval.push(pos[1]) <* \label{lst:cr_index_query_push_read} *>
+      else
+        retval.push(rev_compl(pos[1])) <* \label{lst:cr_index_query_push_rev_compl} *>
+      end
+    end
+  end
+  
+  return retval
+end
+\end{pseudocode}
+\bigskip
+
+Premenné $fm\_index$ a $positions$ sú výsledkom konštrukcie z časti \ref{ssec:index}, premenná $l$ predstavuje dĺžku každého readu, premenná $k$ má hodnotu dĺžky dotazu (podľa toho, ako sme problém \emph{indexovania readov} zadefinovali v časti \ref{sec:definicia_problemu} máme obe hodnoty k dispozícii na vstupe pri konštrukcii CR-indexu, t.j. predstavujú parametre konštrukcie) a konštanta $INT\_MAX$ je najväčšia hodnota pre celočíselný dátový typ.
+
+V prvom kroku vyhľadáme výskyty $p$ v superstringu pomocou FM-indexu (riadok \ref{lst:cr_index_query_locate}), ktorý sme skonštruovali počas predchádzajúcej fázy -- výsledkom bude zoznam pozícií v superstringu, kde bola vzorka $p$ nájdená. Následne potrebujeme tieto pozície preložiť na ready, ktorým prislúchajú a na to využijeme pole \emph{positions}. To spravíme tak, že v ňom pre každý index $i$ (riadok \ref{lst:cr_index_query_foreach}) pomocou binárneho vyhľadávania obmedzíme rozsah, kde sa nachádzajú relevantné hodnoty -- tie prvky, ktoré označujú začiatky readov, ktoré obsahujú ako podreťazec tento výskyt hľadanej vzorky. Práve tu využijeme to, že toto pole je utriedené podľa prvej súradnice -- indexu ukazujúceho na pozíciu v superstringu. Metódy $lower\_bound$\footnote{Podľa \url{http://www.cplusplus.com/reference/algorithm/lower_bound/}} (riadok \ref{lst:cr_index_query_low}) resp. $upper\_bound$ (riadok \ref{lst:cr_index_query_up}) vrátia takú pozíciu v poli, že hodnota na tejto pozícii nie je menšia resp. je väčšia ako $start\_index$ resp. $end\_index$. Pre $start\_index$ preto zvolíme hodnotu, ktorá popisuje najľavejší index v superstringu taký, že read na ňom začínajúci môže obsahovať výskyt vzorky $p$ začínajúci na indexe $i$ (pre $end\_index$ analogicky najpravejší read). Všetky takto ohraničené hodnoty poľa \emph{positions} (riadok \ref{lst:cr_index_query_foreach2}) predstavujú ready, ktoré obsahujú tento výskyt vzorky $p$ -- posledné, čo ostáva je pridať do výstupného poľa \emph{retval} tento read (riadok \ref{lst:cr_index_query_push_read}) resp. jeho reverzný komplement (riadok \ref{lst:cr_index_query_push_rev_compl}) -- podľa toho, ktorý z nich je v superstringu uložený (a indikátor toho sme si pri konštrukcii poľa \emph{positions} uložili ako tretiu hodnotu pre každý prvok). Metóda \emph{locate} teda pre hľadanú vzorku $p$ vráti zoznam readov, ktoré ju obsahujú ako podreťazec. Pre splnenie poslednej podmienky z časti \ref{sec:definicia_problemu} by sme pre dotaz na vzorku $p$ mali zavolať metódu \emph{locate} aj pre vstup $rev_compl(p)$ a výstupy pre obe volania spojiť do jedného poľa a vrátiť ako výstup to.
 
 \section{Ready s chybami}
 Bohužiaľ, zjednodušením situácie vo forme popierania existencie sekvenovacích chýb sa až príliš vzďaľujeme realite. Ako sa teda zmení situácia, ak máme brať do úvahy, že v \emph{readoch} sa vyskytujú chyby?
