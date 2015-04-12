@@ -54,6 +54,7 @@ keďže máme dopredu danú dĺzku $k = |p|$ a pracujeme nad konečnou abecedou)
 hodnota pre daný kľúč by bol zoznam \emph{readov}, ktoré tento \emph{pattern}
 obsahujú. Algorimus na generovanie takejto hash mapy by vyzeral naslednovne:
 
+\bigskip
 \begin{pseudocode}[label=lst:hash_algorithm,caption={Algoritmus na riešenie
 problému zarovnania readov pomocou hash mapy}]
 h = HashMap.new
@@ -75,6 +76,7 @@ def find_reads(p)
   return (h[p].append(h[revcompl(p)]))
 end
 \end{pseudocode}
+\bigskip
 
 Pre každý \emph{read} $r$ zo zoznamu \emph{readov} $R$ vygerujeme všetky jeho
 podreťazce dĺžky $k$ a tie použijeme ako kľúče do hash mapy, pomocou ktorých

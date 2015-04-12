@@ -1,5 +1,4 @@
-V tejto kapitole predstavíme naše riešenie \emph{problému indexovania readov} -- dátovú štruktúru \emph{CR-index} (z eng. \emph{Compressed Read index}), ktorá je navrhnutá tak, aby sa vyhla nedostatkom, ktorými trpia riešenia s použitím \emph{GkArray} alebo hash mapy.
-
+V tejto kapitole predstavíme naše riešenie \emph{problému indexovania readov} -- dátovú štruktúru \emph{CR-index} (z eng. \emph{Compressed Read index}), ktorá je navrhnutá tak, aby sa vyhla nedostatkom, ktorými trpia riešenia s použitím \emph{GkArray} alebo hash mapy. Pripomeňme, že úlohou tejto dátovej štruktúry bude efektívne (najmä vzhľadom na pamäť) zaindexovať veľkú sadu relatívne krátkych reťazcov nad malou abecedou -- \emph{sequence readov} -- a má vedieť odpovedať na dotaz \emph{,,vráť mi všetky ready také, že obsahujú $p$ ako podreťazec``}.
 %\section{R-index}
 % spravime crappy preproces a vysvetlime koncepty?
 
@@ -11,23 +10,62 @@ V tejto kapitole predstavíme naše riešenie \emph{problému indexovania readov
 \section{Princíp fungovania}
 
 \subsection{Komprimácia vstupu}
-Kým \emph{GkArray} \emph{ready} zo vstupu iba zreťazil a nad týmto dlhým reťazcom potom budoval sufixové polia a ostatné pomocné štruktúry, hlavnou myšlienkou \emph{CR-indexu} je, ako už napovedá názov, \emph{ready} najprv nejakým spôsobom skomprimovať a až potom ďalej spracovávať. Využijeme to, že reťazce, ktoré máme za úlohu indexovať majú čosi spoločné -- vznikli sekvenovaním jedného genómu. Keďže pokrytie sa pri sekvenovaní zvyčajne pohybuje na úrovni $10\times$ -- $100\times$, znamená to, že \emph{ready} obsahujú veľké množstvo nadbytočných informácií. Pomocou nejakého assembleru čiastočne zrekonštruujeme pôvodný genóm \todo{vysvetlit v 1. kapitole co je asembler} -- čiastočne preto, lebo výstupom assemblerov pre nejakú sadu \emph{readov} nebýva vo všeobecnosti súvislý genóm, ale len sada kontigov resp. superkontig.\todo{vysvetlit kontig/superkontig v 1. kapitole}. Tiež nemáme zaručené, že každý \emph{read} zo vstupu sa v niektorom kontigu musí nachádzať. Tieto chýbajúce \emph{ready} potom musíme efektívne nájsť a nejakým spôsobom pridať ku kontigom, aby sme neprišli o žiadnu informáciu.
+Kým \emph{GkArray} ready zo vstupu iba zreťazil a nad týmto dlhým reťazcom potom budoval sufixové polia a ostatné pomocné štruktúry, hlavnou myšlienkou \emph{CR-indexu} je, ako už napovedá názov, ready najprv vhodným spôsobom skomprimovať a až potom ďalej spracovávať. Využijeme to, že reťazce, ktoré máme za úlohu indexovať majú čosi spoločné -- vznikli sekvenovaním jedného genómu. Keďže pokrytie sa pri sekvenovaní zvyčajne pohybuje na úrovni $10\times$ -- $100\times$, znamená to, že ready obsahujú veľké množstvo nadbytočných informácií. Pomocou nejakého assembleru čiastočne zrekonštruujeme pôvodný genóm \todo{vysvetlit v 1. kapitole co je asembler} -- čiastočne preto, lebo výstupom assemblerov pre nejakú sadu readov nebýva vo všeobecnosti súvislý genóm, ale len sada kontigov resp. superkontig.\todo{vysvetlit kontig/superkontig v 1. kapitole}. Tiež nemáme zaručené, že každý read zo vstupu sa v niektorom kontigu musí nachádzať. Tieto chýbajúce ready potom musíme efektívne nájsť a nejakým spôsobom pridať ku kontigom, aby sme neprišli o žiadnu informáciu.
 
-Pre začiatok predpokladajme, že \emph{ready} na vstupe sú bez sekvenovacích chýb -- to znamená, že pre každý \emph{read} platí, že je podreťazcom pôvodného genómu, ktorý bol sekvenovaný. Assembler by mal byť pri rekonštruovaní genómu pomerne úspešný (samozrejme ak majú \emph{ready} dostatočné pokrytie) a relatívne málo \emph{readov} by malo chýbať medzi kontigmi. V tomto prípade by sme teda spolu zreťazili kontigy a všetky chýbajúce \emph{ready} -- tým dostaneme bezstratovo komprimovaný vstup. Nad výsledným reťazcom by potom prebiehala ďalšia fáza konštrukcie -- indexácia textu.
+Pre začiatok predpokladajme, že ready na vstupe sú bez sekvenovacích chýb -- to znamená, že pre každý read platí, že je podreťazcom pôvodného genómu, ktorý bol sekvenovaný. Assembler by mal byť pri rekonštruovaní genómu pomerne úspešný (samozrejme ak majú ready dostatočné pokrytie) a relatívne málo readov by malo chýbať medzi kontigmi. V tomto prípade by sme teda spolu zreťazili kontigy a všetky chýbajúce ready -- tým dostaneme bezstratovo komprimovaný vstup. Ako ale nájdeme ready, ktoré nie sú podreťazcom zreťazenia kontigov? Jednoducho -- nad zreťazením kontigov skonštruujeme FM-index, ktorého sa postupne budeme pýtať na všetky ready zo vstupu (a ich reverzné komplementy) a v prípade, že FM-index tento read (ani jeho reverzný komplement) nenájde, označíme ho ako chýbajúci.
 
-%\subsubsection{Bez chýb to ale nejde}
+Výsledkom komprimačnej fázy je teda zreťazenie kontigov a readov zo vstupu, ktoré nie sú podreťazcom zreťazenia kontigov a ani ich reverzný komplement nie je podreťazcom zreťazenia kontigov. Tento dlhý reťazec nazveme \emph{superstring} (neskôr ho definujeme aj formálne).
+
+\subsection{Index}
+V ďalšej fáze konštrukcie CR-indexu vytvoríme nad superstringom (opäť) FM-index. V tejto chvíli sme už schopní efektívne vyhľadávať vzorky v superstringu, no keď nám operácia FM-indexu \emph{locate} vráti zoznam pozícií superstringu, kde sa daná vzorka nachádza, nevieme z toho povedať ktorým readom tieto pozície prislúchajú. Potrebujeme si teda predrátať, kde sa ktorý read nachádza. Na to použijeme pole \emph{positions} -- jeho prvkami budú trojice $(i, r, b)$ - $i$ bude označovať index v superstringu, kde začína read $r$. Logická premenná $b$ označuje, či sa v superstringu nachádza samotný read ($b=0$) alebo jeho reverzný komplement ($b=1$). Algoritmus na konštrukciu CR-indexu teda vyzerá nasledovne\footnote{Táto implementácia slúži len pre účely vysvetlenia konštrukcie CR-indexu. Reálna implementácia vyzerá trochu odlišne a popíšeme ju v kapitole \ref{ch:implementacia}.}:
+
+\bigskip
+\begin{pseudocode}[label=lst:cr_index_construction,caption={Algoritmus konštrukcie CR-indexu.}]
+assembler = Assembler.new <* \label{lst:cr_index_construction_assembler} *>
+superstring = ""
+positions = Array.new
+
+contigs = assembler.assemble(R) <* \label{lst:cr_index_construction_assemble} *>
+foreach c : contigs do <* \label{lst:cr_index_construction_contigs_start} *>
+  superstring += c 
+end <* \label{lst:cr_index_construction_contigs_end} *>
+
+contigs_fm_index = FMIndex.new(joint_contigs) <* \label{lst:cr_index_construction_fm_index} *>
+
+foreach r : R  do
+  matches = contigs_fm_index.locate(r) <* \label{lst:cr_index_construction_locate} *>
+  matches2 = contigs_fm_index.locate(rev_compl(r)) <* \label{lst:cr_index_construction_rev_compl} *>
+
+  if matches.size() == 0 && matches2.size() 
+    positions.push(superstring.length(), r, 0) <* \label{lst:cr_index_construction_push} *> 
+    superstring += r <* \label{lst:cr_index_construction_superstring_r} *>  
+  else
+    foreach m : matches do
+      positions.push([m, r, 0]) <* \label{lst:cr_index_construction_push2} *>  
+    end
+    
+    foreach m : matches2 do
+      positions.push([m, r, 1]) <* \label{lst:cr_index_construction_push3} *>  
+    end
+  end
+end
+
+fm_index = FMIndex.new(superstring) <* \label{lst:cr_index_construction_fm_index2} *>
+\end{pseudocode}
+\bigskip
+
+Premenná $R$ označuje množinu readov, ktorú máme na vstupe. Objekt \emph{assembler} (riadok \ref{lst:cr_index_construction_assembler}) predstavuje zapuzdrenie volania vhodného assemblera, jeho metóda \emph{assemble} (riadok \ref{lst:cr_index_construction_assemble}) vracia pre pole readov na vstupe pole reťazcov predstavujúcich kontigy, ktoré assembler poskladal z readov. Objekt \emph{FM-index} (riadok \ref{lst:cr_index_construction_fm_index}) je vhodná implementácia FM-indexu podporujúca operáciu \emph{locate} (viď. kapitolu \ref{sec:fm_index}), ktorá pre vzorku na vstupe vráti pole indexov reťazca nad ktorým je tento FM-index skonštruovaný, na ktorých daná vzorka začína. Funkcia \emph{rev\_compl(s)} (riadok \ref{lst:cr_index_construction_rev_compl}) vracia pre reťazec na vstupe jeho reverzný komplement (podľa definície \ref{def:reverzny_komplement}).
+
+Algoritmus najprv zavolá assembler (riadok \ref{lst:cr_index_construction_assemble}), pomocou ktorého vytvorí kontigy, ktoré zreťazí (riadky \ref{lst:cr_index_construction_contigs_start} -- \ref{lst:cr_index_construction_contigs_end}). Potom prebehne konštrukcia pomocného FM-indexu (riadok \ref{lst:cr_index_construction_fm_infex}) nad zreťazenými kontigmi. Následne sa pre každý read $r$ a jeho reverzný komplement zavoláme metódu \emph{locate} tohto FM-indexu (riadky \ref{lst:cr_index_construction_locate} -- \ref{lst:cr_index_construction_rev_compl}). Ak sa ani jeden z nich v superstringu nenachádza, tak ho tam pridáme (riadok \ref{lst:cr_index_construction_superstring_r}). Už predtým už ale vieme, na akej pozícii bude tento read v superstringu začínať (keďže ho pridávame na koniec) a môžeme túto informáciu vložiť do poľa \emph{positions} (riadok \ref{lst:cr_index_construction_push}). Pre ready, ktoré sa v superstringu nachádzajú pridáme do poľa \emph{positions} informáciu o ich výskytoch (riadok \ref{lst:cr_index_construction_push2}) resp. výskytoch ich reverzných komplementov (riadok \ref{lst:cr_index_construction_push3}). Nad superstringom, ktorý sme úspešne zreťazili so všetkými chýbajúcimi readmi potom skonštruujeme nový FM-index (riadok \ref{lst:cr_index_construction_fm_index2}). Práve ten predstavuje výstup konštrukcie celého CR-indexu.
+
+\section{Ready s chybami}
 Bohužiaľ, zjednodušením situácie vo forme popierania existencie sekvenovacích chýb sa až príliš vzďaľujeme realite. Ako sa teda zmení situácia, ak máme brať do úvahy, že v \emph{readoch} sa vyskytujú chyby?
 
 Pripomeňme, že pri probléme \emph{indexovania readov} tak, ako sme ho zadefinovali v kapitole \ref{ch:problem_indexovania_readov} uvažujeme len substitučné chyby -- čo znamená, že \emph{read} sa môže v niektorých bázach líšiť od svojho ,,obrazu`` v pôvodnom genóme.
 
 V prvom rade assembler nebude pri konštrukcii kontigov ani zďaleka tak úspešný ako v predchádzajúcom prípade -- chyby budú znižovať pravdepodobnosť, že úspešne odhalí prekryvy medzi \emph{readmi}, ciže výstupom assembleru budú oveľa kratšie kontigy, čiže aj ,,kompresný pomer`` bude výrazne nižší a to viac \emph{readov} bude potrebné pripojiť na koniec. 
 
-Ako ale nájdeme \emph{ready}, ktoré nie sú podreťazcom zreťazenia kontigov? Jednoducho -- nad zreťazením kontigov skonštruujeme FM-index, ktorého sa postupne budeme pýtať na všetky \emph{ready} zo vstupu a v prípade, že FM-index tento \emph{read} nenájde, označíme ho ako chýbajúci.
 
-Výsledkom komprimačnej fázy je teda zreťazenie kontigov a \emph{readov} zo vstupu, ktoré nie sú podreťazcom zreťazenia kontigov. Tento reťazec nazveme \emph{superstring} (neskôr ho definujeme aj formálne).
-
-\subsection{Index}
-V ďalšej fáze konštrukcie \emph{CR-indexu} vytvoríme nad superstringom index
 
 %,,Komprimovateľnosť`` \emph{readov} zvýšime tak, že pred tým, ako ich dostane assembler na vstup budú opravené -- korekcia \emph{readov} (\emph{sequencing read correction}) je známy problém, na ktorý existuje množstvo riešení. \todo{sem by sa hodili nejake citacie} Čo nám ale skomplikuje situáciu je fakt, že kontigy budú obsahovať opravené \emph{ready} a nie originálne, ktoré sme dostali na vstupe -- preto si budeme musieť pamätať nejaké ďalšie informácie týkajúce sa aplikovaných korekcií, aby sme pomocou nich vedeli odpovedať na otázky týkajúce sa pôvodných \emph{readov}. Výsledkom fázy komprimácie teda bude zreťazenie kontigov\footnote{neskôr ukážeme, že k nemu ešte niečo budeme musieť pridať} - to nazveme \emph{superstring} (formálne definujeme neskôr) a pole nejakým spôsobom popisujúce aplikované korekcie.
 
