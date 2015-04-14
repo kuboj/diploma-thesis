@@ -1,11 +1,4 @@
 V tejto kapitole predstavíme naše riešenie \emph{problému indexovania readov} -- dátovú štruktúru \emph{CR-index} (z eng. \emph{Compressed Read index}), ktorá je navrhnutá tak, aby sa vyhla nedostatkom, ktorými trpia riešenia s použitím \emph{GkArray} alebo hash mapy. Pripomeňme, že úlohou tejto dátovej štruktúry bude efektívne (najmä vzhľadom na pamäť) zaindexovať veľkú sadu relatívne krátkych reťazcov nad malou abecedou -- \emph{sequence readov} -- a má vedieť odpovedať na dotaz \emph{,,vráť mi všetky ready také, že obsahujú $p$ ako podreťazec``}.
-%\section{R-index}
-% spravime crappy preproces a vysvetlime koncepty?
-
-%- hlavna myslienka, ideme ready komprimovat, mohol by som mat SS bez editov, to bolo nanic, dovolime chyby, komplikuje to situaciu, ale je to gain, ako to navonok funguje - ake queries chceme atd.
-%- ako funguju queries
-%- popis vnutorneho fungovania
-%- popis ako to vyrobime - trivialne - crappy preprocess (a potom ako lepsie)
 
 \section{Princíp fungovania}
 
@@ -92,11 +85,41 @@ end
 
 Premenné $fm\_index$ a $positions$ sú výsledkom konštrukcie z časti \ref{ssec:index}, premenná $l$ predstavuje dĺžku každého readu, premenná $k$ má hodnotu dĺžky dotazu (podľa toho, ako sme problém \emph{indexovania readov} zadefinovali v časti \ref{sec:definicia_problemu} máme obe hodnoty k dispozícii na vstupe pri konštrukcii CR-indexu, t.j. predstavujú parametre konštrukcie) a konštanta $INT\_MAX$ je najväčšia hodnota pre celočíselný dátový typ.
 
-V prvom kroku vyhľadáme výskyty $p$ v superstringu pomocou FM-indexu (riadok \ref{lst:cr_index_query_locate}), ktorý sme skonštruovali počas predchádzajúcej fázy -- výsledkom bude zoznam pozícií v superstringu, kde bola vzorka $p$ nájdená. Následne potrebujeme tieto pozície preložiť na ready, ktorým prislúchajú a na to využijeme pole \emph{positions}. To spravíme tak, že v ňom pre každý index $i$ (riadok \ref{lst:cr_index_query_foreach}) pomocou binárneho vyhľadávania obmedzíme rozsah, kde sa nachádzajú relevantné hodnoty -- tie prvky, ktoré označujú začiatky readov, ktoré obsahujú ako podreťazec tento výskyt hľadanej vzorky. Práve tu využijeme to, že toto pole je utriedené podľa prvej súradnice -- indexu ukazujúceho na pozíciu v superstringu. Metódy $lower\_bound$\footnote{Podľa \url{http://www.cplusplus.com/reference/algorithm/lower_bound/}} (riadok \ref{lst:cr_index_query_low}) resp. $upper\_bound$ (riadok \ref{lst:cr_index_query_up}) vrátia takú pozíciu v poli, že hodnota na tejto pozícii nie je menšia resp. je väčšia ako $start\_index$ resp. $end\_index$. Pre $start\_index$ preto zvolíme hodnotu, ktorá popisuje najľavejší index v superstringu taký, že read na ňom začínajúci môže obsahovať výskyt vzorky $p$ začínajúci na indexe $i$ (pre $end\_index$ analogicky najpravejší read). Všetky takto ohraničené hodnoty poľa \emph{positions} (riadok \ref{lst:cr_index_query_foreach2}) predstavujú ready, ktoré obsahujú tento výskyt vzorky $p$ -- posledné, čo ostáva je pridať do výstupného poľa \emph{retval} tento read (riadok \ref{lst:cr_index_query_push_read}) resp. jeho reverzný komplement (riadok \ref{lst:cr_index_query_push_rev_compl}) -- podľa toho, ktorý z nich je v superstringu uložený (a indikátor toho sme si pri konštrukcii poľa \emph{positions} uložili ako tretiu hodnotu pre každý prvok). Metóda \emph{locate} teda pre hľadanú vzorku $p$ vráti zoznam readov, ktoré ju obsahujú ako podreťazec. Pre splnenie poslednej podmienky z časti \ref{sec:definicia_problemu} by sme pre dotaz na vzorku $p$ mali zavolať metódu \emph{locate} aj pre vstup $rev\_compl(p)$ a výstupy pre obe volania spojiť do jedného poľa a vrátiť ako výstup to.
+V prvom kroku vyhľadáme výskyty $p$ v superstringu pomocou FM-indexu (riadok \ref{lst:cr_index_query_locate}), ktorý sme skonštruovali počas predchádzajúcej fázy -- výsledkom bude zoznam pozícií v superstringu, kde bola vzorka $p$ nájdená. Následne potrebujeme tieto pozície preložiť na ready, ktorým prislúchajú a na to využijeme pole \emph{positions}. To spravíme tak, že v ňom pre každý index $i$ (riadok \ref{lst:cr_index_query_foreach}) pomocou binárneho vyhľadávania obmedzíme rozsah, kde sa nachádzajú relevantné hodnoty -- tie prvky, ktoré označujú začiatky readov, ktoré obsahujú ako podreťazec tento výskyt hľadanej vzorky. Práve tu využijeme to, že toto pole je utriedené podľa prvej súradnice -- indexu ukazujúceho na pozíciu v superstringu. Metódy $lower\_bound$\footnote{Podľa \url{http://www.cplusplus.com/reference/algorithm/lower_bound/}} (riadok \ref{lst:cr_index_query_low}) resp. $upper\_bound$ (riadok \ref{lst:cr_index_query_up}) vrátia takú pozíciu v poli, že hodnota na tejto pozícii nie je menšia resp. je väčšia ako $start\_index$ resp. $end\_index$. Pre $start\_index$ preto zvolíme hodnotu, ktorá popisuje najľavejší index v superstringu taký, že read na ňom začínajúci môže obsahovať výskyt vzorky $p$ začínajúci na indexe $i$ (pre $end\_index$ analogicky najpravejší read. Viď príklad \ref{ex:najlavejsi_najpravejsi_read}). Všetky takto ohraničené hodnoty poľa \emph{positions} (riadok \ref{lst:cr_index_query_foreach2}) predstavujú ready, ktoré obsahujú tento výskyt vzorky $p$ -- posledné, čo ostáva je pridať do výstupného poľa \emph{retval} tento read (riadok \ref{lst:cr_index_query_push_read}) resp. jeho reverzný komplement (riadok \ref{lst:cr_index_query_push_rev_compl}) -- podľa toho, ktorý z nich je v superstringu uložený (a indikátor toho sme si pri konštrukcii poľa \emph{positions} uložili ako tretiu hodnotu pre každý prvok). Metóda \emph{locate} teda pre hľadanú vzorku $p$ vráti zoznam readov, ktoré ju obsahujú ako podreťazec. Pre splnenie poslednej podmienky z časti \ref{sec:definicia_problemu} by sme pre dotaz na vzorku $p$ mali zavolať metódu \emph{locate} aj pre vstup $rev\_compl(p)$ a výstupy pre obe volania spojiť do jedného poľa a vrátiť ako výstup to.
 
-\todo{obrazok ako je v suerstringu vzorka a obsahuju ju dva ready prekryvajuce sa, ukazat tam to i+k-l}
+\bigskip
+\begin{example}
+\label{ex:najlavejsi_najpravejsi_read}
+Ilustrácia toho, ako by mohol vyzerať najľavejší a najpravejší read v superstringu pre vzorku $p=GTCG$, $k=3$, $l=10$. Ak vzorka $p$ začína v superstringu na indexe $i$, tak najľavejší read začína na indexe $i+k-l$ a najpravejší na indexe $i$.
 
+$$
+  ss=
+  \ldots
+  ACTTG
+  \rlap{$\overbracket{\phantom{ATACCG              \mathbf{GTCG}}}^{read 1}$}
+                               ATACCG\underbracket{\mathbf{GTCG}             AAAAAA}_{read 2}
+  GGTC
+  \ldots
+$$
+\end{example}
+\bigskip
+
+\begin{example}
+%ACTTGGCCCGAAGGTAATCAAA
+Uvažujme sadu readov $R=\{ACTTGG, CTTGGC, GCCCGA,\\ CCCGAA, $ $GGTAAT, GTAATC, TAATCA, ATCAAA\}$, kde $l=6$ a $p=4$. Ďalej predpokladajme, že výstupom assemblera sú kontigy $c_1=ACTTGGCCCGA$ \\ a $c_2=TTGATTACC$. Ich zreťazením a doplnením chýbajúcich reťazcov dostávame nasledovný superstring: \\
+$$
+  ss=
+  \overbracket{ACTTGGCCCGA}^{c_1}
+  \underbracket{TTGATTACC}_{c_2}
+  \overbracket{CCCGAA}^{r_3}
+  \underbracket{ATCAAA}_{r_7}
+$$
+A pole \emph{positions} by vyzeralo nasledovne: \\
+$pos = \{[0, ACTTG, 0], [1, CTTGGC, 0], [5, GCCCGA, 0], [12, TAATCA, 1],$ \\ $[13, GTAATC, 1], [14, GGTAAT, 1], [20, CCCGAA, 0], [26, ATCAAA, 0]\}$
+
+Ilustrujme dotaz pre vzorku $p=TTG$.
 \todo{priklad na komplet superstring + query}
+\end{example}
 
 \section{Ready s chybami}
 Bohužiaľ, zjednodušením situácie vo forme popierania existencie sekvenovacích chýb sa až príliš vzďaľujeme realite. Ako sa teda zmení situácia, ak máme brať do úvahy, že v readoch sa vyskytujú chyby?
