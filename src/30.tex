@@ -172,10 +172,23 @@ CCC \mathbf{T} TGTG \rightarrow CCC \mathbf{C} TGTG
 V konečnom dôsledku teda vidno, že vhodný prístup leží kdesi uprostred možností zreťaziť s kontigmi (nad opravenými readmi) povodné a opravené ready -- budeme sa musieť vhodne vysporiadať s readmi, ktoré majú korekcie ,,príliš blízko seba``.
 
 \section{Navrhovaná implementácia}
+V predchádzajúcich častiach sme pojem superstring používali dosť voľne, teraz ho konečne riadne zadefinujeme. Predtým ale ešte uvedieme niektoré označenia a definície.
+
+\subsubsection{Substitučná editačná vzdialenosť}
+\begin{defn}
+Substitučnú editačnú vzdialenosť dvoch reťazcov s a t rovnakej dĺžky l definujeme nasledovne:
+$$
+edt_s(s, t) = \left\vert{ \{~i~|~0 \leq i < l~\land s[i] \neq t[i] ~\} }\right\vert
+$$
+\end{defn}
+
+Inými slovami, pre dva rovnako dlhé reťazce je to počet pozícií, na ktorých sa líšia.
+
+\begin{example}
+$edt_s(ACCTGG, TCCTGC) = 2$
+\end{example}
 
 \subsubsection{Superstring}
-V predchádzajúcich častiach sme pojem superstring používali dosť voľne, teraz ho konečne riadne zadefinujeme.
-
 \begin{defn}
 Superstringom množiny reťazcov R rovnakej dĺžky l s parametrom p~$\in \mathbb{N}$ označujeme taký reťazec S, pre ktorý platí, že každý reťazec $r \in R$ spĺňa aspoň jednu z nasledujúcich podmienok:
     \begin{enumerate}[(a)]
@@ -183,22 +196,17 @@ Superstringom množiny reťazcov R rovnakej dĺžky l s parametrom p~$\in \mathb
     \item rev\_compl(r) je podreťazcom S
     \item existuje podreťazec s reťazca S s dĺžkou l taký, že 
     $$
-    \forall i : 0 \leq i \leq l - p : edt(r[i, i+p-1], s[i, i+p-1]) \leq 1
+    \forall i : 0 \leq i \leq l - p : edt_s(r[i, i+p-1], s[i, i+p-1]) \leq 1
     $$
     \item existuje podreťazec s reťazca S s dĺžkou l taký, že 
     $$
-    \forall i : 0 \leq i \leq l - p : edt(rev\_compl(r)[i, i+p-1], s[i, i+p-1]) \leq 1
+    \forall i : 0 \leq i \leq l - p : edt_s(rev\_compl(r)[i, i+p-1], s[i, i+p-1]) \leq 1
     $$    
     \end{enumerate}
 
 \end{defn}
 
-\todo{ludskymi slovami}
-
-\subsection{Označenia a definície}
-\todo{oznacenie byt podretazcom, definicia superstringu, editacna vzdialenost stringov, podretazec pomocou []}
-
-
+Povedané inak, superstringom množiny reťazcov $R$ je taký reťazec, v ktorom pre každý reťazec $r$ z $R$ platí, že buď on alebo jeho reverzný komplement je podreťazcom superstringu alebo pre $r$ alebo jeho reverzný komplement vieme nájsť podreťazec superstringu rovnakej dĺžky, ktorý sa od $r$ (resp. jeho reverzného komplentu) ,,líši len tu a tam`` -- to znamená, že indexy, na ktorých majú tieto dva reťazce rôzne znaky nie sú ,,príliš`` blízko seba, t.j. aspoň $p$.
 
 
 %V našej práci sme použili implementáciu \emph{SGA} (\emph{String Graph Assembler} \cite{SD11}) dostupnú na internete\footnote{\url{https://github.com/jts/sga}}. 
