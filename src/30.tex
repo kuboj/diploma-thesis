@@ -174,6 +174,8 @@ V konečnom dôsledku teda vidno, že vhodný prístup leží kdesi uprostred mo
 \section{Navrhovaná implementácia}
 V predchádzajúcich častiach sme pojem superstring používali dosť voľne, teraz ho konečne riadne zadefinujeme. Predtým ale ešte uvedieme niektoré označenia a definície.
 
+\subsection{Definície a označenia}
+
 \subsubsection{Substitučná editačná vzdialenosť}
 \begin{defn}
 Substitučnú editačnú vzdialenosť dvoch reťazcov s a t rovnakej dĺžky l definujeme nasledovne:
@@ -208,5 +210,22 @@ Superstringom množiny reťazcov R rovnakej dĺžky l s parametrom p~$\in \mathb
 
 Povedané inak, superstringom množiny reťazcov $R$ je taký reťazec, v ktorom pre každý reťazec $r$ z $R$ platí, že buď on alebo jeho reverzný komplement je podreťazcom superstringu alebo pre $r$ alebo jeho reverzný komplement vieme nájsť podreťazec superstringu rovnakej dĺžky, ktorý sa od $r$ (resp. jeho reverzného komplentu) ,,líši len tu a tam`` -- to znamená, že indexy, na ktorých majú tieto dva reťazce rôzne znaky nie sú ,,príliš`` blízko seba, t.j. aspoň $p$.
 
+%\subsection{Korekcia readov}
+% faza korekcie readov
 
-%V našej práci sme použili implementáciu \emph{SGA} (\emph{String Graph Assembler} \cite{SD11}) dostupnú na internete\footnote{\url{https://github.com/jts/sga}}. 
+% skonstruujeme pole diff, ready rozdelime na kriticke a nekriticke, definicia tych dvoch veci
+
+
+% budovanie indexu
+
+% ako sme spominali v predchadzajucej casti, hlavna zmena bude spocitat v tom, ze assembler dostane na vstup opravene ready,ale len nekriticke. queryovat to budeme opravenymi nekritickymi (vysoka sanca, ze tam budu) a originialnymi kritickymi (skoro urcite tam nie su a zretazime ich na koniec, ale nestratime ziadnu informaciu, nebude problem queryovat vzorkou potom). vystupom je fm index nad novym superstringom a polia diff a positions. ukladame si ale len read id, v tych poliach, nie cele ready, lebo chceme setrit pamat a fm index vie rekonstruovat povodny text z indexu. znovu fm index nad superstringom, usortit positions.
+
+
+% dotazy
+
+% to sa dost masivne zmeni. popis ako to ide + priklad
+
+
+% mozne zlepsenia
+
+% popisat cca bloom filter, kde a ako by sa dal pouzit
