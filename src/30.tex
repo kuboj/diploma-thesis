@@ -105,7 +105,6 @@ $$
 \bigskip
 
 \begin{example}
-%ACTTGGCCCGAAGGTAATCAAA
 Uvažujme sadu readov $R=\{AAATTG, AATTGG, ATTGGC, GCCCAA,\\ CCCATA, $ $GGTAAT, GTAATC, TAATCA, ATCAAA\}$, kde $l=6$ a $p=4$. Ďalej predpokladajme, že výstupom assemblera sú kontigy $c_0=AAATTGGCCCAA$ \\ a $c_1=TTGATTACC$. Ich zreťazením a doplnením chýbajúcich reťazcov dostávame nasledovný superstring: \\
 $$
   ss=
@@ -156,9 +155,21 @@ V prvom rade assembler nebude pri konštrukcii kontigov ani zďaleka tak úspeš
 
 ,,Komprimovateľnosť`` readov zvýšime tak, že pred tým, ako ich dostane assembler na vstup budú opravené -- korekcia readov (\emph{sequencing read correction}) je známy problém, na ktorý existuje množstvo riešení. \todo{sem by sa hodili nejake citacie} Čo nám ale skomplikuje situáciu je fakt, že kontigy budú obsahovať opravené ready a nie originálne, ktoré sme dostali na vstupe -- preto si budeme musieť pamätať aj ďalšie informácie týkajúce sa aplikovaných korekcií, aby sme vedeli prevádzať transformácie medzi opravenými a neopravenými readmi. Tým sme však stále nevyriešili situáciu, čo s chýbajúcimi readmi. Ak by sme v zreťazených kontigoch hľadali pôvodné, neopravené ready, chýbalo by ich, pochopiteľne, veľmi veľa a tým pádom by komprimácia nebola tak úspešná. Zvoľme opačný prístup -- v zreťazených kontigoch budeme hľadať opravené ready a tie, ktoré v kontigoch nie sú obsiahnuté zreťazíme na koniec. Zamyslime sa teraz, ako by prebiehal dotaz -- ak existuje výsky vzorky $p$ v superstringu, znamená to, že nejaký \emph{opravený} read obsahuje hľadanú vzorku. To ale neznamená, že ju obsahoval aj pôvodný read -- našťastie túto situáciu vieme ľahko vyriešiť pomocou zapamätaných korekcií -- k danému opravenému readu skonštruujeme pôvodný a v ňom overíme, či je $p$ jeho podreťazcom. Týmto spôsobom vieme vylúčiť \emph{false positives}. Problematickejšie to bude z druhej strany -- vieme ale takto nájsť \emph{všetky} výskyty vzorky $p$ medzi pôvodnými readmi? Uvažujme nasledovný príklad:
 
-\todo{priklad. ready, opravene ready, kontigy nad nimi. jeden povodny read obsahoval nejaku vzorku p, ale korekcia ho dost masivne upravila. eventualne treba skusat prilis vela korekcii p}
+\begin{example}
+Uvažujme sadu readov\footnote{Táto sada readov je zámerne extrémne jednoduchá, našim cieľom je len ilustrovať princíp problému} $R=\{AAAAACCC, TAAAACCC, AAAACCCC,$ \\ $ AAGACCCG, CCCCTGTG\}$, kde $l=8$ a $p=6$. Nech korekcie readov vyzerajú nasledovne:
 
-V konečnom dôsledku teda vidno, že vhodný prístup leží kdesi uprostred možností zreťaziť s kontigmi (nad opravenými readmi) povodné a opravené ready.
+\begin{align*}
+AAAAACCC \rightarrow AAAAACCC \\
+\mathbf{T}AAAACCC \rightarrow \mathbf{A}AAAACCC \\
+AAAACCCC \rightarrow AAAACCCC \\
+AA \mathbf{G} ACCC \mathbf{G} \rightarrow AA \mathbf{A} ACCC \mathbf{C} \\
+CCC \mathbf{T} TGTG \rightarrow CCC \mathbf{C} TGTG
+\end{align*}
+
+Ďalej predpokladajme, že výstupom assemblera spusteného nad opravenými readmi je jeden kontig $c_0=AAAAACCCC$. Po doplnení chýbajúcich \emph{opravených} readov je výstupom superstring $ss=AAAAACCCCCCCCTGTG$. Zamyslime sa teraz, ako by vyzeral dotaz na vzorku $p=TAAAAC$ -- tá sa nachádza v pôvodnom reade $TAAAACCC$, no v superstringu sa už nevyskytuje. Možnosťou by bolo skúsiť vyhľadať všetky vzorky líšiace sa oproti $p$ v jednom znaku, akoby simulovať opravu chyby readu aj vo vzorke. Tým nám lineárne narastie počet dotazov na FM-index nad superstringom. Ak by sme hľadali vzorku $p=GACCCG$ (nachádza sa v pôvodnom reade $AAGACCCG$), potrebovali by sme hľadať ďalej -- výskyt tejto vzorky v pôvodnom reade postihli až dve korekcie. Ak by sme mali vygenerovať všetky možné vzorky líšiace sa od pôvodnej na dvoch miestach, je ich už kvadraticky veľa. Vyzerá to teda, že ani tento prístup, použiť len opravené ready, nebude sláviť úspech. Problematické vyzerajú byť tie ready, v ktorých sú pozície opráv príliš blízko seba -- tak, že by mohli ,,zasiahnúť`` vzorku, t.j. sú bližšie ako $p$.
+\end{example}
+
+V konečnom dôsledku teda vidno, že vhodný prístup leží kdesi uprostred možností zreťaziť s kontigmi (nad opravenými readmi) povodné a opravené ready -- budeme sa musieť vhodne vysporiadať s readmi, ktoré majú korekcie ,,príliš blízko seba``.
 
 \section{Navrhovaná implementácia}
 
