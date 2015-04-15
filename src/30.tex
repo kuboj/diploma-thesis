@@ -69,7 +69,7 @@ def locate(p)
     low = positions.lower_bound(start_index) <* \label{lst:cr_index_query_low} *>  
     up = positions.upper_bound(end_index) <* \label{lst:cr_index_query_up} *>  
     
-    foreach pos : (low..up) do <* \label{lst:cr_index_query_foreach2} *>
+    for (pos = low; pos != up; pos++) do <* \label{lst:cr_index_query_foreach2} *>
       if (pos[2] == 0)
         retval.push(pos[1]) <* \label{lst:cr_index_query_push_read} *>
       else
@@ -106,19 +106,45 @@ $$
 
 \begin{example}
 %ACTTGGCCCGAAGGTAATCAAA
-Uvažujme sadu readov $R=\{ACTTGG, CTTGGC, GCCCGA,\\ CCCGAA, $ $GGTAAT, GTAATC, TAATCA, ATCAAA\}$, kde $l=6$ a $p=4$. Ďalej predpokladajme, že výstupom assemblera sú kontigy $c_1=ACTTGGCCCGA$ \\ a $c_2=TTGATTACC$. Ich zreťazením a doplnením chýbajúcich reťazcov dostávame nasledovný superstring: \\
+Uvažujme sadu readov $R=\{AAATTG, AATTGG, ATTGGC, GCCCAA,\\ CCCATA, $ $GGTAAT, GTAATC, TAATCA, ATCAAA\}$, kde $l=6$ a $p=4$. Ďalej predpokladajme, že výstupom assemblera sú kontigy $c_0=AAATTGGCCCAA$ \\ a $c_1=TTGATTACC$. Ich zreťazením a doplnením chýbajúcich reťazcov dostávame nasledovný superstring: \\
 $$
   ss=
-  \overbracket{ACTTGGCCCGA}^{c_1}
+  \overbracket{AAATTGGCCCAA}^{c_1}
   \underbracket{TTGATTACC}_{c_2}
-  \overbracket{CCCGAA}^{r_3}
+  \overbracket{CCCATA}^{r_3}
   \underbracket{ATCAAA}_{r_7}
 $$
-A pole \emph{positions} by vyzeralo nasledovne: \\
-$pos = \{[0, ACTTG, 0], [1, CTTGGC, 0], [5, GCCCGA, 0], [12, TAATCA, 1],$ \\ $[13, GTAATC, 1], [14, GGTAAT, 1], [20, CCCGAA, 0], [26, ATCAAA, 0]\}$
+Pole \emph{positions} potom vyzerá nasledovne:
 
-Ilustrujme dotaz pre vzorku $p=TTG$.
-\todo{priklad na komplet superstring + query}
+\begin{center}
+    \begin{tabular}{ | c | c | c | }
+        \hline
+        \textbf{i} & \textbf{read} & \textbf{rev\_compl?} \\ \hline
+        0  & AAATTG & 0 \\ \hline
+        1  & AATTGG & 0 \\ \hline
+        2  & ATTGGC & 0 \\ \hline
+        6  & GCCCAA & 0 \\ \hline
+        13 & TAATCA & 1 \\ \hline
+        14 & GTAATC & 1 \\ \hline
+        15 & GGTAAT & 1 \\ \hline
+        21 & CCCATA & 0 \\ \hline
+        27 & ATCAAA & 0 \\ \hline
+    \end{tabular}
+\end{center}
+\bigskip
+
+Ilustrujme dotaz pre vzorku $p=AAT$:
+$$
+A\mathbf{AAT}TGGCCCAATTGATTACCCCCAT\mathbf{AAT}CAAA
+$$
+Vidíme, že FM-index nad superstringom nám ako výsledok vrátil dve hodnoty -- 1 a 26. Ak $i=1$, potom začiatok najľavejšieho readu, ktorý môže vzorku obsahovať je 0, začiatok najpravejšieho 1, iterátor \emph{low} (riadok \ref{lst:cr_index_query_low} listingu \ref{lst:cr_index_query}) ukazuje na index 0 poľa \emph{positions} a iterátor \emph{up} (riadok \ref{lst:cr_index_query_up}) na pozíciu 2 (túto hodnotu už iterátor \emph{pos} pri iterovaní (riadok \ref{lst:cr_index_query_foreach2}) nenabudne). Výsledkom teda budú ready začínajúce na indexoch 0 a 1 -- $AAATTG$ a $AATTGG$.
+
+Pokračujme pre $i=26$. Iterátor \emph{low} bude ukazovať na index 8 v poli \emph{positions} (lebo najľavejší read obsahujúci tento výsky vzorky $p$ môže začínať na indexe 23). Iterátor \emph{up} bude ukazovať tiež na index 8, takže cyklus \emph{for} na riadku \ref{lst:cr_index_query_foreach2} sa nevykoná ani raz -- čo je v poriadku, keďže síce sme našli výskyt vzorky v superstringu, no nachádzal sa akurát na rozhraní readov a teda ani jeden read ho neobsahoval.
+
+V tomto momente je dôležité si všimnúť, že týmto spôsobom sme nenašli všetky výskyty vzorky $p=AAT$, napríklad read $GGTAAT$ ju obsahuje, no tento read sme (zatiaľ) na výstup neposunuli. Assemblery totiž pokladajú ready a ich reverzné komplementy za identické a teda sa môže stať, že niektorý kontig bude zložený len z reverzných komplementov -- v našom príklade je to $c_1$. Preto pri zisťovaní výskytu vzorky $p$ potrebujeme vykonať dopyt aj pre $rev\_compl(p)$ a výsledné množinu readov zjednotiť. Pre vzorku $TAA = rev\_compl(AAT)$ nám už FM-index vráti výskyty v superstringu, ktoré potom úspešne preložíme na chýbajúce ready.
+
+Je nutné poznamenať, že realizáciou dotazovania týmto spôsobom vrátime aj ready, ktoré obsahujú reverzný komplement vzorky $p$ -- predstavme si, že by sme robili dotaz pre $p=TACC$, v tom prípade vrátime na výstup aj read $GGTAAT$, ktorý túto vzorku neobsahuje. To je ale v poriadku, keďže to súhlasí s našou definíciou \emph{problému indexovania readov} (viď poslednú odrážku v časti \ref{sec:definicia_problemu}).
+
 \end{example}
 
 \section{Ready s chybami}
