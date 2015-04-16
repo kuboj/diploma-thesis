@@ -3,7 +3,7 @@ V tejto kapitole predstavíme naše riešenie \emph{problému indexovania readov
 \section{Princíp fungovania}
 
 \subsection{Komprimácia vstupu}
-Kým \emph{GkArray} ready zo vstupu iba zreťazil a nad týmto dlhým reťazcom potom budoval sufixové polia a ostatné pomocné štruktúry, hlavnou myšlienkou \emph{CR-indexu} je, ako už napovedá názov, ready najprv vhodným spôsobom skomprimovať a až potom ďalej spracovávať. Využijeme to, že reťazce, ktoré máme za úlohu indexovať majú čosi spoločné -- vznikli sekvenovaním jedného genómu. Keďže pokrytie sa pri sekvenovaní zvyčajne pohybuje na úrovni $10\times$ -- $100\times$, znamená to, že ready obsahujú veľké množstvo nadbytočných informácií. Pomocou nejakého assembleru čiastočne zrekonštruujeme pôvodný genóm \todo{vysvetlit v 1. kapitole co je asembler} -- čiastočne preto, lebo výstupom assemblerov pre nejakú sadu readov nebýva vo všeobecnosti súvislý genóm, ale len sada kontigov resp. superkontig.\todo{vysvetlit kontig/superkontig v 1. kapitole}. Tiež nemáme zaručené, že každý read zo vstupu sa v niektorom kontigu musí nachádzať. Tieto chýbajúce ready potom musíme efektívne nájsť a nejakým spôsobom pridať ku kontigom, aby sme neprišli o žiadnu informáciu.
+Kým \emph{GkArray} ready zo vstupu iba zreťazil a nad týmto dlhým reťazcom potom budoval sufixové polia a ostatné pomocné štruktúry, hlavnou myšlienkou \emph{CR-indexu} je, ako už napovedá názov, ready najprv vhodným spôsobom skomprimovať a až potom ďalej spracovávať. Využijeme to, že reťazce, ktoré máme za úlohu indexovať majú čosi spoločné -- vznikli sekvenovaním jedného genómu. Keďže pokrytie sa pri sekvenovaní zvyčajne pohybuje na úrovni $10\times$ -- $100\times$, znamená to, že ready obsahujú veľké množstvo nadbytočných informácií. Pomocou nejakého assembleru čiastočne zrekonštruujeme pôvodný genóm -- čiastočne preto, lebo výstupom assemblerov pre nejakú sadu readov nebýva vo všeobecnosti súvislý genóm, ale len sada kontigov resp. superkontig. Tiež nemáme zaručené, že každý read zo vstupu sa v niektorom kontigu musí nachádzať. Tieto chýbajúce ready potom musíme efektívne nájsť a nejakým spôsobom pridať ku kontigom, aby sme neprišli o žiadnu informáciu.
 
 Pre začiatok predpokladajme, že ready na vstupe sú bez sekvenovacích chýb -- to znamená, že pre každý read platí, že je podreťazcom pôvodného genómu, ktorý bol sekvenovaný. Assembler by mal byť pri rekonštruovaní genómu pomerne úspešný (samozrejme ak majú ready dostatočné pokrytie) a relatívne málo readov by malo chýbať medzi kontigmi. V tomto prípade by sme teda spolu zreťazili kontigy a všetky chýbajúce ready -- tým dostaneme bezstratovo komprimovaný vstup. Ako ale nájdeme ready, ktoré nie sú podreťazcom zreťazenia kontigov? Jednoducho -- nad zreťazením kontigov skonštruujeme FM-index, ktorého sa postupne budeme pýtať na všetky ready zo vstupu (a ich reverzné komplementy) a v prípade, že FM-index tento read (ani jeho reverzný komplement) nenájde, označíme ho ako chýbajúci.
 
@@ -181,7 +181,7 @@ V predchádzajúcich častiach sme pojem superstring používali dosť voľne, t
 Substitučnú editačnú vzdialenosť dvoch reťazcov s a t rovnakej dĺžky l definujeme nasledovne:
 $$
 edt_s(s, t) = \left\vert{ \{~i~|~0 \leq i < l~\land s[i] \neq t[i] ~\} }\right\vert
-$$
+$$200/exhibitor/v1/ui/index.html
 \end{defn}
 
 Inými slovami, pre dva rovnako dlhé reťazce je to počet pozícií, na ktorých sa líšia.
@@ -208,7 +208,7 @@ Superstringom množiny reťazcov R rovnakej dĺžky l s parametrom p~$\in \mathb
 
 \end{defn}
 
-Povedané inak, superstringom množiny reťazcov $R$ je taký reťazec, v ktorom pre každý reťazec $r$ z $R$ platí, že buď on alebo jeho reverzný komplement je podreťazcom superstringu alebo pre $r$ alebo jeho reverzný komplement vieme nájsť podreťazec superstringu rovnakej dĺžky, ktorý sa od $r$ (resp. jeho reverzného komplentu) ,,líši len tu a tam`` -- to znamená, že indexy, na ktorých majú tieto dva reťazce rôzne znaky nie sú ,,príliš`` blízko seba, t.j. aspoň $p$.
+Povedané inak, superstringom množiny reťazcov $R$ je taký reťazec, v ktorom pre každý reťazec $r$ z $R$ platí, že buď on alebo jeho reverzný komplement je podreťazcom superstringu alebo pre $r$ alebo jeho reverzný komplement vieme nájsť podreťazec superstringu rovnakej dĺžky, ktorý sa od $r$ (resp. jeho reverzného komplentu) ,,líši len tu a tam`` -- to znamená, že indexy, na ktorých majú tieto dva reťazce rôzne znaky nie sú ,,príliš`` blízko seba, t.j. každé dva sú od seba vzdialené aspoň $p$.
 
 %\subsection{Korekcia readov}
 % faza korekcie readov

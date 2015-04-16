@@ -2,24 +2,35 @@ V tejto kapitole sa oboznámime so základnými pojmami z bioinformatiky a
 niektorými dátovými štruktúrami a algoritmami, ktoré budú neskôr použité pri
 implementácii.
 
-\section{Sekvenovanie}
-\label{sec:sekvenovanie}
-Sekvenovanie DNA je súhrnný termín pre biochemické metódy, pomocou ktorých sa zisťuje poradie nukleotidov (A, C, T, G) v sekvenciách DNA. Z informatického pohľadu je výsledkom sekvenovania DNA sada reťazcov nad abecedou $\Sigma = \{A, C, T, G\}$\footnote{Veci začneme zjednodušovať už hneď zhurta zo začiatku a nebudeme rátať s neznámymi - $N$ (\emph{uNknown}) bázami v \emph{sequence readoch}.}, pričom tieto reťazce pochádzajú z jedného spoločného nadslova. Tieto reťazce nazývame \emph{sequence reads}. Pri sekvenovaní nás zaujímajú hlavne:
-
-\begin{itemize}
-    \item Dĺžka \emph{readov} - tá je daná použitou biochemickou metódou sekvenovania.
-    \item Počet \emph{readov}
-    \item Miera pokrytia - tá nam hovorí, v aspoň koľkých \emph{readoch} sa každý nukleotid sekvenovanej DNA nachádza.
-    \item Miera chýb - žiadna sekvenovacia metóda nie je dokonalá a teda daný \emph{sequence read} nemusí byť v skutočnosti podslovom sekvenovanej DNA, ale môže obsahovať nejaké chyby, napríklad nejaké bázy navyše, či niektoré zmenené.
-\end{itemize}
-
-Tieto \emph{sequence reads} je potom potrebné bioinformatickými metódami poskladať do dlhších fragmentov na základe ich prekryvov.
-
-\todo{assemblery, kontigy, superkontig}
-
 \section{Formálne definície a označenia}
-\todo{narabanie so stringami; oznacenie substringu pomocou [], indexovanie stringov od 0, mozno presunut sem substitucnu editacnu vzdialenost?}
 \label{sec:formalne_definicie}
+
+\begin{defn}
+Abeceda je konečná neprázdna množina symbolov (písmen). Označujeme ju $\Sigma$.
+\end{defn}
+
+\begin{pozn}
+V našom kontexte bude pracovať s abecedou $\Sigma=\{A, C, T, G\}$.
+\end{pozn}
+
+\begin{defn}
+Reťazec nad abecedou $\Sigma$ je konečná postupnosť symbolov z $\Sigma$.
+\end{defn}
+
+\begin{defn}
+Dĺžka reťazca je dĺžka postupnosti, ktorá ho vytvára. Dĺžku reťazca $s$ označujeme $|s|$.
+\end{defn}
+
+\begin{defn}
+Podreťazcom reťazca $s=a_0 a_1 \ldots a_n$ je súvislá podpostupnosť $t=a_i a_{i+1} \ldots a_j$, pričom platí $0 \leq i \leq j \leq n$. Takýto podreťazec označujeme $t=s[i,j]$. Špeciálne, ak $i=0$, tak takýto podreťazec nazývame prefix a ak $j=n$, tak sufix reťazca $s$.
+\end{defn}
+
+\begin{defn}
+K-merom nazývame ľubovoľný podreťazec dĺžky $k$ ľubovoľného reťazca $s$ z množiny reťazcov $S$.
+\end{defn}
+
+\todo{mozno zmazat definiciu zarovnania, lebo je to tu kus odveci}
+
 \begin{defn}
     Zarovnanie sekvencií $S_0=a_1 a_2 \ldots a_n$ a $S_1 = b_1 b_2 \ldots b_m$ je funkcia $f : \mathbb{Z}_n \to \mathbb{Z}_m \cup \{ \bot \} $ spĺňajúca nasledovnú podmienku:
         
@@ -96,9 +107,22 @@ Tieto \emph{sequence reads} je potom potrebné bioinformatickými metódami posk
     Pre reťazec $S=ACTTTGCCCT$ je reverzným komplementom reťazec $S_{rc}=AGGGCAAAGT$.
 \end{example}
 
-\todo{k-mer}
-    
-\todo{chcem viac o zarovnavaniach ? globalne zarovnanie, skorovanie atd. mozno biologicka motivacia, naco su dobre reverzne komplementy}
+\section{Sekvenovanie}
+\label{sec:sekvenovanie}
+Sekvenovanie DNA je súhrnný termín pre biochemické metódy, pomocou ktorých sa zisťuje poradie nukleotidov (A, C, T, G) v sekvenciách DNA. Tieto metódy nedokážu prečítať celý genóm naraz, ale len po malých častiach. 
+
+Z informatického pohľadu je výsledkom sekvenovania DNA sada reťazcov nad abecedou $\Sigma = \{A, C, T, G\}$\footnote{Veci začneme zjednodušovať už hneď zhurta zo začiatku a nebudeme rátať s neznámymi - $N$ (\emph{uNknown}) bázami v \emph{sequence readoch}.}, pričom tieto reťazce pochádzajú z jedného spoločného nadslova. Tieto reťazce nazývame \emph{sequence reads}. Pri sekvenovaní nás zaujímajú hlavne:
+
+\begin{itemize}
+    \item Dĺžka \emph{readov} - tá je daná použitou biochemickou metódou sekvenovania.
+    \item Počet \emph{readov}
+    \item Miera pokrytia - tá nam hovorí, v aspoň koľkých \emph{readoch} sa každý nukleotid sekvenovanej DNA nachádza.
+    \item Miera chýb - žiadna sekvenovacia metóda nie je dokonalá a teda daný \emph{sequence read} nemusí byť v skutočnosti podslovom sekvenovanej DNA, ale môže obsahovať nejaké chyby, napríklad nejaké bázy navyše, či niektoré zmenené.
+\end{itemize}
+
+Tieto \emph{sequence reads} je potom potrebné bioinformatickými metódami poskladať do dlhších fragmentov na základe ich prekryvov -- tie sa nazývaju \emph{kontigy}. Túto úlohu riešia \emph{assemblery}.
+
+\todo{viac o assembleroch? De novo transcriptome assembly ...}
 
 \section{Funkcie rank a select}
 \begin{defn}
