@@ -9,6 +9,8 @@ Pre začiatok predpokladajme, že ready na vstupe sú bez sekvenovacích chýb -
 
 Výsledkom komprimačnej fázy je teda zreťazenie kontigov a readov zo vstupu, ktoré nie sú podreťazcom zreťazenia kontigov a ani ich reverzný komplement nie je podreťazcom zreťazenia kontigov. Tento dlhý reťazec nazveme \emph{superstring} (neskôr ho definujeme aj formálne).
 
+Superstring v princípe predstavuje najkratšie spoločné nadslovo pre ready, no keďže hľadanie najkratšieho spoločného nadslova je NP-úplný problém, musíme sa uchýliť ku vhodnej aproximácii, čo za nás spraví assembler.
+
 \subsection{Index}
 \label{ssec:index}
 V ďalšej fáze konštrukcie CR-indexu vytvoríme nad superstringom (opäť) FM-index. V tejto chvíli sme už schopní efektívne vyhľadávať vzorky v superstringu, no keď nám operácia FM-indexu \emph{locate} vráti zoznam pozícií superstringu, kde sa daná vzorka nachádza, nevieme z toho povedať ktorým readom tieto pozície prislúchajú. Potrebujeme si teda predrátať, kde sa ktorý read nachádza. Na to použijeme pole \emph{positions} -- jeho prvkami budú trojice $(i, r, b)$ - $i$ bude označovať index v superstringu, kde začína read $r$. Logická premenná $b$ označuje, či sa v superstringu nachádza samotný read ($b=0$) alebo jeho reverzný komplement ($b=1$). Algoritmus na konštrukciu CR-indexu teda vyzerá nasledovne\footnote{Táto implementácia slúži len pre účely vysvetlenia konštrukcie CR-indexu. Reálna implementácia vyzerá trochu odlišne a popíšeme ju v kapitole \ref{ch:implementacia}.}:
@@ -147,6 +149,7 @@ Je nutné poznamenať, že realizáciou dotazovania týmto spôsobom vrátime aj
 \end{example}
 
 \section{Ready s chybami}
+\label{sec:ready_s_chybami}
 Bohužiaľ, zjednodušením situácie vo forme popierania existencie sekvenovacích chýb sa až príliš vzďaľujeme realite. Ako sa teda zmení situácia, ak máme brať do úvahy, že v readoch sa vyskytujú chyby?
 
 Pripomeňme, že pri probléme \emph{indexovania readov} tak, ako sme ho zadefinovali v kapitole \ref{ch:problem_indexovania_readov} uvažujeme len substitučné chyby -- čo znamená, že read sa môže v niektorých bázach líšiť od svojho ,,obrazu`` v pôvodnom genóme.
@@ -187,7 +190,7 @@ $$
 Inými slovami, pre dva rovnako dlhé reťazce je to počet pozícií, na ktorých sa líšia.
 
 \begin{example}
-$edt_s(ACCTGG, TCCTGC) = 2$
+$edt_s(ACCTGG, TCCTGC) = 2$ 
 \end{example}
 
 \subsubsection{Superstring}
@@ -209,22 +212,69 @@ Superstringom množiny reťazcov R rovnakej dĺžky l s parametrom p~$\in \mathb
 
 Povedané inak, superstringom množiny reťazcov $R$ je taký reťazec, v ktorom pre každý reťazec $r$ z $R$ platí, že buď on alebo jeho reverzný komplement je podreťazcom superstringu alebo pre $r$ alebo jeho reverzný komplement vieme nájsť podreťazec superstringu rovnakej dĺžky, ktorý sa od $r$ (resp. jeho reverzného komplementu) ,,líši len tu a tam`` -- to znamená, že indexy, na ktorých majú tieto dva reťazce rôzne znaky nie sú ,,príliš`` blízko seba, t.j. každé dva sú od seba vzdialené aspoň $p$.
 
-%\subsection{Korekcia readov}
-% faza korekcie readov
+\subsection{Korekcia readov}
+% zadefinovat korekcnu funkciu, ta je nad R, Correcter ju potom realizuje
+\begin{ozn}
+Označme ako $corr_R(r)$ \emph{korekčnú} funkciu nad množinou readov $R$, ktorej výstupom pre read $r$ je opravený read $r_{corr}$, čo je read rovnakej dĺžky, ktorý sa môže (ale nie nutne musí) líšiť od pôvodného readu na niektorých pozíciach.
+\end{ozn}
 
-% skonstruujeme pole diff, ready rozdelime na kriticke a nekriticke, definicia tych dvoch veci
+Fáza korekcie readov bude prebiehať tak, že ako prvé vygenerujeme sadu opravených readov. Potom skonštruujeme pole \emph{diff} a nakoniec rozdelíme ready na dve skupiny, ako uvidíme neskôr.
+
+\subsubsection{Pole diff}
+Pole \emph{diff} skonštruujeme tak, aby obsahovalo informácie o aplikovaných korekciách na jednotlivé ready. Formálne by sme ho definovali ako:
+
+\begin{defn}
+Množinu korekcií pre množinu readov $R$ a korekčnú funkciu $corr_R$ definujeme ako 
+$$
+diff = \{(corr_R(r), i, r[i])~|~\forall r \in R~\forall i : 0 \leq i < |r| : corr_R(r)[i] \neq r[i] \}
+$$
+\end{defn}
+
+Algoritmus na konštrukciu poľa \emph{diff} by vyzeral nasledovne:
+
+\bigskip
+\begin{pseudocode}[label=lst:cr_index_diff_construction,caption={Algoritmus konštrukcie poľa diff.}]
+diff = Array.new
+correcter = Correcter.new <* \label{lst:cr_index_diff_construction_correcter} *>
+corrected_reads = correcter.correct_reads(R)
+
+for (i = 0; i < R.length; i++) do
+  for (j = 0; j < R[i].length; j++) do
+    if R[i][j] != corrected_reads[i][j]
+      diff.push([corrected_reads[i], j, R[j]])
+    end  
+  end
+end
+\end{pseudocode}
+\bigskip
+
+Algoritmus dostane na vstupe množinu readov $R$, ktoré opraví -- trieda $Correcter$ (riadok \ref{lst:cr_index_diff_construction_correcter}) predstavuje vhodné zapuzdrenie implementácie algoritmu opravujúceho ready -- funkciu $corr_R$. Vo for cykle potom porovnáme každý znak každého readu s pôvodným, a ak nie sú zhodné, vložíme do poľa \emph{diff} trojicu $[cr, j, o]$, kde $cr$ je opravený reťazec, $j$ index ukazujúci na pozíciu v danom reade, kde sa pred korekciou nachádzal znak $o$.
+
+\subsubsection{Rozdelenie readov}
+\begin{defn}
+Uvažujme read $r$ z množiny readov $R$, korekčnú funkciu $corr_R$ a parameter $p$\footnote{Dĺžka dotazu.}. Potom read $r$ nazývame \emph{kritický}, ak existujú také čísla $i, j$, že $0 \leq i < j < |r|$ a $corr_R(r)[i] \neq r[i] \wedge corr_R(r)[j] \neq r[j] \wedge j - i < p$.
+\end{defn}
+
+Inak povedané, read je kritický, ak sú v opravenom reade dve korekcie príliš blízko seba -- menej ako $p$.
+
+Po tom, ako prebehne korekcia readov a konštrukcia poľa \emph{diff}, rozdelíme ready na kritické -- to sú pôvodné ready, ktorých korekcia by nám veľmi nepomohla -- a opravené nekritické ready. Výstupom fázy korekcie readov teda budú dve sady readov a pole uchovávajúce informácie o aplikovaných korekciách.
+
+\subsection{Budovanie indexu}
+
+\todo{ako sme spominali v predchadzajucej casti, hlavna zmena bude spocitat v tom, ze assembler dostane na vstup opravene ready,ale len nekriticke. queryovat to budeme opravenymi nekritickymi (vysoka sanca, ze tam budu) a originialnymi kritickymi (skoro urcite tam nie su a zretazime ich na koniec, ale nestratime ziadnu informaciu, nebude problem queryovat vzorkou potom). vystupom je fm index nad novym superstringom a polia diff a positions. ukladame si ale len read id, v tych poliach, nie cele ready, lebo chceme setrit pamat a fm index vie rekonstruovat povodny text z indexu. znovu fm index nad superstringom, usortit positions.}
 
 
-% budovanie indexu
+\subsection{Dotazy}
 
-% ako sme spominali v predchadzajucej casti, hlavna zmena bude spocitat v tom, ze assembler dostane na vstup opravene ready,ale len nekriticke. queryovat to budeme opravenymi nekritickymi (vysoka sanca, ze tam budu) a originialnymi kritickymi (skoro urcite tam nie su a zretazime ich na koniec, ale nestratime ziadnu informaciu, nebude problem queryovat vzorkou potom). vystupom je fm index nad novym superstringom a polia diff a positions. ukladame si ale len read id, v tych poliach, nie cele ready, lebo chceme setrit pamat a fm index vie rekonstruovat povodny text z indexu. znovu fm index nad superstringom, usortit positions.
-
-
-% dotazy
-
-% to sa dost masivne zmeni. popis ako to ide + priklad
+\todo{to sa dost masivne zmeni. popis ako to ide + priklad}
 
 
-% mozne zlepsenia
+\subsection{Možné zlepšenia}
+\todo{popisat cca bloom filter, kde a ako by sa dal pouzit}
 
-% popisat cca bloom filter, kde a ako by sa dal pouzit
+\newpage
+\todo{nekonzistentnost oznaceni, superstring je raz ss a raz S}\\
+\todo{zmenit \emph{ready} na ready} \\
+\todo{usamova minimovka - citacie} \\
+\todo{mensie odstavce} \\
+\todo{vyhodit slovo 'nejak'}
