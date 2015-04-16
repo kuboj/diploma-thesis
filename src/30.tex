@@ -181,7 +181,7 @@ V predchádzajúcich častiach sme pojem superstring používali dosť voľne, t
 Substitučnú editačnú vzdialenosť dvoch reťazcov s a t rovnakej dĺžky l definujeme nasledovne:
 $$
 edt_s(s, t) = \left\vert{ \{~i~|~0 \leq i < l~\land s[i] \neq t[i] ~\} }\right\vert
-$$200/exhibitor/v1/ui/index.html
+$$
 \end{defn}
 
 Inými slovami, pre dva rovnako dlhé reťazce je to počet pozícií, na ktorých sa líšia.
@@ -205,10 +205,9 @@ Superstringom množiny reťazcov R rovnakej dĺžky l s parametrom p~$\in \mathb
     \forall i : 0 \leq i \leq l - p : edt_s(rev\_compl(r)[i, i+p-1], s[i, i+p-1]) \leq 1
     $$    
     \end{enumerate}
-
 \end{defn}
 
-Povedané inak, superstringom množiny reťazcov $R$ je taký reťazec, v ktorom pre každý reťazec $r$ z $R$ platí, že buď on alebo jeho reverzný komplement je podreťazcom superstringu alebo pre $r$ alebo jeho reverzný komplement vieme nájsť podreťazec superstringu rovnakej dĺžky, ktorý sa od $r$ (resp. jeho reverzného komplentu) ,,líši len tu a tam`` -- to znamená, že indexy, na ktorých majú tieto dva reťazce rôzne znaky nie sú ,,príliš`` blízko seba, t.j. každé dva sú od seba vzdialené aspoň $p$.
+Povedané inak, superstringom množiny reťazcov $R$ je taký reťazec, v ktorom pre každý reťazec $r$ z $R$ platí, že buď on alebo jeho reverzný komplement je podreťazcom superstringu alebo pre $r$ alebo jeho reverzný komplement vieme nájsť podreťazec superstringu rovnakej dĺžky, ktorý sa od $r$ (resp. jeho reverzného komplementu) ,,líši len tu a tam`` -- to znamená, že indexy, na ktorých majú tieto dva reťazce rôzne znaky nie sú ,,príliš`` blízko seba, t.j. každé dva sú od seba vzdialené aspoň $p$.
 
 %\subsection{Korekcia readov}
 % faza korekcie readov
