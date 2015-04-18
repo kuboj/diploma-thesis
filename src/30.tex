@@ -179,18 +179,18 @@ V predchádzajúcich častiach sme pojem superstring používali dosť voľne, t
 
 \subsection{Definície a označenia}
 
-\subsubsection{Substitučná editačná vzdialenosť}
+\subsubsection{Hammingova vzdialenosť}
 \begin{defn}
-Substitučnú editačnú vzdialenosť dvoch reťazcov s a t rovnakej dĺžky l definujeme nasledovne:
+Hammingova vzdialenosť dvoch reťazcov s a t rovnakej dĺžky l je definovaná nasledovne:
 $$
-edt_s(s, t) = \left\vert{ \{~i~|~0 \leq i < l~\land s[i] \neq t[i] ~\} }\right\vert
+edt_h(s, t) = \left\vert{ \{~i~|~0 \leq i < l~\land s[i] \neq t[i] ~\} }\right\vert
 $$
 \end{defn}
 
 Inými slovami, pre dva rovnako dlhé reťazce je to počet pozícií, na ktorých sa líšia.
 
 \begin{example}
-$edt_s(ACCTGG, TCCTGC) = 2$ 
+$edt_h(ACCTGG, TCCTGC) = 2$ 
 \end{example}
 
 \subsubsection{Superstring}
@@ -201,16 +201,18 @@ Superstringom množiny reťazcov R rovnakej dĺžky l s parametrom p~$\in \mathb
     \item rev\_compl(r) je podreťazcom S
     \item existuje podreťazec s reťazca S s dĺžkou l taký, že 
     $$
-    \forall i : 0 \leq i \leq l - p : edt_s(r[i, i+p-1], s[i, i+p-1]) \leq 1
+    \forall i : 0 \leq i \leq l - p : edt_h(r[i, i+p-1], s[i, i+p-1]) \leq 1
     $$
     \item existuje podreťazec s reťazca S s dĺžkou l taký, že 
     $$
-    \forall i : 0 \leq i \leq l - p : edt_s(rev\_compl(r)[i, i+p-1], s[i, i+p-1]) \leq 1
+    \forall i : 0 \leq i \leq l - p : edt_h(rev\_compl(r)[i, i+p-1], s[i, i+p-1]) \leq 1
     $$    
     \end{enumerate}
 \end{defn}
 
 Povedané inak, superstringom množiny reťazcov $R$ je taký reťazec, v ktorom pre každý reťazec $r$ z $R$ platí, že buď on alebo jeho reverzný komplement je podreťazcom superstringu alebo pre $r$ alebo jeho reverzný komplement vieme nájsť podreťazec superstringu rovnakej dĺžky, ktorý sa od $r$ (resp. jeho reverzného komplementu) ,,líši len tu a tam`` -- to znamená, že indexy, na ktorých majú tieto dva reťazce rôzne znaky nie sú ,,príliš`` blízko seba, t.j. každé dva sú od seba vzdialené aspoň $p$.
+
+Pre nás bude podstatné nájdenie čo najkratšieho superstringu pre danú sadu readov. Technicky vzaté, najkratší superstring je najkratšie spoločné nadslovo readov, no keďže jeho hľadanie je NP-ťažký problém, aplikujeme vhodnú heuristiku -- zostavovanie genómu (\emph{sequence assembly}) pomocou assemblera.
 
 \subsection{Korekcia readov}
 % zadefinovat korekcnu funkciu, ta je nad R, Correcter ju potom realizuje
