@@ -56,6 +56,7 @@ Premenná $R$ označuje množinu readov, ktorú máme na vstupe. Objekt \emph{as
 Algoritmus najprv zavolá assembler (riadok \ref{lst:cr_index_construction_assemble}), pomocou ktorého vytvorí kontigy, ktoré zreťazí (riadky \ref{lst:cr_index_construction_contigs_start} -- \ref{lst:cr_index_construction_contigs_end}). Potom prebehne konštrukcia pomocného FM-indexu (riadok \ref{lst:cr_index_construction_fm_index}) nad zreťazenými kontigmi. Následne sa pre každý read $r$ a jeho reverzný komplement zavoláme metódu \emph{locate} tohto FM-indexu (riadky \ref{lst:cr_index_construction_locate} -- \ref{lst:cr_index_construction_rev_compl}). Ak sa ani jeden z nich v superstringu nenachádza, tak ho tam pridáme (riadok \ref{lst:cr_index_construction_superstring_r}). Už predtým už ale vieme, na akej pozícii bude tento read v superstringu začínať (keďže ho pridávame na koniec) a môžeme túto informáciu vložiť do poľa \emph{positions} (riadok \ref{lst:cr_index_construction_push}). Pre ready, ktoré sa v superstringu nachádzajú pridáme do poľa \emph{positions} informáciu o ich výskytoch (riadok \ref{lst:cr_index_construction_push2}) resp. výskytoch ich reverzných komplementov (riadok \ref{lst:cr_index_construction_push3}). Pole \emph{positions} nakoniec utriedime (riadok \ref{lst:cr_index_construction_sort}) -- ako uvidíme v ďalšej časti, pomôže nám to rýchlejšie identifikovať ready obsahujúce hľadanú vzorku. Nad superstringom, ktorý sme úspešne zreťazili so všetkými chýbajúcimi readmi potom skonštruujeme nový FM-index (riadok \ref{lst:cr_index_construction_fm_index2}). Práve ten spolu s poľom \emph{positions} predstavujú výstup konštrukcie celého CR-indexu.
 
 \subsection{Dotazy}
+\label{ssec:dotazy}
 Úlohou je pre reťazec $p$ na vstupe vrátiť tie ready, ktoré obsahujú $p$ ako podreťazec. Najprv uvedieme algoritmus v pseudokóde a potom ho vysvetlíme:
 
 \bigskip
@@ -346,11 +347,76 @@ Zaujímavejšia je funkcia \emph{locate\_with\_check} (riadok \ref{lst:cr_index_
 
 Celé fungovanie bude jasnejšie na príklade:
 
-\todo{priklad}
+\begin{example}
+Uvažujme $k=4$, $l=8$, nasledovný superstring\footnote{Respektíve jeho časť.} (nech index jeho prvého znaku je 100):
+$$S=\ldots ACCTAGCCTGCTTTAGCTTTAG \ldots$$
 
+Ďalej nech polia \emph{positions} a \emph{diff} vyzerajú nasledovne:
+
+\begin{minipage}[t]{0.45\linewidth}
+    \vspace{0pt}
+    \begin{tabular}{ | c | c | c | }
+        \hline
+        \textbf{i} & \textbf{read\_id} & \textbf{rev\_compl?} \\ \hline
+        \ldots & \ldots & \ldots \\ \hline
+        100    & 966    &  0     \\ \hline
+        102    & 256    &  0     \\ \hline
+        \ldots & \ldots & \ldots \\ \hline   
+        110    & 452    &  0     \\ \hline
+        \ldots & \ldots & \ldots \\ \hline   
+        113    & 812    &  0     \\ \hline 
+        \ldots & \ldots & \ldots \\ \hline
+    \end{tabular}
+\end{minipage}
+\hspace{0.5cm}
+\begin{minipage}[t]{0.45\linewidth}
+    \vspace{0pt}
+    \begin{tabular}{ | c | c | c | }
+        \hline
+        \textbf{read\_id} & \textbf{i} & \textbf{orig} \\ \hline
+        \ldots & \ldots & \ldots \\ \hline        
+        254  & 7 & C \\ \hline
+        256  & 0 & A \\ \hline
+        256  & 7 & C \\ \hline
+        257  & 1 & T \\ \hline
+        \ldots  & \ldots & \ldots \\ \hline
+        812  & 4 & C \\ \hline
+        \ldots  & \ldots & \ldots \\ \hline
+        966  & 6 & G \\ \hline
+        \ldots & \ldots & \ldots \\ \hline
+    \end{tabular}
+\end{minipage}
+\bigskip
+\bigskip
+
+Ilustrujme teraz dotaz pre vzorku $p=AGCC$. FM-index nájde výskyt tejto vzorky na pozícii 104:
+
+$$S=\ldots ACCT \mathbf{AGCC} TGCTTTAGCTTTAG \ldots$$
+
+V tabuľke \emph{positions} nájdeme relevantné záznamy -- vidíme, že ready číslo 966 a 254 obsahujú tento výskyt $p$. Následne pre tieto ready vyhľadáme záznamy o korekciách v tabuľke \emph{diff}. Vidíme, že pri reade 256 nastali dve korekcie -- znaky na indexoch 0 a 7 sa zmenili na A resp. C -- keď ale tieto indexy prerátame na indexy v rámci superstringu (102 resp. 109) tak vidíme, že tieto nezasahujú do tohto výskytu $p$ (ten sa nachádza v superstringu na pozíciach 104 -- 108). Z toho vyplýva, že read číslo 256 tento výskyt $p$ obsahuje.
+
+Ďalej spracujeme read číslo 966 začínajúci na indexe 100 v rámci superstringu. V tomto prípade korekcia nastala na indexe 6 vzhľadom na tento read, čiže na indexe 106 v rámci superstringu -- to už zasahuje do výskytu vzorky $p$, z ktorej tým dostávame $p'=AG\mathbf{G}C$, čo znamená, že read číslo 966 výskyt $p$ neobsahuje, namiesto neho obsahuje podreťazec $AGGC$, ktorý sa vo fáze korekcie readov zmenil na $AGCC$ a preto sme tento výskyt našli v superstringu.
+
+Nasleduje druhá fáza dotazu, kde spravíme dotaz pre všetky reťazce s Hammingovou vzdialenosťou 1 od $p$. Pre účely príkladu si vystačíme s jednou vzorkou, napríklad $p_{d(1)}=AGCT$. FM-index vráti ako výskyt tejto vzorky index 114 v superstringu:
+
+$$S=\ldots ACCTAGCCTGCTTT \mathbf{AGCT} TTAG \ldots$$
+
+Prvým nájdeným readom, ktorý obsahuje $AGCT$ je read číslo 452 -- v tabuľke \emph{diff} pre tento read ale nemáme žiadne záznamy, čo znamená, že pri ňom neprebehli žiadne korekcie. Obsahuje síce výskyt modifikovanej vzorky -- $AGCT$, no nie pôvodnú vzorku $p$ a teda sa do výsledku nedostane. Druhý read, ktorý obsahuje $AGCT$ je read číslo 812. Preň máme v tabuľke \emph{diff} záznam o korekcii na indexe 4. Keďže tento read začína v superstringu na indexe 113, tak táto korekcia sa dotkne aj výskytu hľadanej vzorky -- $AGCT$ sa upraví na $AGCC$, čo sa rovná pôvodne hľadanej vzorke $p$ a preto read číslo 452 tiež zahrnieme do výsledku. Čo vlastne nastalo je to, že read číslo 812 pôvodne obsahoval ako podreťazec $p$, no pri korekčnej fáze bol tento read zmenený akurát na mieste výskytu $p$. Spätným hľadaním pomocou poľa \emph{diff} sme to ale odhalili a úspešne ho zahrnuli do výsledku.
+\end{example}
+
+\begin{pozn}
+V predchádzajúcom príklade sme zámerne uvažovali len ready, ktoré sa v superstringu nachádzajú priamo samé a nie ich reverzný komplement. Princíp hľadania by sa nezmenil (postupovali by sme podľa algoritmu uvedenom v listingu \ref{lst:cr_index_query2}), no príklad by bol zbytočne komplikovaný a technický.
+\end{pozn}
+
+\begin{pozn}
+Tak ako sme už uviedli v časti \ref{ssec:dotazy}, tak ,,pre splnenie poslednej podmienky z časti \ref{sec:definicia_problemu} by sme pre dotaz na vzorku $p$ mali zavolať metódu \emph{locate} aj pre vstup $rev\_compl(p)$ a výstupy pre obe volania spojiť do jedného poľa a vrátiť ako výstup to``.\end{pozn}
 
 \subsection{Možné zlepšenia}
-\todo{popisat cca bloom filter, kde a ako by sa dal pouzit}
+Naša implementácia CR-indexu ako riešenia \emph{problému indexovania readov} je síce pamäťovo výrazne efektívnejšia než implementácia pomocou hash mapy alebo použite knižnice GkArray, no stále je tu priestor na zlepšenie.
+
+V prvom rade by sa dali polia \emph{diff} a \emph{positions} reprezentovať efektívnejšie. \todo{jednou vetou, ako napr.}.
+
+Ďalším, už podstatne menej triviálnym zlepšením by bolo použitie \emph{Bloom filtra}, v druhej fáze dotazu, keď sa pýtame CR-indexu na vzorky s Hammingovou vzdialenosťou 1 od pôvodnej vzorky. Bloom filter je pamäťovo efektívna pravdepodobnostná dátová štruktúra, ktorá sa používa na odpovedanie na otázku, či sa daný prvok nachádza v danej množine. Bloom filter je navrhnutý tak, že sa môže stať, že odpovie, že sa daný prvok v množine nachádza, aj keď sa tam nenachádza (\emph{false positive}), no nikdy nie naopak. Pri konštrukcii CR-indexu, konkrétne pri konštrukcii poľa \emph{positions} by sme pre každý spracovávaný read vygenerovali všetky jeho podreťazce dĺžky $p$ a tie vložili do Bloom filtra. Pri druhej fáze dotazu by sme potom vedeli vynechať niektoré dotazy na FM-index tým, že by sme sa najprv Bloom filtra spýtali, či má zaindexovaný daný reťazec. Týmto spôsobom by sme síce mierne predĺžili čas potrebný na konštrukciu CR-indexu, no na druhej strane by sme nezanedbateľne zrýchlili operáciu \emph{locate}.
 
 \newpage
 \todo{nekonzistentnost oznaceni, superstring je raz ss a raz S}\\
