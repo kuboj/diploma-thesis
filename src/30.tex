@@ -178,6 +178,7 @@ V konečnom dôsledku teda vidno, že vhodný prístup leží kdesi uprostred mo
 Kým predchádzajúca časť bola skôr určená na ilustráciu fungovania princípov stojacich za CR-indexom, v tejto časti už konkrétne popíšeme jeho vnútorný dizajn.
 
 \subsection{Korekcia readov}
+\label{ssec:korekcia_readov}
 \subsubsection{Korekčná funkcia}
 \begin{ozn}
 Označme ako $corr_R(r)$ \emph{korekčnú} funkciu nad množinou readov $R$, ktorej výstupom pre read $r$ je opravený read $r_{corr}$, čo je read rovnakej dĺžky, ktorý sa môže (ale nie nutne musí) líšiť od pôvodného readu na niektorých pozíciach.
@@ -229,7 +230,7 @@ Inak povedané, read je kritický, ak sú v opravenom reade dve korekcie príli�
 Po tom, ako prebehne korekcia readov a konštrukcia poľa \emph{diff}, rozdelíme ready na kritické -- to sú pôvodné ready, ktorých korekcia by nám veľmi nepomohla -- a opravené nekritické ready. Výstupom fázy korekcie readov teda budú dve sady readov a utriedené pole uchovávajúce informácie o aplikovaných korekciách.
 
 \subsection{Budovanie indexu}
-
+\label{ssec:budovanie_indexu}
 \subsubsection{Hammingova vzdialenosť}
 \begin{defn}
 Hammingova vzdialenosť dvoch reťazcov s a t rovnakej dĺžky l je definovaná nasledovne:
@@ -272,8 +273,23 @@ Tak ako sme už naznačili, hlavná zmena bude spočívať v tom, že assembler 
 
 V poslednej fáze pripojíme k výslednému reťazcu neopravené kritické ready a konštrukcia superstringu je hotová. Z konštrukcie vyplýva, že takto skonštruovaný superstring spĺňa definíciu \ref{def:superstring} -- pre kritické ready zo vstupnej sady readov je splnená podmienka $(a)$ z tejto definície a pre nekritické ready zo vstupnej sady buď podmienka $(c)$ alebo $(d)$ -- tieto podmienky sú totiž postavené tak, že hovoria práve o tom, že v superstringu sa má nachádzať taký podreťazec, že sa od daného readu ,,veľmi nelíší`` a indexy, na ktorých sa tieto dva reťazce líšia majú byť od seba vzdialené aspoň $p$ -- a to nekritické ready spĺňajú. Nad výsledným superstringom skonštruujeme nový FM-index, ktorý spolu s poľom \emph{diff} a (utriedeným) poľom \emph{positions} tvoria celý CR-index.
 
-\todo{schema: R sa opravi, rozdelenie na kriticke atd, vysledok je skatlka cr-index s pos, diff a fm indexom nad SS}
-
+\begin{figure}[ht]
+    \begin{minipage}[t]{0.45\linewidth}
+        \vspace{0pt}
+        \centering
+        \includegraphics[width=\textwidth]{cr_index}
+        \caption{Schéme konštrukcie CR-indexu}
+        \label{fig:cr_index}
+    \end{minipage}
+    \hspace{0.5cm}
+    \begin{minipage}[t]{0.45\linewidth}
+        \vspace{50pt}
+        Na obrázku je znázornená schéma konštrukcie CR-indexu. $R$ označuje vstupnú sadu readov, $R_{corr}$ je sada opravených readov -- výstup korekčnej funkcie $corr_R$. Pole \emph{diff} a sady readov $R_{corr,ncrit}$ (opravené, nekritické) a $R_{crit}$ (pôvodné, kritické) tvoria výstup fázy korekcie readov popísanej v časti \ref{ssec:korekcia_readov}.
+        
+        Vo fáza budovania indexu (popísanej v časti \ref{ssec:budovanie_indexu}) potom zo zreťazených kontigov, chýbajúcich nekritických opravených readov a kritických readov skonštruujeme superstring, ktorý spolu s poľami \emph{diff} a \emph{pos} (\emph{positions}) tvoria samotný CR-index.
+    \end{minipage}
+\end{figure}
+\newpage
 \subsection{Dotazy}
 Kým v predchádzajúcej časti sme pri dotazovaní spravili len jednoduchý dotaz do FM-indexu a podľa výsledných indexov vyhľadali príslušné ready, tým, že superstring obsahuje opravené ready\footnote{a originálne kritické ready} je momentálna situácia o čosi komplikovanejšia.
 
