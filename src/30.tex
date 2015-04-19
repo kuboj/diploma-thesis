@@ -175,47 +175,10 @@ CCC \mathbf{T} TGTG \rightarrow CCC \mathbf{C} TGTG
 V konečnom dôsledku teda vidno, že vhodný prístup leží kdesi uprostred možností zreťaziť s kontigmi (nad opravenými readmi) povodné a opravené ready -- budeme sa musieť vhodne vysporiadať s readmi, ktoré majú korekcie ,,príliš blízko seba``.
 
 \section{Navrhovaná implementácia}
-V predchádzajúcich častiach sme pojem superstring používali dosť voľne, teraz ho konečne riadne zadefinujeme. Predtým ale ešte uvedieme niektoré označenia a definície.
-
-\subsection{Definície a označenia}
-
-\subsubsection{Hammingova vzdialenosť}
-\begin{defn}
-Hammingova vzdialenosť dvoch reťazcov s a t rovnakej dĺžky l je definovaná nasledovne:
-$$
-edt_h(s, t) = \left\vert{ \{~i~|~0 \leq i < l~\land s[i] \neq t[i] ~\} }\right\vert
-$$
-\end{defn}
-
-Inými slovami, pre dva rovnako dlhé reťazce je to počet pozícií, na ktorých sa líšia.
-
-\begin{example}
-$edt_h(ACCTGG, TCCTGC) = 2$ 
-\end{example}
-
-\subsubsection{Superstring}
-\begin{defn}
-Superstringom množiny reťazcov R rovnakej dĺžky l s parametrom p~$\in \mathbb{N}$ označujeme taký reťazec S, pre ktorý platí, že každý reťazec $r \in R$ spĺňa aspoň jednu z nasledujúcich podmienok:
-    \begin{enumerate}[(a)]
-    \item r je podreťazcom S
-    \item rev\_compl(r) je podreťazcom S
-    \item existuje podreťazec s reťazca S s dĺžkou l taký, že 
-    $$
-    \forall i : 0 \leq i \leq l - p : edt_h(r[i, i+p-1], s[i, i+p-1]) \leq 1
-    $$
-    \item existuje podreťazec s reťazca S s dĺžkou l taký, že 
-    $$
-    \forall i : 0 \leq i \leq l - p : edt_h(rev\_compl(r)[i, i+p-1], s[i, i+p-1]) \leq 1
-    $$    
-    \end{enumerate}
-\end{defn}
-
-Povedané inak, superstringom množiny reťazcov $R$ je taký reťazec, v ktorom pre každý reťazec $r$ z $R$ platí, že buď on alebo jeho reverzný komplement je podreťazcom superstringu alebo pre $r$ alebo jeho reverzný komplement vieme nájsť podreťazec superstringu rovnakej dĺžky, ktorý sa od $r$ (resp. jeho reverzného komplementu) ,,líši len tu a tam`` -- to znamená, že indexy, na ktorých majú tieto dva reťazce rôzne znaky nie sú ,,príliš`` blízko seba, t.j. každé dva sú od seba vzdialené aspoň $p$.
-
-Pre nás bude podstatné nájdenie čo najkratšieho superstringu pre danú sadu readov. Technicky vzaté, najkratší superstring je najkratšie spoločné nadslovo readov, no keďže jeho hľadanie je NP-ťažký problém, aplikujeme vhodnú heuristiku -- zostavovanie genómu (\emph{sequence assembly}) pomocou assemblera.
+Kým predchádzajúca časť bola skôr určená na ilustráciu fungovania princípov stojacich za CR-indexom, v tejto časti už konkrétne popíšeme jeho vnútorný dizajn.
 
 \subsection{Korekcia readov}
-% zadefinovat korekcnu funkciu, ta je nad R, Correcter ju potom realizuje
+\subsubsection{Korekčná funkcia}
 \begin{ozn}
 Označme ako $corr_R(r)$ \emph{korekčnú} funkciu nad množinou readov $R$, ktorej výstupom pre read $r$ je opravený read $r_{corr}$, čo je read rovnakej dĺžky, ktorý sa môže (ale nie nutne musí) líšiť od pôvodného readu na niektorých pozíciach.
 \end{ozn}
@@ -243,30 +206,125 @@ corrected_reads = correcter.correct_reads(R)
 for (i = 0; i < R.length; i++) do
   for (j = 0; j < R[i].length; j++) do
     if R[i][j] != corrected_reads[i][j]
-      diff.push([corrected_reads[i], j, R[j]])
+      diff.push([i, j, R[j]])
     end  
   end
 end
 \end{pseudocode}
 \bigskip
 
-Algoritmus dostane na vstupe množinu readov $R$, ktoré opraví -- trieda $Correcter$ (riadok \ref{lst:cr_index_diff_construction_correcter}) predstavuje vhodné zapuzdrenie implementácie algoritmu opravujúceho ready -- funkciu $corr_R$. Vo for cykle potom porovnáme každý znak každého readu s pôvodným, a ak nie sú zhodné, vložíme do poľa \emph{diff} trojicu $[cr, j, o]$, kde $cr$ je opravený reťazec, $j$ index ukazujúci na pozíciu v danom reade, kde sa pred korekciou nachádzal znak $o$.
+Algoritmus dostane na vstupe množinu readov $R$, ktoré opraví -- trieda $Correcter$ (riadok \ref{lst:cr_index_diff_construction_correcter}) predstavuje vhodné zapuzdrenie implementácie algoritmu opravujúceho ready -- funkciu $corr_R$. Vo for cykle potom porovnáme každý znak každého readu s pôvodným, a ak nie sú zhodné, vložíme do poľa \emph{diff} trojicu $[i, j, o]$, kde $i$ predstavuje poradové číslo reťazca\footnote{Mohli by sme použiť aj reťazec samotný, no týmto spôsobom vieme ušetriť nezanedbateľné množstvo pamäte.}, $j$ index ukazujúci na pozíciu v danom reade, kde sa pred korekciou nachádzal znak $o$. Na konci toto pole utriedime podľa prvej súradnice -- to je dôležité z toho dôvodu, aby sme vedeli efektívne (pomocou binárneho vyhľadávania) vyhľadávať všetky korekcie pre daný read.
 
 \subsubsection{Rozdelenie readov}
 \begin{defn}
 Uvažujme read $r$ z množiny readov $R$, korekčnú funkciu $corr_R$ a parameter $p$\footnote{Dĺžka dotazu.}. Potom read $r$ nazývame \emph{kritický}, ak existujú také čísla $i, j$, že $0 \leq i < j < |r|$ a $corr_R(r)[i] \neq r[i] \wedge corr_R(r)[j] \neq r[j] \wedge j - i < p$.
 \end{defn}
 
+\begin{pozn}
+Nekritický read je taký read $r$ z množiny readov $R$, ktorý nie je kritický.
+\end{pozn}
+
 Inak povedané, read je kritický, ak sú v opravenom reade dve korekcie príliš blízko seba -- menej ako $p$.
 
-Po tom, ako prebehne korekcia readov a konštrukcia poľa \emph{diff}, rozdelíme ready na kritické -- to sú pôvodné ready, ktorých korekcia by nám veľmi nepomohla -- a opravené nekritické ready. Výstupom fázy korekcie readov teda budú dve sady readov a pole uchovávajúce informácie o aplikovaných korekciách.
+Po tom, ako prebehne korekcia readov a konštrukcia poľa \emph{diff}, rozdelíme ready na kritické -- to sú pôvodné ready, ktorých korekcia by nám veľmi nepomohla -- a opravené nekritické ready. Výstupom fázy korekcie readov teda budú dve sady readov a utriedené pole uchovávajúce informácie o aplikovaných korekciách.
 
 \subsection{Budovanie indexu}
 
-\todo{ako sme spominali v predchadzajucej casti, hlavna zmena bude spocitat v tom, ze assembler dostane na vstup opravene ready,ale len nekriticke. queryovat to budeme opravenymi nekritickymi (vysoka sanca, ze tam budu) a originialnymi kritickymi (skoro urcite tam nie su a zretazime ich na koniec, ale nestratime ziadnu informaciu, nebude problem queryovat vzorkou potom). vystupom je fm index nad novym superstringom a polia diff a positions. ukladame si ale len read id, v tych poliach, nie cele ready, lebo chceme setrit pamat a fm index vie rekonstruovat povodny text z indexu. znovu fm index nad superstringom, usortit positions.}
+\subsubsection{Hammingova vzdialenosť}
+\begin{defn}
+Hammingova vzdialenosť dvoch reťazcov s a t rovnakej dĺžky l je definovaná nasledovne:
+$$
+edt_h(s, t) = \left\vert{ \{~i~|~0 \leq i < l~\land s[i] \neq t[i] ~\} }\right\vert
+$$
+\end{defn}
 
+Inými slovami, pre dva rovnako dlhé reťazce je to počet pozícií, na ktorých sa líšia.
+
+\begin{example}
+$edt_h(ACCTGG, TCCTGC) = 2$ 
+\end{example}
+
+\subsubsection{Superstring}
+Kým v doterajšom texte sme používali pojem superstring dosť voľne, na tomto mieste ho konečne riadne zadefinujeme.
+\begin{defn}
+\label{def:superstring}
+Superstringom množiny reťazcov R rovnakej dĺžky l s parametrom p~$\in \mathbb{N}$ označujeme taký reťazec S, pre ktorý platí, že každý reťazec $r \in R$ spĺňa aspoň jednu z nasledujúcich podmienok:
+    \begin{enumerate}[(a)]
+    \item r je podreťazcom S
+    \item rev\_compl(r) je podreťazcom S
+    \item existuje podreťazec s reťazca S s dĺžkou l taký, že 
+    $$
+    \forall i : 0 \leq i \leq l - p : edt_h(r[i, i+p-1], s[i, i+p-1]) \leq 1
+    $$
+    \item existuje podreťazec s reťazca S s dĺžkou l taký, že 
+    $$
+    \forall i : 0 \leq i \leq l - p : edt_h(rev\_compl(r)[i, i+p-1], s[i, i+p-1]) \leq 1
+    $$    
+    \end{enumerate}
+\end{defn}
+
+Povedané inak, superstringom množiny reťazcov $R$ je taký reťazec, v ktorom pre každý reťazec $r$ z $R$ platí, že buď on alebo jeho reverzný komplement je podreťazcom superstringu alebo pre $r$ alebo jeho reverzný komplement vieme nájsť podreťazec superstringu rovnakej dĺžky, ktorý sa od $r$ (resp. jeho reverzného komplementu) ,,líši len tu a tam`` -- to znamená, že indexy, na ktorých majú tieto dva reťazce rôzne znaky nie sú ,,príliš`` blízko seba, t.j. každé dva sú od seba vzdialené aspoň $p$.
+
+Pre nás bude podstatné nájdenie čo najkratšieho superstringu pre danú sadu readov. Technicky vzaté, najkratší superstring je najkratšie spoločné nadslovo readov, no keďže jeho hľadanie je NP-ťažký problém, aplikujeme vhodnú heuristiku -- zostavovanie genómu (\emph{sequence assembly}) pomocou assemblera.
+
+\subsubsection{Index}
+Tak ako sme už naznačili, hlavná zmena bude spočívať v tom, že assembler dostane na vstup už opravené ready, no len nekritické. Tak ako v predchádzajúcej časti, výsledné kontigy zreťazíme a skonštruujeme nad nimi FM-index, pomocou ktorého identifikujeme tie ready, ktoré assembler dostal na vstup, ktoré nie sú podreťazcom zreťazenia kontigov a zreťazíme ich so zreťazením kontigov. Zároveň popritom konštruujeme pole \emph{positions} s jemnou odlišnosťou oproti tomu, ako sme ho popísali v časti \ref{ssec:index}. Namiesto celého readu si totiž, kvôli úspore pamäte, budeme pamätať len identifikátor daného readu -- jeho poradové číslo (vzhľadom na poradie vo vstupnej sade $R$). Na spätnú rekonštrukciu readu potom využijeme schopnosť FM-indexu rekonštruovať pôvodný text, nad ktorým bol konštruovaný -- zaplatíme za to síce cenu v podobe dlhšieho času, ktorý bude potrebný na vykonanie dotazu, no úspora pamäte bude výrazná.
+
+V poslednej fáze pripojíme k výslednému reťazcu neopravené kritické ready a konštrukcia superstringu je hotová. Z konštrukcie vyplýva, že takto skonštruovaný superstring spĺňa definíciu \ref{def:superstring} -- pre kritické ready zo vstupnej sady readov je splnená podmienka $(a)$ z tejto definície a pre nekritické ready zo vstupnej sady buď podmienka $(c)$ alebo $(d)$ -- tieto podmienky sú totiž postavené tak, že hovoria práve o tom, že v superstringu sa má nachádzať taký podreťazec, že sa od daného readu ,,veľmi nelíší`` a indexy, na ktorých sa tieto dva reťazce líšia majú byť od seba vzdialené aspoň $p$ -- a to nekritické ready spĺňajú. Nad výsledným superstringom skonštruujeme nový FM-index, ktorý spolu s poľom \emph{diff} a (utriedeným) poľom \emph{positions} tvoria celý CR-index.
+
+\todo{schema: R sa opravi, rozdelenie na kriticke atd, vysledok je skatlka cr-index s pos, diff a fm indexom nad SS}
 
 \subsection{Dotazy}
+Kým v predchádzajúcej časti sme pri dotazovaní spravili len jednoduchý dotaz do FM-indexu a podľa výsledných indexov vyhľadali príslušné ready, tým, že superstring obsahuje opravené ready\footnote{a originálne kritické ready} je momentálna situácia o čosi komplikovanejšia.
+
+Proces dotazu rozdelíme na dve fázy -- v prvej fáze sa FM-indexu spýtame na výskyty vzorky $p$, k nim zrekonštruujeme prislúchajúce ready a vylúčime prípadné \emph{false positives}. V druhej fáze vykonáme dotazy pre všetky reťazce s Hammingovou vzdalenosťou 1 od vzorky $p$ (a opäť zrekonštruujeme ready a overíme). Táto druhá fáza je potrebná kvôli tomu, aby sme niektoré ready, ktoré $p$ obsahujú nevynechali z výsledku. Mohlo totiž nastať to, že korekcia readu prebehla akurát na mieste, kde tento read obsahuje vzorku $p$ a ak tento read nie je kritický, tak v superstringu sa nachádza akurát s týmto modifikovaným výskytom vzorky $p$. Na druhej strane, ak pri nejakom reade nastali také korekcie, že boli bližšie ako $p$, t.j. tak sa v superstringu nachádza jeho originál\footnote{Keďže je kritický.}, takže nám stačí Hammingova vzdialenosť 1. Algoritmus na vykonanie dotazu teda vyzerá nasledovne:
+
+\bigskip
+\begin{pseudocode}[label=lst:cr_index_query2,caption={Algoritmus dotazu \emph{locate} CR-indexu nad readmi s chybami.}]
+def locate(p) 
+  retval = locate_with_check(p, p)  <* \label{lst:cr_index_query2_locate_with_check_call} *>  
+  
+  foreach p2 : strings_with_hd_1(p) do
+    foreach i : locate_with_check(p2, p) do <* \label{lst:cr_index_query2_locate_with_check_call2} *> 
+      retval.push(i)
+    end
+  end
+  
+  return retval
+end
+
+def locate_with_check(p, p_check) <* \label{lst:cr_index_query2_locate_with_check} *>  
+  retval = Array.new
+  indexes = fm_index.locate(p)
+  
+  foreach i : indexes do
+    foreach pos : positions.bound([i + k - l, -1, 0],
+                                  [i, INT_MAX, 1]) do
+      read_id = pos[1]
+      diffs = diff.bound([read_id, -1, 'A'],
+                         [read_id, INT_MAX, 'A'])
+      if pos[2]
+        p2 = apply_corrections(diffs, rev_compl(p))
+        if p2 == rev_compl(p_check)
+          retval.push(read_id)
+        end
+      else
+        p2 = apply_corrections(diffs, p)
+        if p2 == p_check
+          retval.push(read_id)
+        end
+      end
+    end
+  end
+  
+  return retval
+end
+\end{pseudocode}
+\bigskip
+
+Funkcia \emph{locate}, ako sme už skôr spomenuli, najprv vykoná dotaz pre vzorku $p$ (riadok \ref{lst:cr_index_query2_locate_with_check_call}) a potom vykonáva dotazy pre všetky vzorky s Hammingovou editačnou vzdialenosťou 1 od vzorky $p$ -- riadok \ref{lst:cr_index_query2_locate_with_check_call2} (predpokladajme ešte, že máme k dispozícii funkciu \emph{strings\_with\_hd\_1(s)}, ktorá pre daný reťazec vráti pole všetkých reťazcov s Hammingovou vzdialenosťou 1 od reťazca $s$).
+
+Zaujímavejšia je funkcia \emph{locate\_with\_check} (riadok \ref{lst:cr_index_query2_locate_with_check}). Tá vyhľadá vzorku $p$, pre každý výskyt nájde prislúchajúci read, pomocou poľa $diff$ z rekonštruuje pôvodný, neopravený read
 
 \todo{to sa dost masivne zmeni. popis ako to ide + priklad}
 
