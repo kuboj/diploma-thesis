@@ -414,14 +414,6 @@ Tak ako sme už uviedli v časti \ref{ssec:dotazy}, tak ,,pre splnenie poslednej
 \subsection{Možné zlepšenia}
 Naša implementácia CR-indexu ako riešenia \emph{problému indexovania readov} je síce pamäťovo výrazne efektívnejšia než implementácia pomocou hash mapy alebo použite knižnice GkArray, no stále je tu priestor na zlepšenie.
 
-V prvom rade by sa dali polia \emph{diff} a \emph{positions} reprezentovať efektívnejšie. \todo{jednou vetou, ako napr.}.
+V prvom rade by sa dali polia \emph{diff} a \emph{positions} reprezentovať efektívnejšie pomocou tzv. \emph{úsporných dátových štruktúr} (\emph{succinct data structures}) \cite{GBMP14}.
 
-Ďalším, už podstatne menej triviálnym zlepšením by bolo použitie \emph{Bloom filtra}, v druhej fáze dotazu, keď sa pýtame CR-indexu na vzorky s Hammingovou vzdialenosťou 1 od pôvodnej vzorky. Bloom filter je pamäťovo efektívna pravdepodobnostná dátová štruktúra, ktorá sa používa na odpovedanie na otázku, či sa daný prvok nachádza v danej množine. Bloom filter je navrhnutý tak, že sa môže stať, že odpovie, že sa daný prvok v množine nachádza, aj keď sa tam nenachádza (\emph{false positive}), no nikdy nie naopak. Pri konštrukcii CR-indexu, konkrétne pri konštrukcii poľa \emph{positions} by sme pre každý spracovávaný read vygenerovali všetky jeho podreťazce dĺžky $p$ a tie vložili do Bloom filtra. Pri druhej fáze dotazu by sme potom vedeli vynechať niektoré dotazy na FM-index tým, že by sme sa najprv Bloom filtra spýtali, či má zaindexovaný daný reťazec. Týmto spôsobom by sme síce mierne predĺžili čas potrebný na konštrukciu CR-indexu, no na druhej strane by sme nezanedbateľne zrýchlili operáciu \emph{locate}.
-
-\newpage
-\todo{nekonzistentnost oznaceni, superstring je raz ss a raz S}\\
-\todo{zmenit \emph{ready} na ready} \\
-\todo{usamova minimovka - citacie} \\
-\todo{usamova minimovka - 1.1 shortest common superstring je np-hard + 2.5 apx.(?)} \\
-\todo{mensie odstavce} \\
-\todo{vyhodit slovo 'nejak'}
+Ďalším, už podstatne menej triviálnym zlepšením by bolo použitie \emph{Bloom filtra}, v druhej fáze dotazu, keď sa pýtame CR-indexu na vzorky s Hammingovou vzdialenosťou 1 od pôvodnej vzorky. Bloom filter je pamäťovo efektívna pravdepodobnostná dátová štruktúra, ktorá sa používa na odpovedanie na otázku, či sa daný prvok nachádza v danej množine. Bloom filter je navrhnutý tak, že sa môže stať, že odpovie, že sa daný prvok v množine nachádza, aj keď sa tam nenachádza (\emph{false positive}), no nikdy nie naopak. Pri konštrukcii CR-indexu, konkrétne pri konštrukcii poľa \emph{positions} by sme pre každý spracovávaný read vygenerovali všetky jeho podreťazce dĺžky $p$ a tie vložili do Bloom filtra. Pri druhej fáze dotazu by sme potom vedeli vynechať niektoré dotazy na FM-index tým, že by sme sa najprv Bloom filtra spýtali, či má zaindexovaný daný reťazec. Týmto spôsobom by sme síce mierne predĺžili čas potrebný na konštrukciu CR-indexu a použili isté množstvo pamäte navyše, no na druhej strane by sme nezanedbateľne zrýchlili operáciu \emph{locate}.
