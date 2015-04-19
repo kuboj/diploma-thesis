@@ -277,7 +277,9 @@ V poslednej fáze pripojíme k výslednému reťazcu neopravené kritické ready
 \subsection{Dotazy}
 Kým v predchádzajúcej časti sme pri dotazovaní spravili len jednoduchý dotaz do FM-indexu a podľa výsledných indexov vyhľadali príslušné ready, tým, že superstring obsahuje opravené ready\footnote{a originálne kritické ready} je momentálna situácia o čosi komplikovanejšia.
 
-Proces dotazu rozdelíme na dve fázy -- v prvej fáze sa FM-indexu spýtame na výskyty vzorky $p$, k nim zrekonštruujeme prislúchajúce ready a vylúčime prípadné \emph{false positives}. V druhej fáze vykonáme dotazy pre všetky reťazce s Hammingovou vzdalenosťou 1 od vzorky $p$ (a opäť zrekonštruujeme ready a overíme). Táto druhá fáza je potrebná kvôli tomu, aby sme niektoré ready, ktoré $p$ obsahujú nevynechali z výsledku. Mohlo totiž nastať to, že korekcia readu prebehla akurát na mieste, kde tento read obsahuje vzorku $p$ a ak tento read nie je kritický, tak v superstringu sa nachádza akurát s týmto modifikovaným výskytom vzorky $p$. Na druhej strane, ak pri nejakom reade nastali také korekcie, že boli bližšie ako $p$, t.j. tak sa v superstringu nachádza jeho originál\footnote{Keďže je kritický.}, takže nám stačí Hammingova vzdialenosť 1. Algoritmus na vykonanie dotazu teda vyzerá nasledovne:
+Proces dotazu rozdelíme na dve fázy -- v prvej fáze sa FM-indexu spýtame na výskyty vzorky $p$, k nim zrekonštruujeme prislúchajúce ready a vylúčime prípadné \emph{false positives} -- mohla totiž nastať situácia, že opravený read obsahuje výskyt vzorky $p$, takže ho FM-index nájde, no v pôvodnom reade sa výskyt $p$ nenachádza.
+
+V druhej fáze vykonáme dotazy pre všetky reťazce s Hammingovou vzdalenosťou 1 od vzorky $p$ (a opäť zrekonštruujeme ready a overíme). Táto druhá fáza je potrebná kvôli tomu, aby sme niektoré ready, ktoré $p$ obsahujú nevynechali z výsledku. Mohlo totiž nastať to, že korekcia readu prebehla akurát na mieste, kde tento read obsahuje vzorku $p$ a ak tento read nie je kritický, tak v superstringu sa nachádza akurát s týmto modifikovaným výskytom vzorky $p$. Na druhej strane, ak pri nejakom reade nastali také korekcie, že boli bližšie ako $p$, t.j. tak sa v superstringu nachádza jeho originál\footnote{Keďže je kritický.}, takže nám stačí Hammingova vzdialenosť 1. Algoritmus na vykonanie dotazu teda vyzerá nasledovne:
 
 \bigskip
 \begin{pseudocode}[label=lst:cr_index_query2,caption={Algoritmus dotazu \emph{locate} CR-indexu nad readmi s chybami.}]
@@ -298,11 +300,11 @@ def locate_with_check(p, p_check) <* \label{lst:cr_index_query2_locate_with_chec
   indexes = fm_index.locate(p)
   
   foreach i : indexes do
-    foreach pos : positions.bound([i + k - l, -1, 0],
+    foreach pos : positions.bound([i + k - l, -1, 0],  <* \label{lst:cr_index_query2_bound} *>  
                                   [i, INT_MAX, 1]) do
       read_id = pos[1]
-      diffs = diff.bound([read_id, -1, 'A'],
-                         [read_id, INT_MAX, 'A'])
+      diffs = diff.bound([read_id, -1, 'A'], <* \label{lst:cr_index_query2_bound2} *>  
+                         [read_id, INT_MAX, 'A']) <* \label{lst:cr_index_query2_bound3} *>  
       if pos[2]
         p2 = apply_corrections(diffs, rev_compl(p))
         if p2 == rev_compl(p_check)
@@ -324,9 +326,11 @@ end
 
 Funkcia \emph{locate}, ako sme už skôr spomenuli, najprv vykoná dotaz pre vzorku $p$ (riadok \ref{lst:cr_index_query2_locate_with_check_call}) a potom vykonáva dotazy pre všetky vzorky s Hammingovou editačnou vzdialenosťou 1 od vzorky $p$ -- riadok \ref{lst:cr_index_query2_locate_with_check_call2} (predpokladajme ešte, že máme k dispozícii funkciu \emph{strings\_with\_hd\_1(s)}, ktorá pre daný reťazec vráti pole všetkých reťazcov s Hammingovou vzdialenosťou 1 od reťazca $s$).
 
-Zaujímavejšia je funkcia \emph{locate\_with\_check} (riadok \ref{lst:cr_index_query2_locate_with_check}). Tá vyhľadá vzorku $p$, pre každý výskyt nájde prislúchajúci read, pomocou poľa $diff$ z rekonštruuje pôvodný, neopravený read
+Zaujímavejšia je funkcia \emph{locate\_with\_check} (riadok \ref{lst:cr_index_query2_locate_with_check}). Tá vyhľadá vzorku $p$, pre každý jej výskyt nájde prislúchajúce ready (riadok \ref{lst:cr_index_query2_bound}) -- kvôli zjednodušeniu zápisu predpokladáme, že máme k dispozícii metódu \emph{bound}, ktorá vracia podpole ohraničené argumentmi, čiže je to len skrátený zápis riadkov \ref{lst:cr_index_query_start_index} -- \ref{lst:cr_index_query_foreach2} z príkladu \ref{lst:cr_index_query}. Ďalej pre každý read nájdeme prislúchajúce korekcie v poli \emph{diff} (riadky \ref{lst:cr_index_query2_bound2} a \ref{lst:cr_index_query2_bound3}). Funkcia \emph{apply\_corrections}\footnote{Implementáciu tejto funkcie sme zámerne vynechali, nakoľko nie je veľmi myšlienkovo zaujímavá a prevládajú v nej skôr technické detaily týkajúce sa prerátavania indexov.} potom aplikuje relevantné\footnote{Nie je potrebné rekonštruovať kompletný originálny read, stačí nám tá časť, ktorá obsahuje $p$.} korekcie na nájdený výskyt $p$, aby sme zistili, ako tento nájdený výskyt $p$ vyzeral v pôvodnom, neopravenom reade -- ak je rovnaký ako $p\_check$, tak sme úspešne našli výskyt a pridáme daný read do poľa výsledkov.
 
-\todo{to sa dost masivne zmeni. popis ako to ide + priklad}
+Celé fungovanie bude jasnejšie na príklade:
+
+\todo{priklad}
 
 
 \subsection{Možné zlepšenia}
