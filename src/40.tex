@@ -1,11 +1,4 @@
-% ktore kniznice a naco
-% ako to nainstalovat, ako skompilovat priklady, CLI tych prikladov a benchmarkov atd
-% interface
-% popis foldrovej struktury
-% github
-%V našej práci sme použili implementáciu \emph{SGA} (\emph{String Graph Assembler} \cite{SD11}) dostupnú na internete\footnote{\url{https://github.com/jts/sga}}. 
-
-V tejto kapitole popíšeme našu implementáciu CR-indexu v jazyku \texttt{C++}, použité knižnice, a jej štruktúru.
+V tejto kapitole popíšeme našu implementáciu CR-indexu v jazyku \texttt{C++}, použité knižnice, a jej štruktúru a rozhrania.
 
 \section{Použité knižnice}
 
@@ -32,30 +25,84 @@ Zdrojový kód našej implementácie je verejne dostupný na Github-e na URL \ur
 
 \subsubsection{Súborová štruktúra}
 
-\begin{minipage}[t]{0.3\linewidth}
+\begin{minipage}[t]{0.20\linewidth}
     \vspace{0pt}
     \texttt{benchmark/} \\
-    \hspace*{2em}\texttt{construct.cpp} \\
-    \hspace*{2em}\texttt{query.cpp} \\
+    \texttt{bin/} \\
+    \texttt{build/} \\
     \texttt{examples/}  \\
-    \hspace*{2em}\texttt{cr\_index.cpp} \\
     \texttt{include/}   \\
     \texttt{src/}       \\
     \texttt{tools/}     \\
+    \texttt{LICENSE}     \\
+    \texttt{Makefile}     \\
+    \texttt{README.md}
 \end{minipage}
-\hspace{0.5cm}
-\begin{minipage}[t]{0.65\linewidth}
+\hspace{0.3cm}
+\begin{minipage}[t]{0.8\linewidth}
     \vspace{0pt}
-    kvik \\
-    kvak
+    obsahuje dva testy -- \texttt{construct.cpp} a \texttt{query.cpp} \\
+    táto zložka po vybudovaní obsahuje spustiteľné súbory \\
+    obsahuje vybudované objektové súbory \\
+    v tejto zložke sa nachádzajú príklady \\
+    obsahuje hlavičkové súbory (\emph{header files}) \\
+    obsahuje samotné zdrojové kódy knižnice \\
+    zoskupuje pomocné nástroje \\
+    súbor obsahujúci MIT licenciu \\
+    obsahuje pravidlá pre vybudovanie knižnice pomocou nástroja \texttt{make} \\
+    stručné inštrukcie pre inštaláciu a používanie
 \end{minipage}
 
-\subsubsection{benchmark/construct}
+\subsubsection{benchmark/construct.cpp}
+Úlohou tohto testu je odmerať množstvo spotrebovanej pamäte (a čas potrebný pre konštrukciu) pre jednotlivé implementácie štruktúr indexujúcich ready. Jeho rozhranie príkazového riadku vyzerá nasledovne:
 
-\subsubsection{benchmark/query}
+\begin{verbatim}
+$ construct --help
+Construct index 
+Usage: 
+  construct <index_type> <filename> <read_length> <query_length>
+index_type: cr, hash, gk
+Example: 
+  ./bin/construct cr bacteria.fastq 100 13
+\end{verbatim}
 
-\subsubsection{examples/cr\_index}
+Na vstupe očakáva typ indexu, ktorým bude indexovať vstupnú sadu readov -- \texttt{cr} označuje našu implementáciu CR-indexu, \texttt{hash} implementáciu pomocou hash mapy (mierne vylepšenú oproti časti \ref{sec:riesenie_s_pouzitim_hash_mapy}) a \texttt{gk} označuje konštrukciu indexu pomocou knižnice GkArray (ktorá je popísaná v časti \ref{sec:riesenie_s_pouzitim_gkarray}). Parameter \texttt{filename} predstavuje cestu k súboru so sadou readov vo formáte FASTQ, parameter \texttt{read\_length} označuje dĺžku readu a posledný parameter, \texttt{query\_length} dĺžku dotazu (ktorú sme v predchádzajúcom texte označovali ako $k$).
+
+Ukážkový výstup tohto testu je nasledovný:
+
+\begin{verbatim}
+$ ./construct cr ../genomes/bacteria1M_10E.fastq 100 13                                                       
+index_type: cr
+read_filename: ../genomes/bacteria1M_10E.fastq
+read_length: 100
+query_length: 13
+Total reads size: 100000000
+Superstring size:  9456094
+Compress ratio: 10.575191
+Construction took 252.935495s
+Referenced memory: 23536kB
+OK.
+\end{verbatim}
+
+Meranie spotrebovaného množstva pamäte prebieha na konci konštrukcie -- snahou je teda zmerať, koľko pamäte zaberá samotný index a nie maximum spotrebovanej pamäte počas konštrukcie\footnote{Aj keď aj to je často sledovaný parameter.}. Toto meranie je (momentálne) implementované len pre Unixové operačné systémy a je realizované pomocou analýzy mapovania pamäti procesu, ktoré čítame zo súboru \texttt{/proc/<pid>/smaps}.
+
+\subsubsection{benchmark/query.cpp}
+Tento najprv skonštruuje daný typ indexu a potom meria čas potrebný na odpovedanie na všetky dotazy zo vstupného súboru. Rozhranie príkazového riadku je nasledovné:
+
+\begin{verbatim}
+$ ./query 
+Construct index 
+Usage: ./query <index_type> <reads_filename> <queries_filename>\
+  <read_length> <query_length> <query_type>
+index_type: cr, hash, gk
+query_type: index, read
+Example: 
+  ./query cr bacteria.fastq queries.data 101 13 index
+\end{verbatim}
+
+Parametre \texttt{index\_type}, \texttt{reads\_filename}, \texttt{read\_length}, \texttt{query\_length} sú rovnaké ako v predchádzajúcom teste. Parameter \texttt{queries\_filename} označuje cestu ku súboru obsahujúcemu sadu dotazov, každý dĺžky \texttt{query\_length}, oddelených znakom nového riadku. Parameter \texttt{query\_type} obsahuje typ dotazu, ktorý vykonávame -- v prípade, že sa pýtame len na indexy readov, ktoré danú vzorku obsahujú je tento rovný \emph{index}, ak požadujeme pri dotaze vrátenie celých readov ako reťazcov, tak tento parameter musí mať hodnotu \texttt{read}.
 
 \section{Vnútorná štruktúra}
+Samotné zdrojové kódy CR-indexu sa nachádzajú v zložkách \texttt{include/} (hlavičkové súbory) a \texttt{src/} (súbory implementácie). Zložka \texttt{src/} obsahuje súbory \texttt{util.cpp} (čo je súbor pomocných funkcií na prácu s reťazcami, spúšťanie podprocesov a podobne), \texttt{hash\_index.cpp} (predstavuje implementáciu pomocou hash mapy), \texttt{fm\_wrapper.cpp} (trieda vhodne zapuzdrujúca implementáciu FM-indexu v knižnici SDSL) a súbor \texttt{cr\_index.cpp}, ktorý implementuje triedu CRIndex.
 
 \subsubsection{Trieda CRIndex}

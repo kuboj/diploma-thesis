@@ -49,6 +49,7 @@ nadslova. (Triviálnym riešením by bolo $O(n \cdot L)$, kde $L$ je dĺžka
 \emph{readu})
 
 \section{Riešenie s použitím hash mapy}
+\label{sec:riesenie_s_pouzitim_hash_mapy}
 Ako prvé netriviálne riešenie tohto problému sa naskytá použitie hash mapy,
 kde kľúčom sú všetky možné hľadané vzorky $p$ (tie generovať vieme,
 keďže máme dopredu danú dĺzku $k = |p|$ a pracujeme nad konečnou abecedou) a
@@ -117,6 +118,7 @@ l)$. Existuje množstvo zlepšení, napríklad:
 \todo{dalsie zlepsenia? mozno spomenut sparse/dense hash map, SGI c++ ext}
 
 \section{Riešenie s použitím GkArray}
+\label{sec:riesenie_s_pouzitim_gkarray}
 V roku 2011 vyšiel v \emph{BMC Bioinformatics} článok od N. Phillipea a spol.\cite{NP11} prezentujúci dátovú štruktúru s názvom \emph{GkArray}. Cieľom autorov bolo navrhnúť a implementovať univerzálne riešenie na indexáciu \emph{sequence readov} a vyhľadávanie v nich cez \emph{k}-mery vopred danej dĺžky. Vstupom pre jej konštrukciu je sada \emph{sequence readov} každý  dĺžky $m$ a číslo $k$, kde $k \leq m$. Dátová štruktúra \emph{GkArray} je konštruovaná tak, aby vedela odpovedať na nasledujúce dotazy\footnote{V pôvodnom článku je uvedený aj ôsmy dotaz, ktorý je ale ekvivalentný so šiestym, my sme si ho dovolili rovno vynechať.}:
 
 \begin{itemize}
