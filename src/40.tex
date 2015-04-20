@@ -7,17 +7,30 @@
 
 V tejto kapitole popíšeme našu implementáciu CR-indexu v jazyku \texttt{C++}, použité knižnice, a jej štruktúru.
 
-Ako programovací jazyk sme zvolili \texttt{C++}, konkrétne verziu \texttt{C++11}. Zdrojový kód by mal byť (po doinštalovaní potrebných závislostí) skompilovateľný kompilátorom \texttt{gcc} verzie 4.9.1 a vyššie.
+\section{Použité knižnice}
 
-Zdrojový kód našej implementácie je verejne dostupný na Github-e na URL \url{https://github.com/kuboj/CR-index} pod licenciou MIT.
+Ako programovací jazyk sme zvolili \texttt{C++}, konkrétne verziu \texttt{C++11}. Zdrojový kód by mal byť (po doinštalovaní potrebných závislostí) skompilovateľný kompilátorom \texttt{gcc} verzie 4.9.1 a vyššie. Pri implementácii sme využili nasledujúce knižnice resp. programy:
 
-\subsubsection{Trieda CRIndex}
+\subsubsection{Boost}
+\emph{Boost} je rozsiahla sada univerzálnych knižníc pre programovací jazyk \texttt{C++}. My sme z nej využili podknižnice \texttt{libboost-filesystem} a \texttt{libboost-system} na prácu so súborovým systémom a procesmi.
 
-\subsubsection{benchmark/construct}
+\subsubsection{SGA}
+\emph{SGA} (\emph{String Graph Assembler}) \cite{SD11} je implementácia \emph{de novo genome} assemblera založeného na koncepte grafových reťazcov v jazyku \texttt{C++} a je dostupná na stránke \url{https://github.com/jts/sga}. Tento assembler sme využili pri implementácii CR-indexu hneď na niekoľkých miestach:
 
-\subsubsection{benchmark/query}
+\begin{itemize}
+\item V časti \ref{ssec:korekcia_readov} -- Korekcia readov, sme realizovali korekčnú funkciu $corr_R$ pomocou podprogramu SGA \texttt{sga correct}. Ten očakáva na vstupe okrem sady readov vo \texttt{fastq} formáte aj index tejto sady, ktorý sme vybudovali pomocou podprogramu \texttt{sga index}.
+\item Ďalej v časti \ref{ssec:budovanie_indexu} -- Budovanie indexu sme pomocou SGA konštruovali kontigy. Najprv sme pomocou \texttt{sga index} vybudovali index readov, potom pomocou \texttt{sga overlap} našli prekryvy readov a nakoniec cez \texttt{sga assemble} skonštruovali kontigy.
+\end{itemize}
 
-\subsubsection{examples/cr\_index}
+\subsubsection{SDSL}
+\emph{SDSL} (\emph{Succinct Data Structure Library}) [GBMP14] je sada knižníc obsahujúca implementáciu \emph{úsporných dátových štruktúr} pre programovací jazyk \texttt{C++}. Zahŕňa množstvo rôznych implementácií napríklad bitových vektorov, celočíselných vektorov, wavelet stromov, komprimovaných sufixových polí a podobne. My sme túto knižnicu využili na implementáciu FM-indexu, ktorý používame v CR-indexe hneď dvakrát -- prvýkrát v konštrukčnej fáze, keď v zreťazených kontigoch hľadáme chýbajúce ready a druhýkrát konštruujeme FM-index nad superstringom a potom ho využívame pri dotazovaní.
+
+\section{Inštalácia}
+Zdrojový kód našej implementácie je verejne dostupný na Github-e na URL \url{https://github.com/kuboj/CR-index} pod licenciou MIT. Pred vybudovaním zdrojových kódov CR-indexu je najprv potrebné mať nainštalované všetky závislosti spomínane v predchádzajúcej časti. \texttt{Boost}, \texttt{PStreams}, \texttt{libboost-filesystem} a \texttt{libboost-system} zvyknú byť široko dostupné pre Unixové operačné systémy vo forme balíčkov pre daný systém. Po naklonovaní repozitára lokálne stačí spustiť príkaz \texttt{make} pre vybudovanie modulov alebo \texttt{make examples} resp. \texttt{make benchmarks} pre vybudovanie príkladov respektíve testovacích programov.
+
+\section{Vonkajšia štruktúra}
+
+\subsubsection{Súborová štruktúra}
 
 \begin{minipage}[t]{0.3\linewidth}
     \vspace{0pt}
@@ -36,3 +49,13 @@ Zdrojový kód našej implementácie je verejne dostupný na Github-e na URL \ur
     kvik \\
     kvak
 \end{minipage}
+
+\subsubsection{benchmark/construct}
+
+\subsubsection{benchmark/query}
+
+\subsubsection{examples/cr\_index}
+
+\section{Vnútorná štruktúra}
+
+\subsubsection{Trieda CRIndex}
