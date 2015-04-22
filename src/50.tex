@@ -4,34 +4,34 @@ V poslednej časti práce prezentujeme praktické výsledky našej implementáci
 \section{Testovacie prostredie}
 Všetky testy prebiehali pod 64-bitovou verziou operačného systému Linux verzie 3.16.0-34. Testy boli kompilované kompilátorom \texttt{gcc} verzie 4.9.1 s prepínačmi \texttt{-std=c++11} a \texttt{-O3} a spustené na hardvéri s CPU \texttt{Intel(R) Core(TM) i7-4910MQ CPU @ 2.90GHz} a 16GB RAM. Na meranie spotreby pamäte a rýchlosti odpovedania na dotazy sme použili testy \texttt{benchmark/construct.cpp} a \texttt{benchmark/query.cpp} popísané v časti \ref{sec:vonkajsia_struktura}.
 
-\subsection{Testovacie dáta}
-\subsubsection{Sady readov}
-Sady readov sme generovali z genómu baktérie \emph{Staphylococcus aureus}\footnote{Dostupné na internete na stránke \url{http://gage.cbcb.umd.edu/data/index.html}}\footnote{Z genómu na stránke sme odstránili genómy plasmidov a použili len genóm samotnej baktérie.}. Tento genóm má dĺžku 2872915 báz, dĺžku readu $l$ sme zvolili 100 a dĺžku dotazu $k=13$. 
-
-% tabulku asi
-Podľa týchto parametrov sme dorátali, že počet readov v sadách pre jednotlivé pokrytia je: 57458 readov pre pokrytie $2\times$, 143645 readov pre pokrytie $5\times$, 287291 readov pre pokrytie $10\times$, 574583 readov pre pokrytie $20\times$ a 1436457 readov pre pokrytie $50\times$.
-
-V poslednom teste sme použili reálnu, nie generovanú sadu readov. % odkial + samplovanie
-
-\subsubsection{Sada dotazov}
-% nahodne vs. generovane z genomu/readov
-
 \section{Testy}
 
-\subsection{CR-index vs GkArray}
+\subsection{CR-index vs GkArray - pamäť}
+V tomto teste sme porovnávali spotrebu pamäte CR-indexu oproti knižnici GkArray. Pre testovanie sme použili sadu readov spracovávanú v \cite{DFPB13}\footnote{Táto sada je verejne dostupná na internete na linke \url{ftp://webdata:webdata@ussd-ftp.illumina.com/Data/SequencingRuns/MG1655/MiSeq_Ecoli_MG1655_110721_R1.fastq}}. Sekvenovaný genóm patrí baktérii \emph{Escherichia Coli} a má dĺžku 4639675 báz. Táto sada obsahuje 6028744\footnote{Z pôvodnej sady sme vynechali tie ready, ktoré obsahovali neznámu bázu (N), ich podiel bol zanedbateľný.} readov dĺžky 151 (z čoho vyplýva, že pokrytie sa pohybuje na úrovni $196.2\times$) a miera chýb predstavuje 0.75\%. Dĺžku dotazu sme zvolili $k=13$.
+
+Z tejto základnej sady readov sme potom \emph{samplovaním} vyrobili ďalšie, pomocou ktorých sme simulovali pokrytie na úrovni $2\times$, $5\times$, $10\times$, $20\times$, $50\times$ a $100\times$.
+
+Namerané výsledky možno vidieť v nasledujúcom grafe:
+
+% dve ciary - gk a cr. pre rozne coverages hodnoty pamate.
+
+
 % pamat
 % variovat coverage (a/alebo error rate)
 
-\subsection{CR-index vs GkArray 2}
+\subsection{CR-index vs GkArray - čas dotazu}
+Tento test porovnáva rýchlosť odpovedania na dotazy pre CR-index a knižnicu GkArray. Sady readov sme použili rovnaké ako v predchádzajúcom teste. Sady dotazov sme použili dvoch typov -- prvá sada bola plne náhodne generovaná a druhá bola generovaná ako náhodné podreťazce dĺžky $k$ náhodných readov z danej sady readov.
 % query time
 % variovat coverage (a/alebo error rate)
 
 \subsection{Pamäť vs. pokrytie}
-V tomto teste sme merali závislosť spotreby pamäte na pokrytí pre rôznu chybovosť readov. 
+V tomto teste sme merali závislosť spotreby pamäte na pokrytí pre rôznu chybovosť readov. Sady readov sme generovali z genómu baktérie \emph{Staphylococcus aureus}\footnote{Dostupné na internete na stránke \url{http://gage.cbcb.umd.edu/data/index.html}}\footnote{Z genómu na stránke sme odstránili genómy plasmidov a použili len genóm samotnej baktérie.}. Tento genóm má dĺžku 2872915 báz, dĺžku readu $l$ sme zvolili 100 a dĺžku dotazu $k=13$. 
+
+Podľa týchto parametrov sme dorátali, že počet readov v sadách pre jednotlivé pokrytia je: 57458 readov pre pokrytie $2\times$, 143645 readov pre pokrytie $5\times$, 287291 readov pre pokrytie $10\times$, 574583 readov pre pokrytie $20\times$ a 1436457 readov pre pokrytie $50\times$.
 
 \begin{figure}[h]
     \centering
-    \includegraphics[width=16.5cm]{staphyl}
+    \includegraphics[width=16.5cm]{cr_errors}
     \caption{Závislosť spotreby pamäte na pokrytí pre rôznu chybovosť vstupnej sady readov.}
     \label{fig:graf_staphyl}
 \end{figure}
