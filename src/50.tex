@@ -13,16 +13,34 @@ Z tejto základnej sady readov sme potom \emph{samplovaním} vyrobili ďalšie, 
 
 Namerané výsledky možno vidieť v nasledujúcom grafe:
 
-% dve ciary - gk a cr. pre rozne coverages hodnoty pamate.
-
-
-% pamat
-% variovat coverage (a/alebo error rate)
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=16.5cm]{cr_gk_memory}
+    \caption{Porovnanie spotreby pamäti CR-indexu a GkArray pre rôzne pokrytia.}
+    \label{fig:graf_cr_gk_memory}
+\end{figure}
 
 \subsection{CR-index vs GkArray - čas dotazu}
-Tento test porovnáva rýchlosť odpovedania na dotazy pre CR-index a knižnicu GkArray. Sady readov sme použili rovnaké ako v predchádzajúcom teste. Sady dotazov sme použili dvoch typov -- prvá sada bola plne náhodne generovaná a druhá bola generovaná ako náhodné podreťazce dĺžky $k$ náhodných readov z danej sady readov.
-% query time
-% variovat coverage (a/alebo error rate)
+Tento test porovnáva rýchlosť odpovedania na dotazy pre CR-index a knižnicu GkArray. Sady readov sme použili rovnaké ako v predchádzajúcom teste. Sady dotazov (pre $k=13$) sme použili dvoch typov -- prvá sada bola plne náhodne generovaná a druhá bola generovaná ako náhodné podreťazce dĺžky $k$ náhodných readov z danej sady readov. Počet dotazov pre každú sadu činil 100 miliónov (z toho dôvodu, aby sme čo najviac obmedzili odchýlky a zároveň aby sa táto sada aj s daným indexom pohodlne zmestili do operačnej pamäte počítača). 
+
+Tabuľka \ref{fig:graf_cr_gk_query_rand} ilustruje namerané hodnoty pre sadu 100 miliónov náhodných dotazov a tabuľka \ref{fig:graf_cr_gk_query_read} pre sadu 100 miliónov generovaných readov.
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=16.5cm]{cr_gk_query_rand}
+    \caption{Porovnanie času potrebného pre vykonanie sady náhodných dotazov pre CR-indexu a GkArray pre rôzne pokrytia.}
+    \label{fig:graf_cr_gk_query_rand}
+\end{figure}
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=16.5cm]{cr_gk_query_read}
+    \caption{Porovnanie času potrebného pre vykonanie sady nenáhodných dotazov pre CR-indexu a GkArray pre rôzne pokrytia.}
+    \label{fig:graf_cr_gk_query_read}
+\end{figure}
+
+
+\clearpage
 
 \subsection{Pamäť vs. pokrytie}
 V tomto teste sme merali závislosť spotreby pamäte na pokrytí pre rôznu chybovosť readov. Sady readov sme generovali z genómu baktérie \emph{Staphylococcus aureus}\footnote{Dostupné na internete na stránke \url{http://gage.cbcb.umd.edu/data/index.html}}\footnote{Z genómu na stránke sme odstránili genómy plasmidov a použili len genóm samotnej baktérie.}. Tento genóm má dĺžku 2872915 báz, dĺžku readu $l$ sme zvolili 100 a dĺžku dotazu $k=13$. 
@@ -33,13 +51,17 @@ Podľa týchto parametrov sme dorátali, že počet readov v sadách pre jednotl
     \centering
     \includegraphics[width=16.5cm]{cr_errors}
     \caption{Závislosť spotreby pamäte na pokrytí pre rôznu chybovosť vstupnej sady readov.}
-    \label{fig:graf_staphyl}
+    \label{fig:graf_cr_errors}
 \end{figure}
 
-\subsection{Test na reálnych dátach}
-% graf realne data, variujem coverage (samplovanim nasimulujem ine converages)
+\clearpage
 
 \section{Zhrnutie a interpretácia výsledkov}
+Z výsledkov vykonaných testov môžeme skonštatovať, že úlohu naimplementovať pamäťovo efektívnu dátovú štruktúru indexujúcu ready sme úspešne splnili. CR-index vykazuje oproti knižnici GkArray rádovo nižšiu spotrebu pamäte pri zachovaní podobnej rýchlosti odpovedania na dotazy.
+
+Ďalej vidíme, že čas odpovedania na dotaz nezávisí od pokrytia readmi ani v prípade CR-indexu ani pri knižnici GkArray a tiež, že to, že odpovedanie na náhodne generované dotazy je rovnako rýchle ako odpovedanie na dotazy, ktoré zaručene vrátia nejaký výsledok (generovaná sada).
+
+Možnosti zlepšenia vidíme, ako sme spomínali už v časti \ref{ssec:mozne_zlepsenia}, napríklad v implementácii bloom filtra, ktorým by sme vedeli zlepšiť čas potrebný na vykonanie dotazu a tým by sme sa priblížili ku času, ktorý vykazuje knižnica GkArray. Ďalšie možné zlepšenie je efektívnejšie ukladať polia \emph{pos} a \emph{diff} -- pri vyšších pokrytiach práve tieto dve polia zaberajú väčšinu pamäte -- superstring totiž v pamäti uložený celý nemáme, FM-index drží iba vhodne komprimovanú verziu.
 
 \todo{nekonzistentnost oznaceni, superstring je raz ss a raz S}\\
 \todo{zmenit \emph{ready} na ready} \\

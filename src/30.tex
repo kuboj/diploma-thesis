@@ -412,6 +412,7 @@ V predchádzajúcom príklade sme zámerne uvažovali len ready, ktoré sa v sup
 Tak ako sme už uviedli v časti \ref{ssec:dotazy}, tak ,,pre splnenie poslednej podmienky z časti \ref{sec:definicia_problemu} by sme pre dotaz na vzorku $p$ mali zavolať metódu \emph{locate} aj pre vstup $rev\_compl(p)$ a výstupy pre obe volania spojiť do jedného poľa a vrátiť ako výstup to``.\end{pozn}
 
 \subsection{Možné zlepšenia}
+\label{ssec:mozne_zlepsenia}
 Naša implementácia CR-indexu ako riešenia \emph{problému indexovania readov} je síce pamäťovo výrazne efektívnejšia než implementácia pomocou hash mapy alebo použite knižnice GkArray, no stále je tu priestor na zlepšenie.
 
 V prvom rade by sa dali polia \emph{diff} a \emph{positions} reprezentovať efektívnejšie pomocou tzv. \emph{úsporných dátových štruktúr} (\emph{succinct data structures}) \cite{GBMP14}.
