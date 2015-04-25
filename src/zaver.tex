@@ -1,1 +1,5 @@
-\emph{Záver\ldots}
+V tejto práci sme sa venovali návrhu a implementácii dátovej štruktúry \emph{CR-index}, ktorá rieši \emph{problém indexovania readov} tak, ako sme ho zadefinovali -- ako efektívne indexovať vstupnú sadu readov a vedieť v nich vyhľadávať ready, ktoré obsahujú daný podreťazec.
+
+Túto dátovú štruktúru sme naimplementovali ako knižnicu pre jazyk \texttt{C++} a uverejnili na stránke  \url{https://github.com/kuboj/CR-index/}. Pri meraniach jej vlastností sme potvrdili predpoklad pamäťovej efektivity, ktorý vyplýval z jej návrhu a ukázali sme, že naša implementácia je výrazne efektívnejšia ako existujúce riešenia.
+
+V našej implementácii je však stále priestor na zlepšenia -- ako napríklad implementácia Bloom filtra, ktorý by znížil čas potrebný na vykonanie dotazu alebo pamäťovo efektívnejšia reprezentácia polí \emph{diff} a \emph{positions}.

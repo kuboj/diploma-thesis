@@ -1,1 +1,7 @@
-\emph{Úvod\ldots}
+Výsledkom príchodu nových technológií sekvenovania genómov je tlak na efektívne spracovávanie veľkého množstva dát -- \emph{sequence readov} -- ktoré sekvenátory produkujú. Jedným so súvisiacich problémov je aj problém, ako efektívne tieto sequence ready indexovať a vyhľadávať v nich.
+
+V súčastnosti nie sú k dispozícii knižnice, ktoré by tento problém vhodne riešili -- buď sú príliš všeobecné alebo sú neefektívne.
+
+V tejto práci sa zaoberáme návrhom a implementáciou dátovej štruktúry, pomocou ktorej by bolo možné efektívne indexovať ready a vyhľadávať v nich podľa vopred určených kritérií.
+
+V prvej kapitole sa oboznámime so základnými pojmami a algoritmami. V druhej kapitole zadefinujeme \emph{problém indexovania readov} ako algoritmickú úlohu. V kapitole č. 3 predstavíme náš návrh riešenia tohto problému -- dátovú štruktúru \emph{CR-index}. V nasledujúcej kapitole popíšeme jej implementáciu, ktorú sme realizovali v jazyku \texttt{C++} a v poslednej, piatej kapitole, prezentujeme výsledky meraní efektívnosti CR-indexu.

@@ -1,4 +1,4 @@
-V tejto kapitole sa oboznámime so základnými pojmami z bioinformatiky a
+V tejto kapitole sa oboznámime so základnými pojmami z bioinformatiky a s
 niektorými dátovými štruktúrami a algoritmami, ktoré budú neskôr použité pri
 implementácii.
 
@@ -33,65 +33,63 @@ I-ty symbol postupnosti tvoriacej reťazec $s$ budeme označovať $s[i]$.
 K-merom nazývame ľubovoľný podreťazec dĺžky $k$ ľubovoľného reťazca $s$ z množiny reťazcov $S$.
 \end{defn}
 
-\todo{mozno zmazat definiciu zarovnania, lebo je to tu kus odveci}
-
-\begin{defn}
-    Zarovnanie sekvencií $S_0=a_1 a_2 \ldots a_n$ a $S_1 = b_1 b_2 \ldots b_m$ je funkcia $f : \mathbb{Z}_n \to \mathbb{Z}_m \cup \{ \bot \} $ spĺňajúca nasledovnú podmienku:
-        
-    $ (\forall i, j \in \mathbb{Z}_n) (f(i) \neq \bot \wedge f(j) \neq \bot \wedge i < j) \implies (f(i) < f(j)) $
-\end{defn}
-    
-\bigskip
-    
-\begin{example}
-    Dve možné zarovnania sekvencií $S_0$ = \texttt{AGGTA} a $S_1$ = \texttt{GCTA}:
-    
-    \bigskip
-    
-    \begin{minipage}{2.5in}
-        \begin{tabular}{ c c c c c c c }
-            0 & 1 & 2 &   & 3 & 4 \\ \hline     
-            A & G & G & - & T & A \\
-            - & G & - & C & T & A \\ \hline
-              & 0 &   & 1 & 2 & 3 \\   
-        \end{tabular}
-    \end{minipage}
-    \begin{minipage}{2.5in}
-        \begin{tabular}{ | c | c | }
-            \hline            
-            $i$ & $f(i)$ \\ \hline             
-            0   & $\bot$ \\ \hline 
-            1   & 0      \\ \hline
-            2   & $\bot$ \\ \hline
-            3   & 2      \\ \hline
-            4   & 3      \\ \hline
-        \end{tabular}
-    \end{minipage}
-        
-    \bigskip
-        
-    \begin{minipage}{2.5in}
-        \begin{tabular}{ c c c c c c c c c }
-            0 & 1 & 2 & 3 & 4 &           \\ \hline     
-            A & G & G & T & A & - & - & - \\
-            - & - & G & - & - & C & T & A \\ \hline
-            &   & 0 &   &   & 1 & 2 & 3 \\   
-        \end{tabular}
-    \end{minipage}
-    \begin{minipage}{2.5in}
-        \begin{tabular}{ | c | c | }
-            \hline            
-            $i$ & $f(i)$ \\ \hline             
-            0   & $\bot$ \\ \hline 
-            1   & $\bot$ \\ \hline
-            2   & 0      \\ \hline
-            3   & $\bot$ \\ \hline
-            4   & $\bot$ \\ \hline
-        \end{tabular}
-    \end{minipage}        
-\end{example}
-    
-\bigskip
+%\begin{defn}
+%    Zarovnanie sekvencií $S_0=a_1 a_2 \ldots a_n$ a $S_1 = b_1 b_2 \ldots b_m$ je funkcia $f : \mathbb{Z}_n \to \mathbb{Z}_m \cup \{ \bot \} $ spĺňajúca nasledovnú podmienku:
+%        
+%    $ (\forall i, j \in \mathbb{Z}_n) (f(i) \neq \bot \wedge f(j) \neq \bot \wedge i < j) \implies (f(i) < f(j)) $
+%\end{defn}
+%    
+%\bigskip
+%    
+%\begin{example}
+%    Dve možné zarovnania sekvencií $S_0$ = \texttt{AGGTA} a $S_1$ = \texttt{GCTA}:
+%    
+%    \bigskip
+%    
+%    \begin{minipage}{2.5in}
+%        \begin{tabular}{ c c c c c c c }
+%            0 & 1 & 2 &   & 3 & 4 \\ \hline     
+%            A & G & G & - & T & A \\
+%            - & G & - & C & T & A \\ \hline
+%              & 0 &   & 1 & 2 & 3 \\   
+%        \end{tabular}
+%    \end{minipage}
+%    \begin{minipage}{2.5in}
+%        \begin{tabular}{ | c | c | }
+%            \hline            
+%            $i$ & $f(i)$ \\ \hline             
+%            0   & $\bot$ \\ \hline 
+%            1   & 0      \\ \hline
+%            2   & $\bot$ \\ \hline
+%            3   & 2      \\ \hline
+%            4   & 3      \\ \hline
+%        \end{tabular}
+%    \end{minipage}
+%        
+%    \bigskip
+%        
+%    \begin{minipage}{2.5in}
+%        \begin{tabular}{ c c c c c c c c c }
+%            0 & 1 & 2 & 3 & 4 &           \\ \hline     
+%            A & G & G & T & A & - & - & - \\
+%            - & - & G & - & - & C & T & A \\ \hline
+%            &   & 0 &   &   & 1 & 2 & 3 \\   
+%        \end{tabular}
+%    \end{minipage}
+%    \begin{minipage}{2.5in}
+%        \begin{tabular}{ | c | c | }
+%            \hline            
+%            $i$ & $f(i)$ \\ \hline             
+%            0   & $\bot$ \\ \hline 
+%            1   & $\bot$ \\ \hline
+%            2   & 0      \\ \hline
+%            3   & $\bot$ \\ \hline
+%            4   & $\bot$ \\ \hline
+%        \end{tabular}
+%    \end{minipage}        
+%\end{example}
+%    
+%\bigskip
 
 \begin{defn}
     \label{def:reverzny_komplement}
@@ -115,16 +113,16 @@ K-merom nazývame ľubovoľný podreťazec dĺžky $k$ ľubovoľného reťazca $
 \label{sec:sekvenovanie}
 Sekvenovanie DNA je súhrnný termín pre biochemické metódy, pomocou ktorých sa zisťuje poradie nukleotidov (A, C, T, G) v sekvenciách DNA. Tieto metódy nedokážu prečítať celý genóm naraz, ale len po malých častiach. 
 
-Z informatického pohľadu je výsledkom sekvenovania DNA sada reťazcov nad abecedou $\Sigma = \{A, C, T, G\}$\footnote{Veci začneme zjednodušovať už hneď zhurta zo začiatku a nebudeme rátať s neznámymi - $N$ (\emph{uNknown}) bázami v \emph{sequence readoch}.}, pričom tieto reťazce pochádzajú z jedného spoločného nadslova. Tieto reťazce nazývame \emph{sequence reads}. Pri sekvenovaní nás zaujímajú hlavne:
+Z informatického pohľadu je výsledkom sekvenovania DNA sada reťazcov nad abecedou $\Sigma = \{A, C, T, G\}$\footnote{Veci začneme zjednodušovať už hneď zhurta zo začiatku a nebudeme rátať s neznámymi - $N$ (\emph{uNknown}) bázami v sequencing readoch.}, pričom tieto reťazce pochádzajú z jedného spoločného nadslova. Tieto reťazce nazývame \emph{sequencing reads}. Pri sekvenovaní nás zaujímajú hlavne:
 
 \begin{itemize}
-    \item Dĺžka \emph{readov} - tá je daná použitou biochemickou metódou sekvenovania.
-    \item Počet \emph{readov}
-    \item Miera pokrytia - tá nam hovorí, v aspoň koľkých \emph{readoch} sa každý nukleotid sekvenovanej DNA nachádza.
-    \item Miera chýb - žiadna sekvenovacia metóda nie je dokonalá a teda daný \emph{sequence read} nemusí byť v skutočnosti podslovom sekvenovanej DNA, ale môže obsahovať nejaké chyby, napríklad nejaké bázy navyše, či niektoré zmenené.
+    \item Dĺžka readov - tá je daná použitou biochemickou metódou sekvenovania.
+    \item Počet readov
+    \item Miera pokrytia - tá nam hovorí, v aspoň koľkých readoch sa každá báza sekvenovanej DNA nachádza.
+    \item Miera chýb - žiadna sekvenovacia metóda nie je dokonalá a teda daný read nemusí byť v skutočnosti podslovom sekvenovanej DNA, ale môže obsahovať chyby, napríklad bázy navyše, či niektoré zmenené.
 \end{itemize}
 
-Tieto \emph{sequence reads} je potom potrebné bioinformatickými metódami poskladať do dlhších fragmentov na základe ich prekryvov -- tie sa nazývaju \emph{kontigy}. Túto úlohu riešia \emph{assemblery}.
+Ready je následne potrebné bioinformatickými metódami poskladať do dlhších fragmentov na základe ich prekryvov -- tie sa nazývajú \emph{kontigy}. Túto úlohu riešia \emph{assemblery}.
 
 \todo{viac o assembleroch? De novo transcriptome assembly ...}
 \todo{jednou vetou o FASTQ formate?}
@@ -195,16 +193,15 @@ lexikografickom usporiadaní nachádza pred všetkými znakmi uvažovanej abeced
     $\forall k: i \leq k \leq j: S[SA[k], \lvert S \rvert] = P$. Kedže je
     sufixové pole usporiadané, môžeme použiť binárne vyhľadávanie. V tomto
     prípade bude zložitosť algoritmu $O(\lvert P \rvert \log \lvert S \rvert)$.
-    (Porovnanie dvoch reťazcov dľžky $n$ je realizované v čase $O(n)$). Použitím
+    (Porovnanie dvoch reťazcov dĺžky $n$ je realizované v čase $O(n)$). Použitím
     $LCP$ (least common prefix) je možné tento čas vylepšiť na $O(\lvert P
     \rvert + \log{\lvert S \rvert})$. Idea spočíva v tom, že pri porovnávaní
     reťazcov nie je potrebné niektoré znaky porovnávať znovu, ak vieme, že sú
-    súčasťou $LCP$ - najdlhšieho spoločného prefixu - vzorky a momentálneho
+    súčasťou $LCP$ -- najdlhšieho spoločného prefixu -- vzorky a momentálneho
     prehľadávaného intervalu. V roku 2004 bol predstavený algoritmus
-    \cite{AKO04} pracujúci v čase dokonca $O(\lvert P \rvert)$.
+    \cite{AKO04} pracujúci dokonca v čase $O(\lvert P \rvert)$.
     
     \subsection{Konštrukcia sufixového poľa}
-    
     
     \subsubsection{Klasické triedenie}
     Merge sort potrebuje $O(n \log{n})$ porovnaní, no porovnanie každej dvojice sufixov trvá $O(n)$, takže dokopy konštrukcia sufixového poľa potrvá $O(n^2 \log{n})$.
@@ -220,9 +217,9 @@ Ak najprv skonštruujeme sufixový strom (to sa dá spraviť v čase $O(n)$) a p
     \todo{chcem tu nejak velmi rozpisovat nejaky konkretny linearny algoritmus?}
     
     \subsection{Pamäťová efektivita}
-    Sufixové polia sú vo všeobecnsti efektívnejšie než sufixové stromy, no v
+    Sufixové polia sú vo všeobecnosti efektívnejšie než sufixové stromy, no v
     niektorých prípadoch to nestačí. Sufixové pole vyžaduje $O(n \log{n})$
-    bitov, kdežto pôvodný text nad abecedou $\sigma$ len $O(n
+    bitov, no pôvodný text nad abecedou $\sigma$ len $O(n
     \log{\lvert \sigma \rvert})$. Pre ľudský genóm ($\sigma = \{A, C, T, G\}, n
     = 3.4 \times 10^9$) by teda sufixové pole zaberalo približne 16 krát viac
     pamäte než samotný genóm. Práve z tohto dôvodu sa objavili vylepšenia ako
@@ -412,11 +409,11 @@ Ak najprv skonštruujeme sufixový strom (to sa dá spraviť v čase $O(n)$) a p
         \end{tabular}
     \end{center}
     
-    \emph{LF mapping} nám hovorí nasledovnú vec: \emph{i-ty} výskyt znaku $c$ v $F$ má rovnaký \emph{rank} ako \emph{i-ty} výskyt $c$ v $L$. Všimnime si to napríklad na znaku $a$ - v $F$ sú ranky v poradí: 2, 1, 0, rovnako ako v $L$. To platí kvôli tomu, že keď si zvolíme nejaký znak $c$, tak usporiadanie jeho \emph{rankov} v $F$ je dané tým, čo nasleduje po tomto znaku $c$ v pôvodnom reťazci $T$ (pre $a$ je to teda poradie $\$, na\$, nana\$$). To je ale to isté, čím je dané poradie znakov $a$ v $L$ - tiež tým, čo sa nachádza za daným znakom v pôvodnom reťazci $T$.
+    \emph{LF mapping} nám hovorí nasledovnú vec: \emph{i-ty} výskyt znaku $c$ v $F$ má rovnaký \emph{rank} ako \emph{i-ty} výskyt $c$ v $L$. Všimnime si to napríklad na znaku $a$ -- v $F$ sú ranky v poradí: 2, 1, 0, rovnako ako v $L$. To platí kvôli tomu, že keď si zvolíme znak $c$, tak usporiadanie jeho rankov v $F$ je dané tým, čo nasleduje po tomto znaku $c$ v pôvodnom reťazci $T$ (pre $a$ je to teda poradie $\$, na\$, nana\$$). To je ale to isté, čím je dané poradie znakov $a$ v $L$ -- tiež tým, čo sa nachádza za daným znakom v pôvodnom reťazci $T$.
     
     \subsubsection{Reverzná BWT}
         
-     Na začiatku teda poznáme len $BWT(T)$, čo je posledný stĺpec ($L$) matice lexikograficky usporiadaných cyklických rotácií pôvodného reťazca $T$. Z neho si vieme spočitať prvý stĺpec ($F$) matice jednoduchým utriedením posledného stĺpca. Pri $BWT$ sme počítali \emph{rank} vzhľadom na $T$, teraz ho budeme počítať vzhľadom na $BWT(T)$:
+     Na začiatku teda poznáme len $BWT(T)$, čo je posledný stĺpec ($L$) matice lexikograficky usporiadaných cyklických rotácií pôvodného reťazca $T$. Pomocou neho vieme vyrátať prvý stĺpec ($F$) matice jednoduchým utriedením posledného stĺpca. Pri $BWT$ sme počítali rank vzhľadom na $T$, teraz ho budeme počítať vzhľadom na $BWT(T)$:
     
     \bigskip
     
@@ -453,7 +450,7 @@ Ak najprv skonštruujeme sufixový strom (to sa dá spraviť v čase $O(n)$) a p
         \item{Opakuj kroky 2 až 6 pokým nie je zrekonštruovaný pôvodný reťazec $T$.}
     \end{enumerate}
     
-    Pre náš príklad by teda postup vyzeral tak, že by sme začali v prvom riadku (resp. nultom), teda $pos = 0$, $c = a$. Ďalej by sme sa posunuli v $F$ na riadok 1 ($i = 1$), kde sa nachádza $a$ s \emph{rankom} 0. Na konci tohto riadka je $n$, to je teda predposledný znak pôvodného reťazca $T$. V tomto kroku priradíme do $c$ znak $n$ a opakujeme procedúru.
+    Pre náš príklad by postup vyzeral tak, že by sme začali v prvom riadku (resp. nultom), teda $pos = 0$, $c = a$. Ďalej by sme sa posunuli v $F$ na riadok 1 ($i = 1$), kde sa nachádza $a$ s rankom 0. Na konci tohto riadka je $n$, to je teda predposledný znak pôvodného reťazca $T$. V tomto kroku priradíme do $c$ znak $n$ a opakujeme procedúru.
     
     \emph{Rekonštrukcia odpredu} funguje podobne, no nasledujúce znaky sa extrahujú z prvého stĺpca rovnakého riadka a na posun ďalej sa využíva \emph{FL mapping}, ktorý je podstatne zložitejší na implementáciu.
     
@@ -461,7 +458,7 @@ Ak najprv skonštruujeme sufixový strom (to sa dá spraviť v čase $O(n)$) a p
     
 \section{FM-index}
 \label{sec:fm_index}
-    FM-index je komprimovaný index založený na Burrows-Wheelerovej transformácii, publikovaný v \cite{FM00}. Skratka \emph{FM} je odvodená od \emph{Full-text in Minute space} - \emph{full-text} index je dátová štruktúra nad textom $T$ umožňujúca efektívne vyhľadávanie podreťazcov v $T$. \emph{Minute space} znamená, že index je pamäťovo veľmi efektívny. Táto dátová štruktúra vo všeobecnosti podporuje dve operácie - \emph{count}, ktorá pre reťazec na vstupe vráti počet výskytov v $T$ a operáciu \emph{locate}, ktorej výsledkom pre nejaký vstupný reťazec $P$ je zoznam indexov v $T$, na ktorých sa $P$ vyskytuje v $T$.
+    FM-index je komprimovaný index založený na Burrows-Wheelerovej transformácii, publikovaný v \cite{FM00}. Skratka \emph{FM} je odvodená od \emph{Full-text in Minute space} -- \emph{full-text} index je dátová štruktúra nad textom $T$ umožňujúca efektívne vyhľadávanie podreťazcov v $T$. \emph{Minute space} znamená, že index je pamäťovo veľmi efektívny. Táto dátová štruktúra vo všeobecnosti podporuje dve operácie -- operáciu \emph{count}, ktorá pre reťazec na vstupe vráti počet výskytov v $T$ a operáciu \emph{locate}, ktorej výsledkom pre vstupný reťazec $P$ je zoznam indexov v $T$, na ktorých sa $P$ vyskytuje v $T$.
     
     Na FM-index sa dá pozerať ako na súbor tabuliek skladajúci sa z dvoch častí s istou funkcionalitou navyše. Prvú časť tvoria tabuľky, ktoré zabezpečujú vykonanie operácie \emph{count}. Do tejto kategórie patria všetky tabuľky podporujúce \emph{LF mapping}. Presnejšie, táto skupina sa skladá z dvoch tabuliek - tabuľky \emph{prefixových súm} $C$ a \emph{tabuľky výskytov} tiež označovanej ako $Occ$. Druhú kategóriu tvoria tabuľky, pomocou ktorých FM-index odpovedá na dotaz \emph{locate}.
     
@@ -473,13 +470,13 @@ Ak najprv skonštruujeme sufixový strom (to sa dá spraviť v čase $O(n)$) a p
     \end{figure}
     
     \subsubsection{Komprimované sufixové pole}
-    Komprimované sufixové pole (\emph{CSA - compressed suffix array}) pole sa využíva na zistenie pozície daného podreťazca v texte $T$. Nie je si ale potrebné držať v ňom pozície všetkých sufixov $T$, keďže pomocou \emph{LF mappingu} vieme zrekonštruovať podreťazec $T$ začínajúci na ľubovoľnej pozícii. Preto si stačí pamätať len pozície niektorých sufixov a potom pomocou \emph{LF mappingu} len čiastočne rekonštruovať $T$, pokým nedosiahneme nejakú pamätanú pozíciu sufixu. Komprimované sufixové pole zaberá iba zlomok pamäte oproti pôvodnému, no na oplátku sa kvôli nutnosti čiastočnej rekonštrukcie výrazne zvýši čas trvania operácie \emph{locate}.
+    Komprimované sufixové pole (\emph{CSA - compressed suffix array}) pole sa využíva na zistenie pozície daného podreťazca v texte $T$. Nie je si ale potrebné držať v ňom pozície všetkých sufixov $T$, keďže pomocou LF mappingu vieme zrekonštruovať podreťazec $T$ začínajúci na ľubovoľnej pozícii. Preto si stačí pamätať len pozície niektorých sufixov a potom pomocou LF mappingu len čiastočne rekonštruovať $T$, pokým nedosiahneme nejakú pamätanú pozíciu sufixu. Komprimované sufixové pole zaberá iba zlomok pamäte oproti pôvodnému, no na oplátku sa kvôli nutnosti čiastočnej rekonštrukcie výrazne zvýši čas trvania operácie \emph{locate}.
     
     \subsubsection{Tabuľka prefixových súm}
     Táto tabuľka obsahuje pre každý znak $c$ danej abecedy počet výskytov lexikograficky menších znakov ako $c$ v danom reťazci $S$. Narozdiel od sufixového poľa ale nie je tak ľahko komprimovateľná, keďže frekvencie výskytu jednotlivých znakov sú na sebe navzájom nezávislé. Na druhej strane, zvyčajne býva veľkosť abecedy rádovo menšia než dĺžka textu, takže veľkosť tejto tabuľky bude prispievať do celkovej pamäťovej náročnosti len malou časťou\footnote{Špeciálne to platí v našom, bioinformatickom kontexte, kde používame štvorpísmenovú abecedu a genómy majú dĺžky v miliónoch.}.
     
     \subsubsection{Tabuľka výskytov}
-    Tabuľka výskytov $Occ$ pre dané $c$ a $k$ vráti počet výskytov znaku $c$ v prefixe $S[0..k]$ daného reťazca $S$. Keď túto tabuľku skonštruujeme nad $BWT(T)$, tak \emph{LF mapping} vieme zadefinovať ako $$LF(i) = C[BWT(T)[i]] + Occ(BWT(T)[i], i)$$
+    Tabuľka výskytov $Occ$ pre dané $c$ a $k$ vráti počet výskytov znaku $c$ v prefixe $S[0..k]$ daného reťazca $S$. Keď túto tabuľku skonštruujeme nad $BWT(T)$, tak LF mapping vieme zadefinovať ako $$LF(i) = C[BWT(T)[i]] + Occ(BWT(T)[i], i)$$
     Rýchlosť prístupu k tejto tabuľke a jej pamäťová náročnosť je najdôležitejším faktorom FM-indexu. 
     
     \bigskip
@@ -513,7 +510,7 @@ Ak najprv skonštruujeme sufixový strom (to sa dá spraviť v čase $O(n)$) a p
     \end{example}
 
     \subsection{Vyhľadávanie pomocou FM-indexu}
-    Vyhľadávanie v FM-indexe rozdelíme na dve fázy - \emph{počítaciu} a \emph{lokalizačnú} (pri operácii \emph{count} stačí vykonať prvú časť, pre \emph{locate} obe). \emph{Počítacia} fáza má za úlohu identifikovať rozsah sufixov zo sufixového poľa, ktoré majú rovnaký prefix -- vyhľadávanú vzorku\footnote{Z definície sufixového poľa vyplýva, že sufixy s rovnakým prefixom nasledujú v sufixovom poli za sebou} a \emph{lokalizačná} fáza potom identifikuje vzorky v sufixovom poli.
+    Vyhľadávanie v FM-indexe rozdelíme na dve fázy -- \emph{počítaciu} a \emph{lokalizačnú} (pri operácii \emph{count} stačí vykonať prvú časť, pre \emph{locate} obe). \emph{Počítacia} fáza má za úlohu identifikovať rozsah sufixov zo sufixového poľa, ktoré majú rovnaký prefix -- vyhľadávanú vzorku\footnote{Z definície sufixového poľa vyplýva, že sufixy s rovnakým prefixom nasledujú v sufixovom poli za sebou} a \emph{lokalizačná} fáza potom identifikuje vzorky v sufixovom poli.
     
     \subsubsection{Počítacia fáza}
     Hľadanie vzorky v sufixovom poli je časovo veľmi efektívne, pretože sa zároveň hľadajú všetky výskyty danej vzorky $P$ -- simultánnym posúvaním ukazovateľov hornej a dolnej hranice v sufixovom poli. Označme tieto ukazovatele $sp$ a $ep$ (z ang. \emph{starting} resp. \emph{ending pointer}). Znak $c$ bude obsahovať momentálne spracovávaný znak vzorky $P$, pričom začneme posledným znakom a budeme tiež využívať pomocné polia $Occ$ a $C$ zadefinované v predchádzajúcej časti. Ukazovateľ $sp$ bude inicializovaný na $C[c]$ a ukazovateľ $ep$ na $C[c + 1]$ -- v tomto prípade už tieto ukazovatele ukazujú na prvý resp. posledný výskyt posledného písmena $P$ v $F$\footnote{Pripomeňme, že $F$ je prvým stĺpcom $BWM$ a $F$ je vlastne pole znakov, ktoré zodpovedajú indexom sufixového poľa do pôvodného textu $T$.}.
@@ -534,7 +531,7 @@ while i > 0 do
 end
     \end{pseudocode}
     
-    $Occ(c, sp - 1)$ (riadok 5) vracia počet znakov $c$ v $BWT(T)[0..(sp - 1)]$. Keď k nemu pripočítame počet znakov, ktoré sú menšie než $c$ ($C[c]$) dostávame pozíciu prvého $c$ v rozsahu $sp$ až $ep$ v $F$. Operácie v riadkoch 5 a 6 realizujú \emph{LF mapping} pre prvý a posledný výskyt $c$ v $BWT(T)[sp..ep]$ (ak by sme nemali k dispozícii tabuľku $Occ$, museli by sme najprv nájsť prvý a posledný výskyt $c$ v $BWT(T)[sp..ep]$ a až potom použiť \emph{LF mapping}).
+    $Occ(c, sp - 1)$ (riadok 5) vracia počet znakov $c$ v $BWT(T)[0..(sp - 1)]$. Keď k nemu pripočítame počet znakov, ktoré sú menšie než $c$ ($C[c]$) dostávame pozíciu prvého $c$ v rozsahu $sp$ až $ep$ v $F$. Operácie v riadkoch 5 a 6 realizujú LF mapping pre prvý a posledný výskyt $c$ v $BWT(T)[sp..ep]$ (ak by sme nemali k dispozícii tabuľku $Occ$, museli by sme najprv nájsť prvý a posledný výskyt $c$ v $BWT(T)[sp..ep]$ a až potom použiť LF mapping).
     
     \bigskip
     \begin{example}
@@ -592,25 +589,25 @@ end
     \subsubsection{Zlepšenia}
     Ak by mala tabuľka $Occ$ odpovedať v konštantnom čase, zaberala by značné množstvo pamäte, preto sa v praxi pri jej implementácii používajú sofistikovanejšie dátové štruktúry ako napríklad \emph{wavelet tree} \cite{GGV03}.
     
-    Čo sa týka lokalizačnej fázy, tak je potrebné spomenúť, že pamätanie si celého sufixového poľa by zaberalo priveľa pamäte, preto sa v praxi používajú napríklad komprimované sufixové pole -- ukladá sa len časť pôvodného sufixového poľa a chýbajúce hodnoty sa potom v prípade potreby dorátavajú pomocou pamätaných hodnôt.
+    Čo sa týka lokalizačnej fázy, tak je potrebné spomenúť, že pamätanie si celého sufixového poľa by zaberalo priveľa pamäte, preto sa v praxi používa napríklad komprimované sufixové pole -- ukladá sa len časť pôvodného sufixového poľa a chýbajúce hodnoty sa potom v prípade potreby dorátavajú pomocou pamätaných hodnôt.
     
     \todo{MTF, RL, wavelet, huffman, ... citacie, odkazy, fm index v2}
     
 \section{Algoritmy na zostavovanie genómu}
     Výsledkom sekvenovania genómu (pri použití súčasných technológií) je veľké
-    množstvo malých fragmentov - \emph{sequencing reads}, ktoré je potrebné
+    množstvo malých fragmentov -- \emph{sequencing reads}, ktoré je potrebné
     zostaviť do jednej súvislej sekvencie. Náročnosť tejto úlohy závisí najmä
     od:
     
     \begin{itemize}
         \item dĺžky zostavovaného genómu - čím je kratší, tým je to jednoduchšie
-        \item dĺžok jednotlivých fragmentov - čím sú dlhšie, tým lepsie
+        \item dĺžok jednotlivých fragmentov - čím sú dlhšie, tým lepšie
         \item priemernej hĺbky pokrytia - tzn koľko fragmentov v priemere
         pokrýva konkrétnu pozíciu zostavovanej sekvencie - čím viac, tým lepšie
     \end{itemize}
 
     \subsection{Najkratšie spoločné nadslovo}
-    Asi najjednodušiu formuláciu problému zostavovania genómu predstavuje
+    Asi najjednoduchšiu formuláciu problému zostavovania genómu predstavuje
     problém hľadania najkratšieho spoločného nadslova (\emph{shortest common
     superstring}).
     
@@ -644,7 +641,7 @@ end
     
     Porovnávanie každej dvojice fragmentov by však bolo v praxi veľmi časovo náročné, nakoľko fragmentov môžu byť často milióny a pri porovnaní každej dvojice by sme potrebovali rádovo $O(n^2k)$ času (kde $n$ je počet fragmentov a $O(k)$ je čas, ktorý trvá porovnanie dvoch fragmentov). 
     
-    Efektívnejšie algoritmy sú založené na predpoklade, že ak sa dva fragmenty úplne zhodujú na úseku dľžky aspoň $k$ (v praxi sa používa $k \approx 24$ ), tak pochádzajú z toho istého miesta v sekvenovanom genóme a teda sú spojené do jedného kontigu. 
+    Efektívnejšie algoritmy sú založené na predpoklade, že ak sa dva fragmenty úplne zhodujú na úseku dĺžky aspoň $k$ (v praxi sa používa $k \approx 24$ ), tak pochádzajú z toho istého miesta v sekvenovanom genóme a teda sú spojené do jedného kontigu. 
     
     Vo všeobecnosti vyzerá tento postup nasledovne:
     \begin{itemize}
@@ -653,7 +650,7 @@ end
         \item skupiny výrazne sa prekrývajúcich fragmentov sa v utriedenom zozname budú vyskytovať pohromade a práve to sú dobrí kandidáti na spojenie do kontigov
     \end{itemize}
     
-    \subsubsection{Layouy}
+    \subsubsection{Layout}
 V druhej fáze assembler určuje relatívnu polohu jednotlivých kontigov a ich približné vzdialenosti, výsledné bloky kontigov sa nazývajú \emph{superkontigy}.
 
     \subsubsection{Consensus}
