@@ -43,7 +43,7 @@ Tabuľka \ref{fig:graf_cr_gk_query_rand} ilustruje namerané hodnoty pre sadu 10
 \clearpage
 
 \subsection{Pamäť vs. pokrytie}
-V tomto teste sme merali závislosť spotreby pamäte na pokrytí pre rôznu chybovosť readov. Sady readov sme generovali z genómu baktérie \emph{Staphylococcus aureus}\footnote{Dostupné na internete na stránke \url{http://gage.cbcb.umd.edu/data/index.html}}\footnote{Z genómu na stránke sme odstránili genómy plasmidov a použili len genóm samotnej baktérie.}. Tento genóm má dĺžku 2872915 báz, dĺžku readu $l$ sme zvolili 100 a dĺžku dotazu $k=13$. 
+V tomto teste sme merali závislosť spotreby pamäte na pokrytí pre rôznu chybovosť readov. Sady readov sme generovali z genómu baktérie \emph{Staphylococcus aureus}\footnote{Dostupné na internete na stránke \url{http://gage.cbcb.umd.edu/data/index.html}}\footnote{Z genómu na stránke sme odstránili genómy plazmidov a použili len genóm samotnej baktérie.}. Tento genóm má dĺžku 2872915 báz, dĺžku readu $l$ sme zvolili 100 a dĺžku dotazu $k=13$. 
 
 Podľa týchto parametrov sme dorátali, že počet readov v sadách pre jednotlivé pokrytia je: 57458 readov pre pokrytie $2\times$, 143645 readov pre pokrytie $5\times$, 287291 readov pre pokrytie $10\times$, 574583 readov pre pokrytie $20\times$ a 1436457 readov pre pokrytie $50\times$.
 
@@ -64,8 +64,5 @@ Z výsledkov vykonaných testov môžeme skonštatovať, že úlohu naimplemento
 Možnosti zlepšenia vidíme, ako sme spomínali už v časti \ref{ssec:mozne_zlepsenia}, napríklad v implementácii bloom filtra, ktorým by sme vedeli zlepšiť čas potrebný na vykonanie dotazu a tým by sme sa priblížili ku času, ktorý vykazuje knižnica GkArray. Ďalšie možné zlepšenie je efektívnejšie ukladať polia \emph{pos} a \emph{diff} -- pri vyšších pokrytiach práve tieto dve polia zaberajú väčšinu pamäte -- superstring totiž v pamäti uložený celý nemáme, FM-index drží iba vhodne komprimovanú verziu.
 
 \todo{nekonzistentnost oznaceni, superstring je raz ss a raz S}\\
-\todo{zmenit \emph{ready} na ready} \\
 \todo{usamova minimovka - citacie} \\
-\todo{usamova minimovka - 1.1 shortest common superstring je np-hard + 2.5 apx.(?)} \\
-\todo{mensie odstavce} \\
-\todo{vyhodit slovo 'nejak'}
+\todo{usamova minimovka - 1.1 shortest common superstring je np-hard + 2.5 apx.(?)}
