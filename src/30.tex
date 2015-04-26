@@ -13,7 +13,7 @@ Superstring v princípe predstavuje najkratšie spoločné nadslovo pre ready, n
 
 \subsection{Index}
 \label{ssec:index}
-V ďalšej fáze konštrukcie CR-indexu vytvoríme nad superstringom (opäť) FM-index. V tejto chvíli sme už schopní efektívne vyhľadávať vzorky v superstringu, no keď nám operácia FM-indexu \emph{locate} vráti zoznam pozícií superstringu, kde sa daná vzorka nachádza, nevieme z toho povedať ktorým readom tieto pozície prislúchajú. Potrebujeme si teda predrátať, kde sa ktorý read nachádza. Na to použijeme pole \emph{positions} -- jeho prvkami budú trojice $(i, r, b)$ - $i$ bude označovať index v superstringu, kde začína read $r$. Logická premenná $b$ označuje, či sa v superstringu nachádza samotný read ($b=0$) alebo jeho reverzný komplement ($b=1$). Algoritmus na konštrukciu CR-indexu teda vyzerá nasledovne\footnote{Táto implementácia slúži len pre účely vysvetlenia konštrukcie CR-indexu. Reálna implementácia vyzerá trochu odlišne a popíšeme ju v kapitole \ref{ch:implementacia}.}:
+V ďalšej fáze konštrukcie CR-indexu vytvoríme nad superstringom (opäť) FM-index. V tejto chvíli sme už schopní efektívne vyhľadávať vzorky v superstringu, no keď nám operácia FM-indexu \emph{locate} vráti zoznam pozícií superstringu, kde sa daná vzorka nachádza, nevieme z toho povedať ktorým readom tieto pozície prislúchajú. Potrebujeme si teda predrátať, kde sa ktorý read nachádza. Na to použijeme pole \emph{positions} -- jeho prvkami budú trojice $(i, r, b)$ - $i$ bude označovať index v superstringu, kde začína read $r$. Logická premenná $b$ označuje, či sa v superstringu nachádza samotný read ($b=0$) alebo jeho reverzný komplement ($b=1$). Algoritmus na konštrukciu CR-indexu teda vyzerá nasledovne\footnote{Táto implementácia slúži len pre účely vysvetlenia konštrukcie CR-indexu. Reálna implementácia sa do istej miery odlišuje a popíšeme ju neskôr.}.
 
 \bigskip
 \begin{pseudocode}[label=lst:cr_index_construction,caption={Algoritmus konštrukcie CR-indexu nad readmi bez chýb.}]
@@ -57,7 +57,7 @@ Algoritmus najprv zavolá assembler (riadok \ref{lst:cr_index_construction_assem
 
 \subsection{Dotazy}
 \label{ssec:dotazy}
-Úlohou je pre reťazec $p$ na vstupe vrátiť tie ready, ktoré obsahujú $p$ ako podreťazec. Najprv uvedieme algoritmus v pseudokóde a potom ho vysvetlíme:
+Úlohou je pre reťazec $p$ na vstupe vrátiť tie ready, ktoré obsahujú $p$ ako podreťazec. Najprv uvedieme algoritmus v pseudokóde a ten následne vysvetlíme:
 
 \bigskip
 \begin{pseudocode}[label=lst:cr_index_query,caption={Algoritmus dotazu \emph{locate} CR-indexu nad readmi bez chýb.}]
@@ -141,7 +141,7 @@ A\mathbf{AAT}TGGCCCAATTGATTACCCCCAT\mathbf{AAT}CAAA
 $$
 Vidíme, že FM-index nad superstringom nám ako výsledok vrátil dve hodnoty -- 1 a 26. Ak $i=1$, potom začiatok najľavejšieho readu, ktorý môže vzorku obsahovať je 0, začiatok najpravejšieho 1, iterátor \emph{low} (riadok \ref{lst:cr_index_query_low} listingu \ref{lst:cr_index_query}) ukazuje na index 0 poľa \emph{positions} a iterátor \emph{up} (riadok \ref{lst:cr_index_query_up}) na pozíciu 2 (túto hodnotu už iterátor \emph{pos} pri iterovaní (riadok \ref{lst:cr_index_query_foreach2}) nenabudne). Výsledkom teda budú ready začínajúce na indexoch 0 a 1 -- $AAATTG$ a $AATTGG$.
 
-Pokračujme pre $i=26$. Iterátor \emph{low} bude ukazovať na index 8 v poli \emph{positions} (lebo najľavejší read obsahujúci tento výsky vzorky $p$ môže začínať na indexe 23). Iterátor \emph{up} bude ukazovať tiež na index 8, takže cyklus \emph{for} na riadku \ref{lst:cr_index_query_foreach2} sa nevykoná ani raz -- čo je v poriadku, keďže síce sme našli výskyt vzorky v superstringu, no nachádzal sa akurát na rozhraní readov a teda ani jeden read ho neobsahoval.
+Pokračujme pre $i=26$. Iterátor \emph{low} bude ukazovať na index 8 v poli \emph{positions} (lebo najľavejší read obsahujúci tento výskyt vzorky $p$ môže začínať na indexe 23). Iterátor \emph{up} bude ukazovať tiež na index 8, takže cyklus \emph{for} na riadku \ref{lst:cr_index_query_foreach2} sa nevykoná ani raz -- čo je v poriadku, keďže síce sme našli výskyt vzorky v superstringu, no nachádzal sa akurát na rozhraní readov a teda ani jeden read ho neobsahoval.
 
 V tomto momente je dôležité si všimnúť, že týmto spôsobom sme nenašli všetky výskyty vzorky $p=AAT$, napríklad read $GGTAAT$ ju obsahuje, no tento read sme (zatiaľ) na výstup neposunuli. Assemblery totiž pokladajú ready a ich reverzné komplementy za identické a teda sa môže stať, že niektorý kontig bude zložený len z reverzných komplementov -- v našom príklade je to $c_1$. Preto pri zisťovaní výskytu vzorky $p$ potrebujeme vykonať dopyt aj pre $rev\_compl(p)$ a výsledné množinu readov zjednotiť. Pre vzorku $TAA = rev\_compl(AAT)$ nám už FM-index vráti výskyty v superstringu, ktoré potom úspešne preložíme na chýbajúce ready.
 
