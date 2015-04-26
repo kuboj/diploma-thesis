@@ -51,13 +51,13 @@ nadslova. (Triviálnym riešením by bolo $O(n \cdot L)$, kde $L$ je dĺžka rea
 \label{sec:riesenie_s_pouzitim_hash_mapy}
 Ako prvé netriviálne riešenie tohto problému sa naskytá použitie hash mapy,
 kde kľúčom sú všetky možné hľadané vzorky $p$ (tie generovať vieme,
-keďže máme dopredu danú dĺzku $k = |p|$ a pracujeme nad konečnou abecedou) a
-hodnota pre daný kľúč by bol zoznam \emph{readov}, ktoré tento \emph{pattern}
-obsahujú. Algorimus na generovanie takejto hash mapy by vyzeral naslednovne:
+keďže máme dopredu danú dĺžku $k = |p|$ a pracujeme nad konečnou abecedou) a
+hodnota pre daný kľúč by bol zoznam readov, ktoré túto vzorku
+obsahujú. Algoritmus na generovanie takejto hash mapy by vyzeral naslednovne:
 
 \bigskip
 \begin{pseudocode}[label=lst:hash_algorithm,caption={Algoritmus na riešenie
-problému zarovnania readov pomocou hash mapy}]
+problému indexovania readov pomocou hash mapy}]
 h = HashMap.new
 
 def process(R)
@@ -79,15 +79,15 @@ end
 \end{pseudocode}
 \bigskip
 
-Pre každý \emph{read} $r$ zo zoznamu \emph{readov} $R$ vygerujeme všetky jeho
+Pre každý read $r$ zo zoznamu readov $R$ vygenerujeme všetky jeho
 podreťazce dĺžky $k$ a tie použijeme ako kľúče do hash mapy, pomocou ktorých
-tento \emph{read} zaindexujeme jeho pridaním do spájaného zozanmu.
+tento read zaindexujeme jeho pridaním do spájaného zoznamu.
 
 Hľadanie vzorky $p$ potom prebieha tak, že vrátime zreťazené spájané
 zoznamy pre $p$ a reverzný komplement $p$.
 
 \begin{example}
-    Príklad hash mapy pre množinu \emph{readov} $$S = \{ACTTT, CTTAT, TTTAT,
+    Príklad hash mapy pre množinu readov $$S = \{ACTTT, CTTAT, TTTAT,
     AAACT, ACTGA\}$$.
     \begin{figure}[h]
         \centering
@@ -96,16 +96,16 @@ zoznamy pre $p$ a reverzný komplement $p$.
         \label{fig:hash_map}
     \end{figure}
     \\
-    Pre vzorku napr. $TTT$ by teda bola výsledkom množina \emph{readov} $R =
+    Pre vzorku napr. $TTT$ je výsledkom množina \emph{readov} $R =
     \{ACTTT, AAACT\}$. $AAACT$ sa do výsledku dostane kvôli tomu, že hľadáme aj reverzné komplementy.
 \end{example}
 
-Vyhľadávanie vzorky prebieha v konštantnom čase, no pamäťová uložitosť tohto
+Vyhľadávanie vzorky prebieha v konštantnom čase, no pamäťová zložitosť tohto
 riešenia ale nie je ani zďaleka optimálna, v najhoršom prípade až $O(n \cdot
 l)$. Existuje množstvo zlepšení, napríklad:
 
 \begin{itemize}
-    \item miesto celých \emph{readov} nám stačí si v spájanom zozname
+    \item miesto celých readov nám stačí si v spájanom zozname
     pamätať len indexy daných readov
     \item kľúče možno komprimovať napríklad nasledovným spôsobom: pre znaky
     tvoriace kľúče vytvoríme nasledovné kódovanie: $A = 00$, $C = 01$, $T = 10$,
@@ -118,29 +118,29 @@ l)$. Existuje množstvo zlepšení, napríklad:
 
 \section{Riešenie s použitím GkArray}
 \label{sec:riesenie_s_pouzitim_gkarray}
-V roku 2011 vyšiel v \emph{BMC Bioinformatics} článok od N. Phillipea a spol.\cite{NP11} prezentujúci dátovú štruktúru s názvom \emph{GkArray}. Cieľom autorov bolo navrhnúť a implementovať univerzálne riešenie na indexáciu \emph{sequence readov} a vyhľadávanie v nich cez \emph{k}-mery vopred danej dĺžky. Vstupom pre jej konštrukciu je sada \emph{sequence readov} každý  dĺžky $m$ a číslo $k$, kde $k \leq m$. Dátová štruktúra \emph{GkArray} je konštruovaná tak, aby vedela odpovedať na nasledujúce dotazy\footnote{V pôvodnom článku je uvedený aj ôsmy dotaz, ktorý je ale ekvivalentný so šiestym, my sme si ho dovolili rovno vynechať.}:
+V roku 2011 vyšiel v \emph{BMC Bioinformatics} článok od N. Phillipea a spol.\cite{NP11} prezentujúci dátovú štruktúru s názvom \emph{GkArray}. Cieľom autorov bolo navrhnúť a implementovať univerzálne riešenie na indexáciu readov a vyhľadávanie v nich cez \emph{k}-mery vopred danej dĺžky. Vstupom pre jej konštrukciu je sada readov, každý dĺžky $m$, a číslo $k$, kde $k \leq m$. Dátová štruktúra \emph{GkArray} je konštruovaná tak, aby vedela odpovedať na nasledujúce dotazy\footnote{V pôvodnom článku je uvedený aj ôsmy dotaz, ktorý je ale ekvivalentný so šiestym, my sme si ho dovolili rovno vynechať.}:
 
 \begin{itemize}
-    \item[\textbf{Q1}:]{Ktoré \emph{ready} obsahujú $f$ ako podreťazec?}
-    \item[\textbf{Q2}:]{Koľko \emph{readov} obsahuje $f$ ako podreťazec?}
-    \item[\textbf{Q3}:]{Na ktorých pozíciach sa v jednotlivých \emph{readoch} $f$ nachádza?}
-    \item[\textbf{Q4}:]{Aký je celkový počet výskytov $f$ vo všetkých \emph{readoch}?}
-    \item[\textbf{Q5}:]{V ktorých \emph{readoch} sa $f$ nachádza len raz?}
-    \item[\textbf{Q6}:]{V koľkých \emph{readoch} sa $f$ nachádza len raz?}
-    \item[\textbf{Q7}:]{Na ktorých pozíciach v \emph{readoch}, ktoré ho obsahujú len raz sa $f$ nachádza?}
+    \item[\textbf{Q1}:]{Ktoré ready obsahujú $f$ ako podreťazec?}
+    \item[\textbf{Q2}:]{Koľko readov obsahuje $f$ ako podreťazec?}
+    \item[\textbf{Q3}:]{Na ktorých pozíciach sa v jednotlivých readoch $f$ nachádza?}
+    \item[\textbf{Q4}:]{Aký je celkový počet výskytov $f$ vo všetkých readoch?}
+    \item[\textbf{Q5}:]{V ktorých readoch sa $f$ nachádza len raz?}
+    \item[\textbf{Q6}:]{V koľkých readoch sa $f$ nachádza len raz?}
+    \item[\textbf{Q7}:]{Na ktorých pozíciach v readoch, ktoré ho obsahujú len raz sa $f$ nachádza?}
 \end{itemize}
 
-\emph{GkArray} vnútorne používa 4 polia -- \emph{GkSA} (Generalized \emph{k} Suffix Array), čo je nejakým spôsobom modifikované sufixové pole skonštruované nad reťazcom získaným zreťazením všetkých \emph{readov} zo vstupu, \emph{GkIFA} (Generalized \emph{k} Inverse Array) predstavuje obmenu sufixového poľa reverzov, \emph{GkCFA} (Generalized \emph{k} Counting Factor Array) a štvrté pole, \emph{GkCFPS} (Generalized \emph{k} Counting Factor Prefix Sum) je použité len pri konštrukcii prvých troch.
+\emph{GkArray} vnútorne používa 4 polia -- \emph{GkSA} (Generalized \emph{k} Suffix Array), čo je vhodným spôsobom modifikované sufixové pole skonštruované nad reťazcom získaným zreťazením všetkých readov zo vstupu, \emph{GkIFA} (Generalized \emph{k} Inverse Array) predstavuje obmenu sufixového poľa reverzov, \emph{GkCFA} (Generalized \emph{k} Counting Factor Array) a štvrté pole, \emph{GkCFPS} (Generalized \emph{k} Counting Factor Prefix Sum) je použité len pri konštrukcii prvých troch.
 
 \todo{ako velmi rozpisovat fungovanie GkArrayu?}
 
-Vidíme teda, že štruktúra \emph{GkArray} by mala vedieť riešiť \emph{problém indexovania readov} podľa našej definície pomocou odpovedí na dotazy \textbf{Q1} -- \textbf{Q4}. Pri indexácii ale len zreťazí reťazce zo vstupu a nijak nevyužíva to, že sú to \emph{sequence ready} nejakého genómu, nesnaží sa ich nijak komprimovať. Skúsme teda spraviť jednoduché porovnanie spotreby pamäte v porovnaní s hash mapou.
+Vidíme teda, že štruktúra \emph{GkArray} by mala vedieť riešiť \emph{problém indexovania readov} podľa našej definície pomocou odpovedí na dotazy \textbf{Q1} -- \textbf{Q4}. Pri indexácii ale len zreťazí reťazce zo vstupu a nijak nevyužíva to, že sú to sekvencieho nejakého genómu, nesnaží sa ich nijak komprimovať. Skúsme teda spraviť jednoduché porovnanie spotreby pamäte v porovnaní s hash mapou.
 
 \section{Porovnanie}
-Pre porovnanie sme použili náhodne vybraných milión \emph{readov} z \emph{E.Coli MG1655 Illumina HiSeq2000 sequencing dataset}\footnote{Dostupné verejne na internete na \url{ftp://webdata:webdata@ussd-ftp.illumina.com/Data/SequencingRuns/MG1655/MiSeq\_Ecoli\_MG1655\_110721\_R1.fastq}}, pričom dĺžka každého \emph{readu} bola 151 báz a dĺžku dotazu sme zvolil $k=13$. Program, ktorý sme použili na testovanie je dostupný na internete na adrese \url{https://github.com/kuboj/CR-index/blob/master/benchmark/construct.cpp}.
+Pre porovnanie sme použili náhodne vybraných milión readov z \emph{E.Coli MG1655 Illumina HiSeq2000 sequencing dataset}\footnote{Dostupné verejne na internete na \url{ftp://webdata:webdata@ussd-ftp.illumina.com/Data/SequencingRuns/MG1655/MiSeq\_Ecoli\_MG1655\_110721\_R1.fastq}}, pričom dĺžka každého readu bola 151 báz a dĺžku dotazu sme zvolil $k=13$. Program, ktorý sme použili na testovanie je dostupný na internete na adrese \url{https://github.com/kuboj/CR-index/blob/master/benchmark/construct.cpp}.
 
-Kompilácia a test prebehli počítači s nainštalovanou 64-bitovou verziou operačného systému Linux 3.16.0-33, kompilátorom \texttt{gcc} verzie 4.9.1 a \texttt{glibc} verziou 2.19. Pri kompilácii boli zapnuté všetky optimalizačné prepínače (\texttt{-O3}).
+Kompilácia a test prebehli počítači s nainštalovanou 64-bitovou verziou operačného systému Linux 3.16.0-33 a kompilátorom \texttt{gcc} verzie 4.9.1. Pri kompilácii boli zapnuté všetky optimalizačné prepínače (\texttt{-O3}).
 
-Ako implementáciu hash mapy sme zvolili \\ \texttt{stl::unordered\_map $<$string, vector$<$int$>>$} - to znamená, že sme nepamätáme všetky \emph{ready}, ale len ich indexy a tie vypisujeme na výstup . Nepoužili sme ani komprimáciu kľúčov, ktorú sme vyššie naznačili.
+Ako implementáciu hash mapy sme zvolili \\ \texttt{stl::unordered\_map $<$string, vector$<$int$>>$} - to znamená, že sme nepamätáme všetky ready, ale len ich indexy a tie vypisujeme na výstup . Nepoužili sme ani komprimáciu kľúčov, ktorú sme vyššie naznačili.
 
-Vo výsledku zaberala hash mapa 2703080kB a \emph{GkArray} 1241084kB (pričom čas konštrukcie hash mapy bol len o málo kratší). Keď si uvedomíme, že vstup tvorilo 150MB dát, tak nám pre \emph{GkArray} vychádza ,,cena`` za jednu bázu na vstupe veľmi vysoká, okolo 8 bajtov. Určite su preto myslíme, že je v tejto oblasti priestor na zlepšenie.
+Vo výsledku zaberala hash mapa 2703080kB a \emph{GkArray} 1241084kB (pričom čas konštrukcie hash mapy bol len o málo kratší). Keď si uvedomíme, že vstup tvorilo 150MB dát, tak nám pre \emph{GkArray} vychádza ,,cena`` za jednu bázu na vstupe veľmi vysoká, okolo 8 bajtov. Určite si preto myslíme, že je v tejto oblasti priestor na zlepšenie.
