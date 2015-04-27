@@ -124,9 +124,6 @@ Z informatického pohľadu je výsledkom sekvenovania DNA sada reťazcov nad abe
 
 Ready je následne potrebné bioinformatickými metódami poskladať do dlhších fragmentov na základe ich prekryvov -- tie sa nazývajú \emph{kontigy}. Túto úlohu riešia softvérové nástroje nazývané\emph{assemblery}.
 
-\todo{viac o assembleroch? De novo transcriptome assembly ...}
-\todo{jednou vetou o FASTQ formate?}
-
 \section{Algoritmy na zostavovanie genómu}
     Výsledkom sekvenovania genómu (pri použití súčasných technológií) je veľké
     množstvo malých fragmentov -- \emph{sequencing reads}, ktoré je potrebné
@@ -256,8 +253,6 @@ V poslednej fáze je vytvorená finálna sekvencia superkontigov, ktorá pokrýv
 
 Nad daným reťazcom sa tieto funkcie dajú implementovať s malou pamäťovou zložitosťou a časovou zložitosťou $O(log(\sigma))$\cite{GGV03}.
 
-\todo{pokec o zlozitosti jednotlivych implementacii rank a select?}
-
 \section{Sufixové polia}
 
 Sufixové pole je jednoduchá dátová štruktúra používaná napríklad pri indexácii,
@@ -324,8 +319,6 @@ Ak najprv skonštruujeme sufixový strom (to sa dá spraviť v čase $O(n)$) a p
 
     \subsubsection{Lineárne algoritmy}
     Lineárnych algoritmov existuje niekoľko, napríklad \emph{SA-SI} \cite{NZC09}, ktorý je momentálne jeden z najrýchlejších známych algoritmov, prípadne algoritmus od Kärkkäinena a Sandersa \cite{KS03}.
-        
-    \todo{chcem tu nejak velmi rozpisovat nejaky konkretny linearny algoritmus?}
     
     \subsection{Pamäťová efektivita}
     Sufixové polia sú vo všeobecnosti efektívnejšie než sufixové stromy, no v
@@ -335,12 +328,10 @@ Ak najprv skonštruujeme sufixový strom (to sa dá spraviť v čase $O(n)$) a p
     = 3.4 \times 10^9$) by teda sufixové pole zaberalo približne 16 krát viac
     pamäte než samotný genóm. Práve z tohto dôvodu sa objavili vylepšenia ako
     napríklad \textit{komprimované sufixové polia} a \textit{FM-index}.
-    
-    \todo{rozpisat rozpisat vypocet hodnot LCP pre sufixove pole (?)}
 
 \section{Burrows-Wheelerova transformácia}
     Burrows-Wheelerova transformácia (BWT) je transformácia textu využívaná pri
-    kompresii (napríklad v programe bzip2) ale aj v úsporných dátových
+    kompresii (napríklad v programe bzip2), ale aj v úsporných dátových
     štruktúrach na hľadanie vzorky v texte. BWT transformuje vstupný reťazec $T$
     na reťazec $BWT(T)$, ktorý je permutáciou pôvodného reťazca, no s tou
     vlastnosťou, že sa dá väčšinou oveľa lepšie skomprimovať než pôvodný
@@ -565,8 +556,6 @@ Ak najprv skonštruujeme sufixový strom (to sa dá spraviť v čase $O(n)$) a p
     
     \emph{Rekonštrukcia odpredu} funguje podobne, no nasledujúce znaky sa extrahujú z prvého stĺpca rovnakého riadka a na posun ďalej sa využíva \emph{FL mapping}, ktorý je podstatne zložitejší na implementáciu.
     
-    \todo{mozno ilustracia tej rekonstrukcie.}
-    
 \section{FM-index}
 \label{sec:fm_index}
     FM-index je komprimovaný index založený na Burrows-Wheelerovej transformácii, publikovaný v \cite{FM00}. Skratka \emph{FM} je odvodená od \emph{Full-text in Minute space} -- \emph{full-text} index je dátová štruktúra nad textom $T$ umožňujúca efektívne vyhľadávanie podreťazcov v $T$. \emph{Minute space} znamená, že index je pamäťovo veľmi efektívny. Táto dátová štruktúra vo všeobecnosti podporuje dve operácie -- operáciu \emph{count}, ktorá pre reťazec na vstupe vráti počet výskytov v $T$ a operáciu \emph{locate}, ktorej výsledkom pre vstupný reťazec $P$ je zoznam indexov v $T$, na ktorých sa $P$ vyskytuje v $T$.
@@ -625,8 +614,7 @@ Ak najprv skonštruujeme sufixový strom (to sa dá spraviť v čase $O(n)$) a p
     
     \subsubsection{Počítacia fáza}
     Hľadanie vzorky v sufixovom poli je časovo veľmi efektívne, pretože sa zároveň hľadajú všetky výskyty danej vzorky $P$ -- simultánnym posúvaním ukazovateľov hornej a dolnej hranice v sufixovom poli. Označme tieto ukazovatele $sp$ a $ep$ (z ang. \emph{starting} resp. \emph{ending pointer}). Znak $c$ bude obsahovať momentálne spracovávaný znak vzorky $P$, pričom začneme posledným znakom a budeme tiež využívať pomocné polia $Occ$ a $C$ zadefinované v predchádzajúcej časti. Ukazovateľ $sp$ bude inicializovaný na $C[c]$ a ukazovateľ $ep$ na $C[c + 1]$ -- v tomto prípade už tieto ukazovatele ukazujú na prvý resp. posledný výskyt posledného písmena $P$ v $F$\footnote{Pripomeňme, že $F$ je prvým stĺpcom $BWM$ a $F$ je vlastne pole znakov, ktoré zodpovedajú indexom sufixového poľa do pôvodného textu $T$.}.
-    
-    \bigskip
+    \newpage
     
     \begin{pseudocode}[label=lst:fm_search_algorithm,caption={Algoritmus na hľadanie vzorky pomocou FM-indexu}]
 i = P.length - 1
@@ -700,7 +688,4 @@ end
     \subsubsection{Zlepšenia}
     Ak by mala tabuľka $Occ$ odpovedať v konštantnom čase, zaberala by značné množstvo pamäte, preto sa v praxi pri jej implementácii používajú sofistikovanejšie dátové štruktúry ako napríklad \emph{wavelet tree} \cite{GGV03}.
     
-    Čo sa týka lokalizačnej fázy, tak je potrebné spomenúť, že pamätanie si celého sufixového poľa by zaberalo priveľa pamäte, preto sa v praxi používa napríklad komprimované sufixové pole -- ukladá sa len časť pôvodného sufixového poľa a chýbajúce hodnoty sa potom v prípade potreby dorátavajú pomocou pamätaných hodnôt.
-    
-    \todo{MTF, RL, wavelet, huffman, ... citacie, odkazy, fm index v2}
-   
+    Čo sa týka lokalizačnej fázy, tak je potrebné spomenúť, že pamätanie si celého sufixového poľa by zaberalo priveľa pamäte, preto sa v praxi používa napríklad komprimované sufixové pole -- ukladá sa len časť pôvodného sufixového poľa a chýbajúce hodnoty sa potom v prípade potreby dorátavajú pomocou pamätaných hodnôt.  

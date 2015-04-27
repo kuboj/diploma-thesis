@@ -20,7 +20,7 @@ na pamäťovú efektívnosť tejto dátovej štruktúry. Čiže:
 \end{description}
 
 V našom kontexte ale platia aj nasledovné veci, ktoré nám riešenie úlohy do
-značnej miery uľahčí:
+značnej miery uľahčia:
 
 \begin{itemize}
     \item Vieme, že všetky ready pochádzajú zo
@@ -34,8 +34,7 @@ značnej miery uľahčí:
     $n \in [ 10^5, \frac{2}{3} \cdot 10^9 ]$.
     \item Dĺžku dotazu $p$ budeme uvažovať v rozmedzí $13 -15$. 
     \item A na záver, pri zisťovaní, či $p$ je podreťazcom $r$ budeme testovať
-    aj to, či reverzný komplement (pozri časť \ref{sec:formalne_definicie}) $p$ ($revcompl(p)$) nie je podreťazcom $r$ -- bude nám stačiť, ak bude túto podmienku spĺňať jeden z nich. \todo{maybe biologicka
-    motivacia preco toto?}
+    aj to, či reverzný komplement (pozri časť \ref{sec:formalne_definicie}) $p$ ($revcompl(p)$) nie je podreťazcom $r$ -- bude nám stačiť, ak bude túto podmienku spĺňať jeden z nich. 
 \end{itemize}
 
 Cieľom bude dosiahnuť čo najnižšiu pamäťovú zložitosť, pri zachovaní
@@ -110,8 +109,6 @@ l)$. Existuje množstvo zlepšení, napríklad:
     jednoduchšie (napríklad ako celé číslo).
 \end{itemize}
 
-\todo{dalsie zlepsenia? mozno spomenut sparse/dense hash map, SGI c++ ext}
-
 \section{Riešenie s použitím GkArray}
 \label{sec:riesenie_s_pouzitim_gkarray}
 V roku 2011 vyšiel v \emph{BMC Bioinformatics} článok od N. Phillipea a spol.\cite{NP11} prezentujúci dátovú štruktúru s názvom \emph{GkArray}. Cieľom autorov bolo navrhnúť a implementovať univerzálne riešenie na indexáciu readov a vyhľadávanie v nich cez \emph{k}-mery vopred danej dĺžky. Vstupom pre jej konštrukciu je sada readov, každý dĺžky $m$, a číslo $k$, kde $k \leq m$. Dátová štruktúra \emph{GkArray} je konštruovaná tak, aby vedela odpovedať na nasledujúce dotazy\footnote{V pôvodnom článku je uvedený aj ôsmy dotaz, ktorý je ale ekvivalentný so šiestym, my sme si ho dovolili rovno vynechať.}:
@@ -127,8 +124,6 @@ V roku 2011 vyšiel v \emph{BMC Bioinformatics} článok od N. Phillipea a spol.
 \end{itemize}
 
 \emph{GkArray} vnútorne používa 4 polia -- \emph{GkSA} (Generalized \emph{k} Suffix Array), čo je vhodným spôsobom modifikované sufixové pole skonštruované nad reťazcom získaným zreťazením všetkých readov zo vstupu, \emph{GkIFA} (Generalized \emph{k} Inverse Array) predstavuje obmenu sufixového poľa reverzov, \emph{GkCFA} (Generalized \emph{k} Counting Factor Array) a štvrté pole, \emph{GkCFPS} (Generalized \emph{k} Counting Factor Prefix Sum) je použité len pri konštrukcii prvých troch.
-
-\todo{ako velmi rozpisovat fungovanie GkArrayu?}
 
 Vidíme teda, že štruktúra \emph{GkArray} by mala vedieť riešiť \emph{problém indexovania readov} podľa našej definície pomocou odpovedí na dotazy \textbf{Q1} -- \textbf{Q4}. Pri indexácii ale len zreťazí reťazce zo vstupu a nijak nevyužíva to, že sú to sekvencieho nejakého genómu, nesnaží sa ich nijak komprimovať. Skúsme teda spraviť jednoduché porovnanie spotreby pamäte v porovnaní s hash mapou.
 

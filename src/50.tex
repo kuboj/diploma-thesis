@@ -62,7 +62,3 @@ Z výsledkov vykonaných testov môžeme skonštatovať, že úlohu naimplemento
 Ďalej vidíme, že čas odpovedania na dotaz nezávisí od pokrytia readmi ani v prípade CR-indexu ani pri knižnici GkArray a tiež, že to, že odpovedanie na náhodne generované dotazy je rovnako rýchle ako odpovedanie na dotazy, ktoré zaručene vrátia nejaký výsledok (generovaná sada).
 
 Možnosti zlepšenia vidíme, ako sme spomínali už v časti \ref{ssec:mozne_zlepsenia}, napríklad v implementácii bloom filtra, ktorým by sme vedeli zlepšiť čas potrebný na vykonanie dotazu a tým by sme sa priblížili ku času, ktorý vykazuje knižnica GkArray. Ďalšie možné zlepšenie je efektívnejšie ukladať polia \emph{pos} a \emph{diff} -- pri vyšších pokrytiach práve tieto dve polia zaberajú väčšinu pamäte -- superstring totiž v pamäti uložený celý nemáme, FM-index drží iba vhodne komprimovanú verziu.
-
-\todo{nekonzistentnost oznaceni, superstring je raz ss a raz S}\\
-\todo{usamova minimovka - citacie} \\
-\todo{usamova minimovka - 1.1 shortest common superstring je np-hard + 2.5 apx.(?)}
